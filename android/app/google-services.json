@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "68786890149",
+    "project_id": "savet-b9216",
+    "storage_bucket": "savet-b9216.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68786890149:android:defcb3d18ab10b5c7b744c",
+        "android_client_info": {
+          "package_name": "com.technion.savet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68786890149-37vbqfcehjb8627ro4n5vrso4h3to3cr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQPrVBsVWnlWIig7QAOB3QXymO9GMB9Mc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68786890149-37vbqfcehjb8627ro4n5vrso4h3to3cr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
