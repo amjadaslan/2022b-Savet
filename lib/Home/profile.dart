@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:savet/Home/follower_card.dart';
 import 'package:savet/auth/auth_repoitory.dart';
 
 import '../Chat/message_card.dart';
@@ -65,41 +66,20 @@ class _profileState extends State<profile> {
                     ],
                   ),
                   LimitedBox(
-                      maxHeight: MediaQuery.of(context).size.height * 0.542,
+                      maxHeight: MediaQuery.of(context).size.height * 0.5813,
                       child: Container(
                         color: Colors.transparent,
                         child: TabBarView(
                           children: [
                             ListView(
                               shrinkWrap: true,
-                              children: [
-                                SizedBox(height: 10),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card()
-                              ],
+                              children:
+                                  List.generate(10, (index) => follower_card()),
                             ),
                             ListView(
                               shrinkWrap: true,
-                              children: [
-                                SizedBox(height: 10),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card(),
-                                message_card()
-                              ],
+                              children:
+                                  List.generate(10, (index) => follower_card()),
                             ),
                           ],
                         ),
