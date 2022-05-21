@@ -4,6 +4,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import 'add_category.dart';
+
 class category extends StatefulWidget {
   const category({Key? key}) : super(key: key);
 
@@ -112,7 +114,8 @@ class _categoryState extends State<category> {
         ),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () {},
+          onPressed: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => add_category())),
           backgroundColor: Colors.deepOrange,
         ),
         body: Column(children: [

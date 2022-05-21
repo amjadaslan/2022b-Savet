@@ -7,6 +7,7 @@ import 'package:flutter/painting.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:savet/Home/profile.dart';
 import 'package:savet/auth/auth_repoitory.dart';
+import '../Category/add_category.dart';
 import '../Category/category_card.dart';
 import '/Category/category.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -56,18 +57,8 @@ class _homeState extends State<home> {
       ]),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {
-          //Alert dialog with fill in details to push to database
-
-          // Category new_category = new Category(
-          //   imageUrl: 'assets/images/new.jpg',
-          //   CategoryName: 'New Category',
-          //   Description: 'newww',
-          //   imagesList: [],
-          // );
-          // AppData.categories.add(new_category);
-          // setState(() {});
-        },
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => add_category())),
         backgroundColor: Colors.deepOrange,
       ),
       body: ListView(

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:savet/Home/follower_card.dart';
 import 'package:savet/auth/auth_repoitory.dart';
 
+import '../Category/profileImage.dart';
 import '../Chat/message_card.dart';
 
 class profile extends StatefulWidget {
@@ -41,7 +42,7 @@ class _profileState extends State<profile> {
             color: Colors.white,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               SizedBox(height: 20),
-              imageProfile(context),
+              profileImage(),
               SizedBox(height: 10),
               Container(
                 child: Text(
@@ -87,85 +88,5 @@ class _profileState extends State<profile> {
                 ]),
               )
             ])));
-  }
-
-  Widget imageProfile(BuildContext context) {
-    return Center(
-      child: Stack(children: <Widget>[
-        CircleAvatar(
-          radius: 80.0,
-          backgroundImage: _imageFile == null
-              ? AssetImage('assets/images/avatar.jpg') as ImageProvider
-              : FileImage(File(_imageFile!.path)),
-        ),
-        Positioned(
-          bottom: 13.0,
-          right: 15.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet(context)),
-              );
-            },
-            child: Icon(
-              Icons.camera_alt,
-              color: Colors.black87,
-              size: 28.0,
-            ),
-          ),
-        ),
-      ]),
-    );
-  }
-
-  void takePhoto(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(
-      source: source,
-    );
-    setState(() {
-      _imageFile = pickedFile;
-    });
-    Navigator.pop(context);
-  }
-
-  Widget bottomSheet(BuildContext context) {
-    return Container(
-      height: 100.0,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        children: <Widget>[
-          const Text(
-            "Choose Category photo",
-            style: TextStyle(
-              fontSize: 20.0,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            TextButton.icon(
-              icon: Icon(Icons.camera),
-              onPressed: () {
-                takePhoto(ImageSource.camera);
-              },
-              label: Text("Camera"),
-            ),
-            TextButton.icon(
-              icon: Icon(Icons.image),
-              onPressed: () {
-                takePhoto(ImageSource.gallery);
-              },
-              label: Text("Gallery"),
-            ),
-          ])
-        ],
-      ),
-    );
   }
 }
