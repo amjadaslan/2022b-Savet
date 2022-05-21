@@ -125,9 +125,12 @@ class _categoryState extends State<category> {
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
           ),
           SizedBox(height: 10),
-          AutoSizeText(
-            "Description _____________________________________________________________________________________",
-            textAlign: TextAlign.center,
+          Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: AutoSizeText(
+              "Description _____________________________________________________________________________________",
+              textAlign: TextAlign.center,
+            ),
           ),
           SizedBox(height: 20),
           Flexible(

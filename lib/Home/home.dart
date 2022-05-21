@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:savet/Home/profile.dart';
+import 'package:savet/auth/auth_repoitory.dart';
 import '../Category/category_card.dart';
 import '/Category/category.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -40,15 +41,17 @@ class _homeState extends State<home> {
       'https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg',
     ];
     TextEditingController editingController = TextEditingController();
-
+    final user = AuthRepository.instance();
     return Scaffold(
       appBar: AppBar(title: const Text('Home'), actions: <Widget>[
-        IconButton(
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => profile()));
-            },
-            icon: Icon(Icons.account_circle)),
+        (user.isAuthenticated)
+            ? (IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => profile()));
+                },
+                icon: Icon(Icons.account_circle)))
+            : (SizedBox()),
         SizedBox(width: 20)
       ]),
       floatingActionButton: FloatingActionButton(

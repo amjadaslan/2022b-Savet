@@ -1,7 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:savet/auth/auth_repoitory.dart';
+
+import '../Chat/message_card.dart';
 
 class profile extends StatefulWidget {
   const profile({Key? key}) : super(key: key);
@@ -16,69 +20,101 @@ class _profileState extends State<profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.white,
-        child: Column(children: <Widget>[
-          imageProfile(context),
-          SizedBox(height: 10),
-          Container(
-            child: Text(
-              'John',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-            ),
-          ),
-          SizedBox(height: 10),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Text(
-                        "",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text('')
-                    ],
-                  ),
-                  OutlinedButton(
-                    onPressed: () {},
-                    child: Container(
-                        width: 70,
-                        child: Text(
-                          'Followers 1024',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.deepOrange),
-                          textAlign: TextAlign.center,
-                        )),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {},
-                    child: Container(
-                        width: 70,
-                        child: Text(
-                          'Following 1300',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.deepOrange),
-                          textAlign: TextAlign.center,
-                        )),
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Text(
-                        "",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text('')
-                    ],
-                  ),
-                ],
-              )),
-        ]));
+    final user = AuthRepository.instance();
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Profile"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    user.signOut();
+                    Navigator.of(context).pop();
+                  });
+                },
+                icon: Icon(Icons.logout)),
+            SizedBox(width: 20)
+          ],
+        ),
+        body: Container(
+            height: MediaQuery.of(context).size.height,
+            color: Colors.white,
+            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SizedBox(height: 20),
+              imageProfile(context),
+              SizedBox(height: 10),
+              Container(
+                child: Text(
+                  'John',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                ),
+              ),
+              SizedBox(height: 10),
+              DefaultTabController(
+                  length: 2,
+                  child: Column(children: [
+                    TabBar(
+                      labelColor: Colors.black,
+                      tabs: [
+                        Tab(
+                          text: "Followers",
+                        ),
+                        Tab(
+                          text: "Following",
+                        ),
+                      ],
+                    ),
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          children: [
+                            Flex(direction: Axis.horizontal, children: [
+                              Flexible(
+                                  child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.58,
+                                      color: Colors.transparent,
+                                      child: TabBarView(
+                                        children: [
+                                          ListView(
+                                            children: [
+                                              SizedBox(height: 10),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card()
+                                            ],
+                                          ),
+                                          ListView(
+                                            children: [
+                                              SizedBox(height: 10),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card(),
+                                              message_card()
+                                            ],
+                                          )
+                                        ],
+                                      )))
+                            ]),
+                          ],
+                        ))
+                  ]))
+            ])));
   }
 
   Widget imageProfile(BuildContext context) {
