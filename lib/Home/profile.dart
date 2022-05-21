@@ -37,7 +37,6 @@ class _profileState extends State<profile> {
           ],
         ),
         body: Container(
-            height: MediaQuery.of(context).size.height,
             color: Colors.white,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               SizedBox(height: 20),
@@ -52,68 +51,61 @@ class _profileState extends State<profile> {
               ),
               SizedBox(height: 10),
               DefaultTabController(
-                  length: 2,
-                  child: Column(children: [
-                    TabBar(
-                      labelColor: Colors.black,
-                      tabs: [
-                        Tab(
-                          text: "Followers",
-                        ),
-                        Tab(
-                          text: "Following",
-                        ),
-                      ],
-                    ),
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
+                length: 2,
+                child: Column(children: [
+                  TabBar(
+                    labelColor: Colors.black,
+                    tabs: [
+                      Tab(
+                        text: "Followers",
+                      ),
+                      Tab(
+                        text: "Following",
+                      ),
+                    ],
+                  ),
+                  LimitedBox(
+                      maxHeight: MediaQuery.of(context).size.height * 0.542,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: TabBarView(
                           children: [
-                            Flex(direction: Axis.horizontal, children: [
-                              Flexible(
-                                  child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.58,
-                                      color: Colors.transparent,
-                                      child: TabBarView(
-                                        children: [
-                                          ListView(
-                                            children: [
-                                              SizedBox(height: 10),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card()
-                                            ],
-                                          ),
-                                          ListView(
-                                            children: [
-                                              SizedBox(height: 10),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card(),
-                                              message_card()
-                                            ],
-                                          )
-                                        ],
-                                      )))
-                            ]),
+                            ListView(
+                              shrinkWrap: true,
+                              children: [
+                                SizedBox(height: 10),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card()
+                              ],
+                            ),
+                            ListView(
+                              shrinkWrap: true,
+                              children: [
+                                SizedBox(height: 10),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card(),
+                                message_card()
+                              ],
+                            ),
                           ],
-                        ))
-                  ]))
+                        ),
+                      ))
+                ]),
+              )
             ])));
   }
 
