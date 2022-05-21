@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:savet/auth/Register.dart';
 import 'package:savet/homepage.dart';
+import '../Services/user_db.dart';
 import 'ResetPassword.dart';
 import 'auth_repoitory.dart';
 import 'package:provider/provider.dart';
@@ -54,11 +55,20 @@ class _LoginState extends State<Login> {
               automaticallyImplyLeading: false,
             ),
             body: FutureBuilder(
-              future: _initializeFirebase(),
-              builder: (context, snapshot) {
-                return LoginScreen();
-              },
-            ));
+                future: _initializeFirebase(),
+                builder: (context, snapshot) {
+                  return FutureBuilder(
+                      future: Provider.of<UserDB>(context).fetchData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(child: Text(snapshot.error.toString()));
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          return LoginScreen();
+                        }
+                        return Center(child: CircularProgressIndicator());
+                      });
+                }));
   }
 
   Widget LoginScreen() {

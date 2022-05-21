@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
 import 'package:savet/Services/user_db.dart';
 
@@ -83,9 +84,8 @@ class _add_categoryState extends State<add_category> {
                         SizedBox(width: 30),
                         TextButton(
                           onPressed: () {
-                            UserDB d = UserDB();
-                            d.fetchData();
-                            d.addCategory(_name.text, _desc.text, "A");
+                            Provider.of<UserDB>(context, listen: false)
+                                .addCategory(_name.text, _desc.text, "A");
                           },
                           child: Text("Submit"),
                           style: TextButton.styleFrom(

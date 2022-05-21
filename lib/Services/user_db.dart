@@ -81,64 +81,73 @@ class UserDB extends ChangeNotifier {
   String username = "";
   String avatar_path = "";
 
-  List<String> notifications = [];
+  List notifications = [];
 
-  List<userwithFollowers_Following> followers = [];
+  List followers = [];
   int followers_count = 0;
-  List<userwithFollowers_Following> following = [];
+  List following = [];
   int following_count = 0;
 
-  List<Category> categories = [];
+  List categories = [];
 
   late DocumentReference userDocument;
 
   fetchData() async {
     final user = AuthRepository.instance();
     String uid = user.user!.uid;
-    uid = 'g72sQSjfyerOS68SxgRV';
+
+    print("Fetching Data");
     print(uid);
     userDocument = FirebaseFirestore.instance.collection('userID').doc(uid);
     DocumentSnapshot userSnapshot = await userDocument.get();
-    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    if (!userSnapshot.exists) {
+      await userDocument.set({
+        'username': username,
+        'avatar_path': avatar_path,
+        'notifications': notifications,
+        'followers': followers,
+        'followers_count': followers_count,
+        'following': following,
+        'following_count': followers_count,
+        'categories': categories
+      });
+    } else {
+      Map<String, dynamic> userData =
+          userSnapshot.data() as Map<String, dynamic>;
 
-    //fetching username & avatarImage
-    username = userData['username'];
-    avatar_path = userData['avatar_path'];
+      //fetching username & avatarImage
+      username = userData['username'];
+      avatar_path = userData['avatar_path'];
 
-    //fetching Notifications
-    List<dynamic> notif = userData['notifications'];
+      //fetching Notifications
+      List<dynamic> notif = userData['notifications'];
 
-    notif.forEach((e) => {notifications.add(e)});
+      notif.forEach((e) => {notifications.add(e)});
 
-    //fetching list of followers
-    List<dynamic> flwrs = userData['followers'];
+      //fetching list of followers
+      List<dynamic> flwrs = userData['followers'];
 
-    flwrs.forEach((e) => {
-          followers.add(userwithFollowers_Following(
-              e['followers'], e['following'], e['username'], e['avatar_path']))
-        });
-    String a, b;
-    int c, d;
-    followers.forEach((e) {
-      a = e.username;
-      b = e.avatar_path;
-      c = e.followers;
-      d = e.following;
-    });
+      flwrs.forEach((e) => {
+            followers.add(userwithFollowers_Following(e['followers'],
+                e['following'], e['username'], e['avatar_path']))
+          });
+      String a, b;
+      int c, d;
+      followers.forEach((e) {
+        a = e.username;
+        b = e.avatar_path;
+        c = e.followers;
+        d = e.following;
+      });
 
-    //fetching list of followers
-    List<dynamic> flwng = userData['following'];
+      //fetching list of followers
+      List<dynamic> flwng = userData['following'];
 
-    flwng.forEach((e) => {
-          following.add(userwithFollowers_Following(
-              e['followers'], e['following'], e['username'], e['avatar_path']))
-        });
-
-    addNotification('hi1');
-    addNotification('hi2');
-    addNotification('hi3');
-    addNotification('hi4');
-    addNotification('hi5');
+      flwng.forEach((e) => {
+            following.add(userwithFollowers_Following(e['followers'],
+                e['following'], e['username'], e['avatar_path']))
+          });
+    }
   }
 
   void addNotification(String s) {
@@ -148,7 +157,8 @@ class UserDB extends ChangeNotifier {
   }
 
   void addCategory(String t, String d, String p_i) {
-    categories.add(Category(t, d, p_i));
+    categories.add({'title': t, 'description': d, 'image': p_i});
+    print("hi");
     userDocument.update({'categories': categories});
     notifyListeners();
   }
