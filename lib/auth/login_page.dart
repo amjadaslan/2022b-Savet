@@ -45,18 +45,20 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Login'),
-          centerTitle: false,
-          automaticallyImplyLeading: false,
-        ),
-        body: FutureBuilder(
-          future: _initializeFirebase(),
-          builder: (context, snapshot) {
-            return LoginScreen();
-          },
-        ));
+    return (Provider.of<AuthRepository>(context).isAuthenticated)
+        ? homepage()
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Login'),
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+            ),
+            body: FutureBuilder(
+              future: _initializeFirebase(),
+              builder: (context, snapshot) {
+                return LoginScreen();
+              },
+            ));
   }
 
   Widget LoginScreen() {

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:savet/Home/profile.dart';
 import 'package:savet/auth/auth_repoitory.dart';
 import '../Category/add_category.dart';
@@ -42,10 +43,9 @@ class _homeState extends State<home> {
       'https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg',
     ];
     TextEditingController editingController = TextEditingController();
-    final user = AuthRepository.instance();
     return Scaffold(
       appBar: AppBar(title: const Text('Home'), actions: <Widget>[
-        (user.isAuthenticated)
+        (Provider.of<AuthRepository>(context).isAuthenticated)
             ? (IconButton(
                 onPressed: () {
                   Navigator.of(context)

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:savet/Home/follower_card.dart';
 import 'package:savet/auth/auth_repoitory.dart';
 
@@ -30,9 +31,10 @@ class _profileState extends State<profile> {
             IconButton(
                 onPressed: () {
                   setState(() {
-                    user.signOut();
-                    Navigator.of(context).pop();
+                    Provider.of<AuthRepository>(context, listen: false)
+                        .signOut();
                   });
+                  Navigator.of(context).pop();
                 },
                 icon: Icon(Icons.logout)),
             SizedBox(width: 20)

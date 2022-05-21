@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:savet/Category/profileImage.dart';
+import 'package:savet/Services/user_db.dart';
 
 class add_category extends StatefulWidget {
   const add_category({Key? key}) : super(key: key);
@@ -12,6 +13,8 @@ class add_category extends StatefulWidget {
 class _add_categoryState extends State<add_category> {
   TextEditingController _desc = new TextEditingController();
   TextEditingController _name = new TextEditingController();
+
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class _add_categoryState extends State<add_category> {
                   child: TextField(
                       controller: _name,
                       decoration: InputDecoration(
-                          labelText: 'Category Name',
+                          labelText: 'Category Title',
                           enabledBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.black38, width: 1.0),
@@ -79,7 +82,11 @@ class _add_categoryState extends State<add_category> {
                         ),
                         SizedBox(width: 30),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            UserDB d = UserDB();
+                            d.fetchData();
+                            d.addCategory(_name.text, _desc.text, "A");
+                          },
                           child: Text("Submit"),
                           style: TextButton.styleFrom(
                               primary: Colors.white,

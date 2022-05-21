@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
-
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
 class AuthRepository with ChangeNotifier {
@@ -28,6 +27,10 @@ class AuthRepository with ChangeNotifier {
 
   bool get isAuthenticated => status == Status.Authenticated;
 
+  Stream<User?> get onAuthStateChanged {
+    return _auth.authStateChanges();
+  }
+
   // Future<String> getDownloadUrl() async {
   //   return await _storage.ref('images').child(_user!.uid).getDownloadURL();
   // }
@@ -44,6 +47,7 @@ class AuthRepository with ChangeNotifier {
       return null;
     }
   }
+
   Future<bool> signIn(String email, String password) async {
     //_auth.signIn("facebook", )
     try {
@@ -58,6 +62,7 @@ class AuthRepository with ChangeNotifier {
       return false;
     }
   }
+
   Future signOut() async {
     _auth.signOut();
     _status = Status.Unauthenticated;
@@ -67,11 +72,11 @@ class AuthRepository with ChangeNotifier {
   }
 
   Future resetPassword() async {
-
     print("resetPassword");
     notifyListeners();
     return Future.delayed(Duration.zero);
   }
+
   Future<void> _onAuthStateChanged(User? firebaseUser) async {
     if (firebaseUser == null) {
       _user = null;
@@ -79,15 +84,14 @@ class AuthRepository with ChangeNotifier {
     } else {
       _user = firebaseUser;
       _status = Status.Authenticated;
-     // await getfavourites();
+      // await getfavourites();
     }
     notifyListeners();
   }
 
-  String? getUserEmail(){
+  String? getUserEmail() {
     return _user!.email;
   }
-
 
   // Widget _showProfile(String? s) {
   //   String _imageURL;
@@ -144,6 +148,5 @@ class AuthRepository with ChangeNotifier {
   //   String? userID = user.user?.uid;
   //   await FirebaseStorage.instance.ref('$userID/profilePic').putFile(imageFile);
   // }
-
 
 }

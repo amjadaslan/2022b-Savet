@@ -6,8 +6,7 @@ class profileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ImagePicker _picker = ImagePicker();
-
+    final _picker = ImagePicker();
     var bottomSheet = Container(
       height: 100.0,
       width: MediaQuery.of(context).size.width,
@@ -74,10 +73,11 @@ class profileImage extends StatelessWidget {
     );
   }
 
-  void takePhoto(ImageSource source, ImagePicker _picker) async {
-    final pickedFile = await _picker.pickImage(
+  void takePhoto(ImageSource source, ImagePicker picker) async {
+    final pickedFile = await picker.pickImage(
       source: source,
     );
-    //uploadpickedFile!.path
+
+    //pickedFile!.path
   }
 }

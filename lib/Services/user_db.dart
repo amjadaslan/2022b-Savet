@@ -71,14 +71,10 @@ class Category {
   String profile_image = '';
   List<Post> posts = [];
 
-  Category(String t, String d, String p_i, List<Post> p)
+  Category(String t, String d, String p_i)
       : title = t,
         description = d,
-        profile_image = p_i,
-        posts = p {
-    cat_id = category_id;
-    category_id++;
-  }
+        profile_image = p_i {}
 }
 
 class UserDB extends ChangeNotifier {
@@ -121,6 +117,14 @@ class UserDB extends ChangeNotifier {
           followers.add(userwithFollowers_Following(
               e['followers'], e['following'], e['username'], e['avatar_path']))
         });
+    String a, b;
+    int c, d;
+    followers.forEach((e) {
+      a = e.username;
+      b = e.avatar_path;
+      c = e.followers;
+      d = e.following;
+    });
 
     //fetching list of followers
     List<dynamic> flwng = userData['following'];
@@ -143,8 +147,9 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCategory(String t, String d, String p_i, List<Post> p) {
-    categories.add(Category(t, d, p_i, p));
+  void addCategory(String t, String d, String p_i) {
+    categories.add(Category(t, d, p_i));
+    userDocument.update({'categories': categories});
     notifyListeners();
   }
 

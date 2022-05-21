@@ -7,15 +7,25 @@ import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'auth/login_page.dart';
 import 'auth/auth_repoitory.dart';
+import 'Services/user_db.dart';
 
 import 'homepage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
-  runApp(ChangeNotifierProvider(
-      create: (context) => AuthRepository.instance(), child: MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => AuthRepository.instance(),
+      ),
+      StreamProvider(
+        create: (context) => context.read<AuthRepository>().onAuthStateChanged,
+      ),
+      ChangeNotifierProvider(create: (context) => UserDB()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -46,8 +56,7 @@ class Splash2 extends StatelessWidget {
       child: SplashScreen(
         seconds: 3,
         useLoader: true,
-        navigateAfterSeconds:
-            AuthRepository.instance().isAuthenticated ? homepage() : Login(),
+        navigateAfterSeconds: Login(),
         title: new Text(
           '',
           textScaleFactor: 2,
