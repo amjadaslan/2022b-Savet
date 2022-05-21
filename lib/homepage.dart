@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'Explore/explore.dart';
-import 'Home/home.dart';
+import 'Community/community.dart';
 import 'Notifications/notifications.dart';
-import 'pages/user_profile_page.dart';
+import 'Home/home.dart';
 
 class homepage extends StatefulWidget {
   const homepage({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _homepageState extends State<homepage> {
     home(),
     explore(),
     notifications(),
-    UserProfilePage()
+    community()
   ];
 
   int _selectedIndex = 0;
@@ -37,8 +37,7 @@ class _homepageState extends State<homepage> {
             BottomNavigationBarItem(icon: Icon(Icons.search), label: "a"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.notifications), label: "b"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle), label: "c"),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: "c"),
           ],
           showSelectedLabels: false,
           showUnselectedLabels: false,
