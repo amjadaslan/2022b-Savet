@@ -34,7 +34,9 @@ class _profileState extends State<profile> {
                     Provider.of<AuthRepository>(context, listen: false)
                         .signOut();
                   });
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      Login()), (Route<dynamic> route) => false);
+                 // Navigator.of(context).pop();
                 },
                 icon: Icon(Icons.logout)),
             SizedBox(width: 20)
@@ -44,7 +46,7 @@ class _profileState extends State<profile> {
             color: Colors.white,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               SizedBox(height: 20),
-              profileImage(pWrap: pWrap, shape: "circle", network_flag: true,profile_pic: true),
+              profileImage(pWrap: pWrap, shape: "circle", network_flag: true),
               SizedBox(height: 10),
               Container(
                 child: Text(
