@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:provider/provider.dart';
 import 'package:savet/Posts/Public_Post/public_post_comments.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 
+import '../../Services/user_db.dart';
 import '../similar_content.dart';
 
 class private_post extends StatefulWidget {
-  const private_post({Key? key}) : super(key: key);
-
+  private_post({Key? key, required this.cat_id, required this.post_id})
+      : super(key: key);
+  int cat_id;
+  int post_id;
   @override
   _private_postState createState() => _private_postState();
 }
@@ -29,10 +33,11 @@ class _private_postState extends State<private_post> {
   ];
   @override
   Widget build(BuildContext context) {
-    bool isPressed = false;
+    Map post = Provider.of<UserDB>(context).categories[widget.cat_id]['posts']
+        [widget.post_id];
     return Scaffold(
         appBar: AppBar(
-          title: Text('Post Title'),
+          title: Text(post['title']),
           actions: [
             Icon(Icons.add_alert),
             SizedBox(width: 20),
@@ -45,16 +50,16 @@ class _private_postState extends State<private_post> {
           color: Colors.white,
           child: Column(
             children: [
-              const Image(
+              Image(
                   fit: BoxFit.cover,
                   width: double.infinity,
-                  image: NetworkImage('https://i.ibb.co/kGwjjp0/1.png')),
+                  image: NetworkImage(post['image'])),
               SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
-                child: const Text(
-                  "Post Description",
+                child: Text(
+                  post['description'],
                   style: TextStyle(
                       fontFamily: 'arial',
                       decoration: TextDecoration.none,

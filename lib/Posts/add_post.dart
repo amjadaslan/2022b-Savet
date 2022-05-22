@@ -91,9 +91,23 @@ class _add_postState extends State<add_post> {
                           SizedBox(width: 30),
                           TextButton(
                             onPressed: () {
-                              Provider.of<UserDB>(context, listen: false)
-                                  .addPost(_name.text, _desc.text, "A",
-                                      widget.cat_id);
+                              if (_name.text.isEmpty || pWrap.value == "") {
+                                if (pWrap.value == "")
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Please pick a post image")));
+                                else
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Please write a title for the Post")));
+                              } else {
+                                Provider.of<UserDB>(context, listen: false)
+                                    .addPost(_name.text, _desc.text,
+                                        pWrap.value, widget.cat_id);
+                                Navigator.of(context).pop();
+                              }
                             },
                             child: Text("Submit"),
                             style: TextButton.styleFrom(

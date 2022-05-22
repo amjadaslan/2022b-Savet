@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../Posts/Private_Post/private_post.dart';
 import '../Posts/add_post.dart';
 import '../Services/user_db.dart';
 import 'add_category.dart';
@@ -103,20 +104,29 @@ class _categoryState extends State<category> {
               child: StaggeredGrid.count(
                 crossAxisCount: 3,
                 children: List.generate(cat['posts'].length, (index) {
-                  return Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.all(Radius.circular(15))),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      child: FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: cat['posts'][index]['image'],
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  );
+                  return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => private_post(
+                                    cat_id: cat['id'], post_id: index)));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: const BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          child: FadeInImage.memoryNetwork(
+                            placeholder: kTransparentImage,
+                            image: cat['posts'][index]['image'],
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ));
                 }),
               ),
             ),

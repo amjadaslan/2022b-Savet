@@ -154,10 +154,6 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map getCategory(int id) {
-    return categories[id];
-  }
-
   void changeCategoryProfile(int cat_id, String new_img) async {
     print("changing Category Profile");
     File imageFile = File(new_img);
@@ -205,14 +201,21 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addPost(String t, String d, String image_path, int c_i) {
+  void addPost(String t, String d, String image_path, int c_i) async {
+    File imageFile = File(image_path);
+    String c = image_path.hashCode.toString();
+    await FirebaseStorage.instance.ref('$c').putFile(imageFile);
+    String path =
+        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
     categories.forEach((e) {
       if (e['id'] == c_i) {
         int post_id = e['posts'].length;
-        e['posts'].add(
-            {'title': t, 'description': d, 'image': image_path, 'id': post_id});
+        e['posts']
+            .add({'title': t, 'description': d, 'image': path, 'id': post_id});
       }
     });
+
+    userDocument.update({'categories': categories});
     notifyListeners();
   }
 

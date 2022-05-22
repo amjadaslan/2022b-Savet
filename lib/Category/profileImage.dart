@@ -132,13 +132,15 @@ class _profileImageState extends State<profileImage> {
     final pickedFile = await picker.pickImage(
       source: source,
     );
-    widget.pWrap.value = pickedFile?.path;
-    path = widget.pWrap.value;
-    widget.network_flag = false;
-    if (widget.id != -1) {
-      Provider.of<UserDB>(context, listen: false)
-          .changeCategoryProfile(widget.id, widget.pWrap.value);
+    if (pickedFile?.path != null) {
+      widget.pWrap.value = pickedFile?.path;
+      path = widget.pWrap.value;
+      widget.network_flag = false;
+      if (widget.id != -1) {
+        Provider.of<UserDB>(context, listen: false)
+            .changeCategoryProfile(widget.id, widget.pWrap.value);
+      }
+      setState(() {});
     }
-    setState(() {});
   }
 }

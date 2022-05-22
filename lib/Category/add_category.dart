@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
 import 'package:savet/Services/user_db.dart';
@@ -20,7 +19,6 @@ class _add_categoryState extends State<add_category> {
   TextEditingController _desc = new TextEditingController();
   TextEditingController _name = new TextEditingController();
 
-  final ImagePicker _picker = ImagePicker();
   var pWrap = new pathWrapper("");
 
   @override
