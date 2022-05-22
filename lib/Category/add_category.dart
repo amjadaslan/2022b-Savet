@@ -21,6 +21,7 @@ class _add_categoryState extends State<add_category> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text("Add Category"),
         ),
         body: Center(

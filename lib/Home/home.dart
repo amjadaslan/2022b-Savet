@@ -44,17 +44,20 @@ class _homeState extends State<home> {
     ];
     TextEditingController editingController = TextEditingController();
     return Scaffold(
-      appBar: AppBar(title: const Text('Home'), actions: <Widget>[
-        (Provider.of<AuthRepository>(context).isAuthenticated)
-            ? (IconButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => profile()));
-                },
-                icon: Icon(Icons.account_circle)))
-            : (SizedBox()),
-        SizedBox(width: 20)
-      ]),
+      appBar: AppBar(
+          title: const Text('Home'),
+          automaticallyImplyLeading: false,
+          actions: <Widget>[
+            (Provider.of<AuthRepository>(context).isAuthenticated)
+                ? (IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => profile()));
+                    },
+                    icon: Icon(Icons.account_circle)))
+                : (SizedBox()),
+            SizedBox(width: 20)
+          ]),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => Navigator.of(context)
@@ -90,7 +93,7 @@ class _homeState extends State<home> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const category()));
+                                  builder: (context) => category(id: i)));
                         },
                         child: Container(
                             padding: EdgeInsets.all(10),

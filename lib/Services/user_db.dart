@@ -80,6 +80,8 @@ class Category {
 class UserDB extends ChangeNotifier {
   String username = "";
   String avatar_path = "";
+  int post_id = 0;
+  int cat_id = 0;
 
   List notifications = [];
 
@@ -121,8 +123,9 @@ class UserDB extends ChangeNotifier {
 
       //fetching Notifications
       List<dynamic> notif = userData['notifications'];
+      notifications = notif;
 
-      notif.forEach((e) => {notifications.add(e)});
+      //notif.forEach((e) => {notifications.add(e)});
 
       //fetching list of followers
       List<dynamic> flwrs = userData['followers'];
@@ -131,14 +134,6 @@ class UserDB extends ChangeNotifier {
             followers.add(userwithFollowers_Following(e['followers'],
                 e['following'], e['username'], e['avatar_path']))
           });
-      String a, b;
-      int c, d;
-      followers.forEach((e) {
-        a = e.username;
-        b = e.avatar_path;
-        c = e.followers;
-        d = e.following;
-      });
 
       //fetching list of followers
       List<dynamic> flwng = userData['following'];
@@ -156,19 +151,27 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCategory(String t, String d, String p_i) {
-    categories.add({'title': t, 'description': d, 'image': p_i});
-    print("hi");
+  void addCategory(String title, String desc, String profile_img) {
+    categories.add({
+      'title': title,
+      'description': desc,
+      'image': profile_img,
+      'posts': [],
+      'id': cat_id
+    });
     userDocument.update({'categories': categories});
+    cat_id++;
     notifyListeners();
   }
 
-  void addPost(String t, String d, String c_p, bool p, int c_i) {
+  void addPost(String t, String d, String image_path, int c_i) {
     categories.forEach((e) {
       if (e.cat_id == c_i) {
-        e.posts.add(Post(t, d, c_p, p, c_i));
+        e.posts.add(
+            {'title': t, 'description': d, 'image': image_path, 'id': post_id});
       }
     });
+    post_id++;
     notifyListeners();
   }
 

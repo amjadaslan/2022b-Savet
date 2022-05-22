@@ -13,6 +13,7 @@ class _notificationsState extends State<notifications> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Notifications'),
         actions: [Icon(Icons.filter_alt), SizedBox(width: 20)],
       ),

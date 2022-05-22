@@ -38,6 +38,7 @@ class profileImage extends StatelessWidget {
               icon: Icon(Icons.image),
               onPressed: () {
                 takePhoto(ImageSource.gallery, _picker);
+
                 Navigator.pop(context);
               },
               label: Text("Gallery"),
@@ -77,7 +78,9 @@ class profileImage extends StatelessWidget {
     final pickedFile = await picker.pickImage(
       source: source,
     );
-
+    print("hi");
+    print(pickedFile?.path);
+    print("hi");
     //pickedFile!.path
   }
 }

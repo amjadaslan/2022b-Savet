@@ -17,7 +17,6 @@ class _public_post_commentsState extends State<public_post_comments> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.arrow_back),
           title: Text('Post Title'),
           actions: [
             Icon(Icons.add_alert),
@@ -83,42 +82,44 @@ class _public_post_commentsState extends State<public_post_comments> {
                     image: NetworkImage('https://i.ibb.co/kGwjjp0/1.png')),
               ),
               Divider(
-                thickness: 2,
+                thickness: 1,
               ),
               Container(
-                height: 300.0,
-                child: ListView(
+                child: Column(
                     children: List.generate(20, (index) {
+                  if (index == 19)
+                    return SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.1);
                   return comment();
                 })),
               ),
               Divider(),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: Row(children: [
-                  SizedBox(width: 15),
-                  const CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          NetworkImage('https://i.ibb.co/CwTL6Br/1.jpg')),
-                  SizedBox(width: 15),
-                  SizedBox(
-                      width: 257,
-                      child: TextField(
-                          decoration:
-                              InputDecoration(hintText: "Add a comment..."),
-                          style: TextStyle(fontSize: 13))),
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text("Post",
-                          style: TextStyle(
-                              fontFamily: 'arial',
-                              color: Colors.deepOrangeAccent,
-                              fontSize: 13)))
-                ]),
-              )
             ],
           ),
-        )));
+        )),
+        bottomSheet: Container(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
+          child: Row(children: [
+            SizedBox(width: 15),
+            const CircleAvatar(
+                radius: 30,
+                backgroundImage:
+                    NetworkImage('https://i.ibb.co/CwTL6Br/1.jpg')),
+            SizedBox(width: 15),
+            SizedBox(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: TextField(
+                    decoration: InputDecoration(hintText: "Add a comment..."),
+                    style: TextStyle(fontSize: 13))),
+            TextButton(
+                onPressed: () {},
+                child: const Text("Post",
+                    style: TextStyle(
+                        fontFamily: 'arial',
+                        color: Colors.deepOrangeAccent,
+                        fontSize: 13)))
+          ]),
+        ));
   }
 }

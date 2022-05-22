@@ -36,6 +36,7 @@ class _exploreState extends State<explore> {
     ];
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Explore', textAlign: TextAlign.center),
         actions: [Icon(Icons.filter_list), SizedBox(width: 20)],
       ),
