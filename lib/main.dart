@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'auth/login_page.dart';
-import 'auth/auth_repoitory.dart';
+import 'auth/auth_repository.dart';
 import 'Services/user_db.dart';
 
 import 'homepage.dart';

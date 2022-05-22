@@ -5,10 +5,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Home/follower_card.dart';
-import 'package:savet/auth/auth_repoitory.dart';
+import 'package:savet/auth/auth_repository.dart';
 
+import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Chat/message_card.dart';
+import '../Services/user_db.dart';
 
 class profile extends StatefulWidget {
   const profile({Key? key}) : super(key: key);
@@ -18,12 +20,10 @@ class profile extends StatefulWidget {
 }
 
 class _profileState extends State<profile> {
-  final ImagePicker _picker = ImagePicker();
-  XFile? _imageFile;
-
   @override
   Widget build(BuildContext context) {
-    final user = AuthRepository.instance();
+    var pWrap = pathWrapper(Provider.of<UserDB>(context).avatar_path);
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Profile"),
@@ -44,7 +44,7 @@ class _profileState extends State<profile> {
             color: Colors.white,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               SizedBox(height: 20),
-              profileImage(),
+              profileImage(pWrap: pWrap, shape: "circle", network_flag: true),
               SizedBox(height: 10),
               Container(
                 child: Text(

@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../homepage.dart';
-import 'auth_repoitory.dart';
+import 'auth_repository.dart';
 import 'package:provider/provider.dart';
 
 class ResetPassword extends StatefulWidget {

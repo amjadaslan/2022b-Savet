@@ -1,7 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-import '../auth/auth_repoitory.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../auth/auth_repository.dart';
 
 int category_id = 0;
 int p_id = 0;
@@ -80,8 +84,6 @@ class Category {
 class UserDB extends ChangeNotifier {
   String username = "";
   String avatar_path = "";
-  int post_id = 0;
-  int cat_id = 0;
 
   List notifications = [];
 
@@ -120,6 +122,7 @@ class UserDB extends ChangeNotifier {
       //fetching username & avatarImage
       username = userData['username'];
       avatar_path = userData['avatar_path'];
+      categories = userData['categories'];
 
       //fetching Notifications
       List<dynamic> notif = userData['notifications'];
@@ -151,27 +154,52 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCategory(String title, String desc, String profile_img) {
+  Map getCategory(int id) {
+    return categories[id];
+  }
+
+  void changeCategoryProfile(int cat_id, String new_img) async {
+    print("changing Category Profile");
+    File imageFile = File(new_img);
+    String c = new_img.hashCode.toString();
+    await FirebaseStorage.instance.ref('$c').putFile(imageFile);
+    String path =
+        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+
+    categories.forEach((e) {
+      if (e['id'] == cat_id) {
+        e['image'] = path;
+      }
+    });
+    userDocument.update({'categories': categories});
+  }
+
+  void addCategory(String title, String desc, String profile_img) async {
+    File imageFile = File(profile_img);
+    String c = profile_img.hashCode.toString();
+    await FirebaseStorage.instance.ref('$c').putFile(imageFile);
+    String path =
+        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+    int cat_id = categories.length;
     categories.add({
       'title': title,
       'description': desc,
-      'image': profile_img,
+      'image': path,
       'posts': [],
       'id': cat_id
     });
     userDocument.update({'categories': categories});
-    cat_id++;
     notifyListeners();
   }
 
   void addPost(String t, String d, String image_path, int c_i) {
     categories.forEach((e) {
-      if (e.cat_id == c_i) {
-        e.posts.add(
+      if (e['id'] == c_i) {
+        int post_id = e['posts'].length;
+        e['posts'].add(
             {'title': t, 'description': d, 'image': image_path, 'id': post_id});
       }
     });
-    post_id++;
     notifyListeners();
   }
 

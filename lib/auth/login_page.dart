@@ -5,7 +5,7 @@ import 'package:savet/auth/Register.dart';
 import 'package:savet/homepage.dart';
 import '../Services/user_db.dart';
 import 'ResetPassword.dart';
-import 'auth_repoitory.dart';
+import 'auth_repository.dart';
 import 'package:provider/provider.dart';
 import 'Register.dart';
 import 'package:flutter/gestures.dart';
