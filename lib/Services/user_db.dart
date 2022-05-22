@@ -175,7 +175,7 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeCategorytitle(int cat_id, String new_title) async {
+  void changeCategoryTitle(int cat_id, String new_title) async {
     print("changing Category title");
 
     categories.forEach((e) {
