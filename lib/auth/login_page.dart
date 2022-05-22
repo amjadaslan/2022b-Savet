@@ -47,7 +47,16 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return (Provider.of<AuthRepository>(context).isAuthenticated)
-        ? homepage()
+        ? FutureBuilder(
+            future: Provider.of<UserDB>(context).fetchData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                return homepage();
+              }
+              return Center(child: CircularProgressIndicator());
+            })
         : Scaffold(
             appBar: AppBar(
               title: Text('Login'),
@@ -57,17 +66,7 @@ class _LoginState extends State<Login> {
             body: FutureBuilder(
                 future: _initializeFirebase(),
                 builder: (context, snapshot) {
-                  return FutureBuilder(
-                      future: Provider.of<UserDB>(context).fetchData(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(child: Text(snapshot.error.toString()));
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.done) {
-                          return LoginScreen();
-                        }
-                        return Center(child: CircularProgressIndicator());
-                      });
+                  return LoginScreen();
                 }));
   }
 
@@ -184,7 +183,23 @@ class _LoginState extends State<Login> {
                               ? Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => homepage()))
+                                      builder: (context) => FutureBuilder(
+                                          future: Provider.of<UserDB>(context)
+                                              .fetchData(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasError) {
+                                              return Center(
+                                                  child: Text(snapshot.error
+                                                      .toString()));
+                                            } else if (snapshot
+                                                    .connectionState ==
+                                                ConnectionState.done) {
+                                              return homepage();
+                                            }
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          })))
                               : ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(
@@ -208,7 +223,21 @@ class _LoginState extends State<Login> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => homepage()));
+                                builder: (context) => FutureBuilder(
+                                    future: Provider.of<UserDB>(context)
+                                        .fetchData(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                            child: Text(
+                                                snapshot.error.toString()));
+                                      } else if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return homepage();
+                                      }
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    })));
                       })),
 
               Padding(
@@ -232,7 +261,21 @@ class _LoginState extends State<Login> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => homepage()));
+                                  builder: (context) => FutureBuilder(
+                                      future: Provider.of<UserDB>(context)
+                                          .fetchData(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  snapshot.error.toString()));
+                                        } else if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return homepage();
+                                        }
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      })));
                         }, // Image tapped
                         child: Image.asset(
                           'assets/image/google.png',
