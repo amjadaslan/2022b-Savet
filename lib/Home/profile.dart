@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Home/follower_card.dart';
 import 'package:savet/auth/auth_repository.dart';
-
+import '../auth/login_page.dart';
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Chat/message_card.dart';
@@ -36,7 +36,10 @@ class _profileState extends State<profile> {
                   });
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
                       Login()), (Route<dynamic> route) => false);
-                 // Navigator.of(context).pop();
+                 // Navigator.pushNamedAndRemoveUntil(context, "/Login()", (r) => false);
+                 // Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Login()));
+                  //Navigator.pushReplacement(context,  Login())
+                  //Navigator.of(context).pop();
                 },
                 icon: Icon(Icons.logout)),
             SizedBox(width: 20)
