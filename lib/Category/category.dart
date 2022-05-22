@@ -97,7 +97,7 @@ class _categoryState extends State<category> {
           ),
           SizedBox(height: 10),
           Divider(),
-          SizedBox(height: 10),
+          SizedBox(height: 11),
           Flexible(
             child: SingleChildScrollView(
               child: StaggeredGrid.count(
