@@ -83,16 +83,18 @@ class _homeState extends State<home> {
                       return InkWell(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => category(id: i)));
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => category(id: i)))
+                              .then((_) => setState(() {}));
                         },
                         child: Container(
                             padding: EdgeInsets.all(10),
                             height: MediaQuery.of(context).size.width / 2.5,
                             width: MediaQuery.of(context).size.width / 3.2,
                             child: category_card(
-                                url: (cats[i])['image'],
+                                url: (Provider.of<UserDB>(context)
+                                    .categories[i])['image'],
                                 title: (cats[i])['title'])),
                       );
                     }))),

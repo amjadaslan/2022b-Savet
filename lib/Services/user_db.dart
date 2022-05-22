@@ -172,6 +172,19 @@ class UserDB extends ChangeNotifier {
       }
     });
     userDocument.update({'categories': categories});
+    notifyListeners();
+  }
+
+  void changeCategorytitle(int cat_id, String new_title) async {
+    print("changing Category title");
+
+    categories.forEach((e) {
+      if (e['id'] == cat_id) {
+        e['title'] = new_title;
+      }
+    });
+    userDocument.update({'categories': categories});
+    notifyListeners();
   }
 
   void addCategory(String title, String desc, String profile_img) async {

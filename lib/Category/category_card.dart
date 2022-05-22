@@ -13,7 +13,6 @@ class category_card extends StatefulWidget {
 class _category_cardState extends State<category_card> {
   @override
   Widget build(BuildContext context) {
-    bool isPressed = false;
     return Center(
       child: Container(
         padding: EdgeInsets.fromLTRB(0, 4, 0, 4),

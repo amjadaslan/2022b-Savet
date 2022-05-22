@@ -21,9 +21,10 @@ class _categoryState extends State<category> {
   Widget build(BuildContext context) {
     Map cat = Provider.of<UserDB>(context).categories[widget.id];
     var pWrap = pathWrapper(cat['image']);
+    var t = cat['title'];
     return Scaffold(
         appBar: AppBar(
-          title: Text(cat['title']),
+          title: Text(t),
           //automaticallyImplyLeading: false,
         ),
         floatingActionButton: FloatingActionButton(
@@ -39,11 +40,13 @@ class _categoryState extends State<category> {
           profileImage(
               pWrap: pWrap, shape: "square", network_flag: true, id: cat['id']),
           SizedBox(height: 10),
-          Text(
-            cat['title'],
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+          TextButton(
+              onPressed: () {},
+              child: Text("$t",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 25))),
           SizedBox(height: 10),
           Container(
             width: MediaQuery.of(context).size.width * 0.7,
