@@ -73,8 +73,6 @@ class _LoginState extends State<Login> {
   Widget LoginScreen() {
     final user = Provider.of<AuthRepository>(context);
     UserModel? userModel = _currentUser;
-    // if(user.isAuthenticated)
-    //   user.signOut();
     if (userModel != null) {
       return Padding(
         padding: const EdgeInsets.all(12.0),
@@ -179,6 +177,8 @@ class _LoginState extends State<Login> {
                         ),
                         onPressed: () async {
                           await user.signIn(_email.text, _password.text);
+                          _email.text = "";
+                          _password.text = "";
                           (user.isAuthenticated)
                               ? Navigator.push(
                                   context,

@@ -66,7 +66,7 @@ class AuthRepository with ChangeNotifier {
   Future signOut() async {
     _auth.signOut();
     _status = Status.Unauthenticated;
-    print("sigOut");
+    print("signOut");
     notifyListeners();
     return Future.delayed(Duration.zero);
   }
@@ -92,61 +92,4 @@ class AuthRepository with ChangeNotifier {
   String? getUserEmail() {
     return _user!.email;
   }
-
-  // Widget _showProfile(String? s) {
-  //   String _imageURL;
-  //   String? userID = AuthRepository.instance().user?.uid;
-  //   return Container(
-  //       color: Colors.white,
-  //       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
-  //       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-  //         FutureBuilder(
-  //             future: FirebaseStorage.instance
-  //                 .ref()
-  //                 .child('$userID/profilePic')
-  //                 .getDownloadURL(),
-  //             builder: (context, AsyncSnapshot<String> snapshot) {
-  //               _imageURL = snapshot.data ??
-  //                   'https://cdn-icons-png.flaticon.com/512/847/847969.png';
-  //               return CircleAvatar(
-  //                   backgroundImage: NetworkImage(_imageURL), radius: 40);
-  //             }),
-  //         const SizedBox(width: 20),
-  //         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-  //           AutoSizeText('$s',
-  //               style: const TextStyle(fontSize: 20), maxLines: 1),
-  //           const SizedBox(height: 8),
-  //           TextButton(
-  //               child: const AutoSizeText("Change avatar",
-  //                   style: TextStyle(fontSize: 10), maxLines: 1),
-  //               style: TextButton.styleFrom(
-  //                   primary: Colors.white,
-  //                   fixedSize: const Size(120, 10),
-  //                   backgroundColor: Colors.lightBlue),
-  //               onPressed: _imagePicker)
-  //         ])
-  //       ]));
-  // }
-  //
-  // void _imagePicker() async {
-  //   final picker = ImagePicker();
-  //   XFile? pickedImage;
-  //
-  //   pickedImage =
-  //   await picker.pickImage(source: ImageSource.gallery, maxWidth: 1920);
-  //
-  //   if (pickedImage == null) {
-  //     ScaffoldMessenger.of(context)
-  //         .showSnackBar(const SnackBar(content: Text('No image selected')));
-  //     return;
-  //   }
-  //
-  //   File imageFile = File(pickedImage.path);
-  //
-  //   // Uploading the selected image
-  //   final user = AuthRepository.instance();
-  //   String? userID = user.user?.uid;
-  //   await FirebaseStorage.instance.ref('$userID/profilePic').putFile(imageFile);
-  // }
-
 }

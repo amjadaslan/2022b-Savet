@@ -34,7 +34,7 @@ class _profileState extends State<profile> {
                     Provider.of<AuthRepository>(context, listen: false)
                         .signOut();
                   });
-                  Navigator.of(context).pop();
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 icon: Icon(Icons.logout)),
             SizedBox(width: 20)
