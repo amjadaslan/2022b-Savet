@@ -82,8 +82,9 @@ class Category {
 }
 
 class UserDB extends ChangeNotifier {
-  String username = "";
+  String? username = "";
   String avatar_path = "";
+  String? user_email = "";
 
   List notifications = [];
 
@@ -97,12 +98,13 @@ class UserDB extends ChangeNotifier {
   late DocumentReference userDocument;
 
   fetchData() async {
-    final user = AuthRepository.instance();
-    String uid = user.user!.uid;
+    final auth = AuthRepository.instance();
+    user_email = auth.user?.email;
+    username = auth.username;
 
     print("Fetching Data");
-    print(uid);
-    userDocument = FirebaseFirestore.instance.collection('userID').doc(uid);
+    userDocument =
+        FirebaseFirestore.instance.collection('users').doc(user_email);
     DocumentSnapshot userSnapshot = await userDocument.get();
     if (!userSnapshot.exists) {
       await userDocument.set({

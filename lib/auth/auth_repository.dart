@@ -11,6 +11,7 @@ enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 class AuthRepository with ChangeNotifier {
   FirebaseAuth _auth;
   User? _user;
+  String? _username;
   Status _status = Status.Uninitialized;
   //FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //FirebaseStorage _storage = FirebaseStorage.instance;
@@ -25,6 +26,8 @@ class AuthRepository with ChangeNotifier {
 
   User? get user => _user;
 
+  String? get username => _username;
+
   bool get isAuthenticated => status == Status.Authenticated;
 
   Stream<User?> get onAuthStateChanged {
@@ -34,10 +37,11 @@ class AuthRepository with ChangeNotifier {
   // Future<String> getDownloadUrl() async {
   //   return await _storage.ref('images').child(_user!.uid).getDownloadURL();
   // }
-  Future<UserCredential?> signUp(String email, String password) async {
+  Future<UserCredential?> signUp(String email, String password,String username) async {
     try {
       _status = Status.Authenticating;
       notifyListeners();
+      _username=username;
       return await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
