@@ -44,7 +44,7 @@ class _profileState extends State<profile> {
             color: Colors.white,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               SizedBox(height: 20),
-              profileImage(pWrap: pWrap, shape: "circle", network_flag: true),
+              profileImage(pWrap: pWrap, shape: "circle", network_flag: true,profile_pic: true),
               SizedBox(height: 10),
               Container(
                 child: Text(

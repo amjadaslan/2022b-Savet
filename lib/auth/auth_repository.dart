@@ -1,7 +1,6 @@
 import 'dart:io';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -11,7 +10,6 @@ enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 class AuthRepository with ChangeNotifier {
   FirebaseAuth _auth;
   User? _user;
-  String? _username;
   Status _status = Status.Uninitialized;
   //FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //FirebaseStorage _storage = FirebaseStorage.instance;
@@ -26,8 +24,6 @@ class AuthRepository with ChangeNotifier {
 
   User? get user => _user;
 
-  String? get username => _username;
-
   bool get isAuthenticated => status == Status.Authenticated;
 
   Stream<User?> get onAuthStateChanged {
@@ -37,11 +33,15 @@ class AuthRepository with ChangeNotifier {
   // Future<String> getDownloadUrl() async {
   //   return await _storage.ref('images').child(_user!.uid).getDownloadURL();
   // }
-  Future<UserCredential?> signUp(String email, String password,String username) async {
+  Future<UserCredential?> signUp(
+      String email, String password, String userName) async {
     try {
       _status = Status.Authenticating;
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(email)
+          .set({'username': userName});
       notifyListeners();
-      _username=username;
       return await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {

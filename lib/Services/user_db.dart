@@ -100,27 +100,25 @@ class UserDB extends ChangeNotifier {
   fetchData() async {
     final auth = AuthRepository.instance();
     user_email = auth.user?.email;
-    username = auth.username;
 
     print("Fetching Data");
     userDocument =
         FirebaseFirestore.instance.collection('users').doc(user_email);
     DocumentSnapshot userSnapshot = await userDocument.get();
-    if (!userSnapshot.exists) {
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    if (userData.length == 1) {
+      String username = userData['username'];
       await userDocument.set({
-        'username': username,
         'avatar_path': avatar_path,
         'notifications': notifications,
         'followers': followers,
         'followers_count': followers_count,
         'following': following,
         'following_count': followers_count,
-        'categories': categories
+        'categories': categories,
+        'username': username
       });
     } else {
-      Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
-
       //fetching username & avatarImage
       username = userData['username'];
       avatar_path = userData['avatar_path'];
@@ -182,6 +180,19 @@ class UserDB extends ChangeNotifier {
       }
     });
     userDocument.update({'categories': categories});
+    notifyListeners();
+  }
+
+  void changeProfileImage(String new_img) async {
+    print("changing Profile Image");
+    File imageFile = File(new_img);
+    String c = new_img.hashCode.toString();
+    await FirebaseStorage.instance.ref('$c').putFile(imageFile);
+    String path =
+        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+
+    avatar_path = path;
+    userDocument.update({'avatar_path': avatar_path});
     notifyListeners();
   }
 

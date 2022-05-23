@@ -15,11 +15,13 @@ class profileImage extends StatefulWidget {
       required this.pWrap,
       required this.shape,
       required this.network_flag,
-      this.id = -1})
+      this.id = -1,
+      this.profile_pic = false})
       : super(key: key);
   pathWrapper pWrap;
   bool network_flag;
   int id;
+  bool profile_pic;
   String shape;
   @override
   _profileImageState createState() => _profileImageState();
@@ -139,6 +141,10 @@ class _profileImageState extends State<profileImage> {
       if (widget.id != -1) {
         Provider.of<UserDB>(context, listen: false)
             .changeCategoryProfile(widget.id, widget.pWrap.value);
+      }
+      if (widget.profile_pic) {
+        Provider.of<UserDB>(context, listen: false)
+            .changeProfileImage(widget.pWrap.value);
       }
       setState(() {});
     }
