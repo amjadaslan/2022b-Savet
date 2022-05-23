@@ -13,11 +13,11 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
-  List<Widget> _pages = <Widget>[
+  final List<Widget> _pages = <Widget>[
     home(),
-    explore(),
-    notifications(),
-    community()
+    const explore(),
+    const notifications(),
+    const community()
   ];
 
   int _selectedIndex = 0;

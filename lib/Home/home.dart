@@ -11,6 +11,7 @@ import 'package:savet/auth/auth_repository.dart';
 import '../Category/add_category.dart';
 import '../Category/category_card.dart';
 import '../Services/user_db.dart';
+import '../auth/login_page.dart';
 import '/Category/category.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -47,8 +48,16 @@ class _homeState extends State<home> {
                           MaterialPageRoute(builder: (context) => profile()));
                     },
                     icon: Icon(Icons.account_circle)))
-                : (SizedBox()),
-            SizedBox(width: 20)
+                : (IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Login()));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              'Please login')));
+                },
+                icon: Icon(Icons.account_circle)))
           ]),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),

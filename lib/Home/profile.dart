@@ -6,11 +6,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Home/follower_card.dart';
 import 'package:savet/auth/auth_repository.dart';
-import '../auth/login_page.dart';
+
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Chat/message_card.dart';
 import '../Services/user_db.dart';
+import '../auth/login_page.dart';
 
 class profile extends StatefulWidget {
   const profile({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class _profileState extends State<profile> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Profile"),
+          title: const Text("Profile"),
           actions: [
             IconButton(
                 onPressed: () {
@@ -35,34 +36,31 @@ class _profileState extends State<profile> {
                         .signOut();
                   });
                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                      Login()), (Route<dynamic> route) => false);
-                 // Navigator.pushNamedAndRemoveUntil(context, "/Login()", (r) => false);
-                 // Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Login()));
-                  //Navigator.pushReplacement(context,  Login())
-                  //Navigator.of(context).pop();
+                      const Login()), (Route<dynamic> route) => false);
+                 // Navigator.of(context).pop();
                 },
-                icon: Icon(Icons.logout)),
-            SizedBox(width: 20)
+                icon: const Icon(Icons.logout)),
+            const SizedBox(width: 20)
           ],
         ),
         body: Container(
             color: Colors.white,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               profileImage(pWrap: pWrap, shape: "circle", network_flag: true),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
-                child: Text(
+                child: const Text(
                   'John',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DefaultTabController(
                 length: 2,
                 child: Column(children: [
-                  TabBar(
+                  const TabBar(
                     labelColor: Colors.black,
                     tabs: [
                       Tab(
@@ -82,12 +80,12 @@ class _profileState extends State<profile> {
                             ListView(
                               shrinkWrap: true,
                               children:
-                                  List.generate(10, (index) => follower_card()),
+                                  List.generate(10, (index) => const follower_card()),
                             ),
                             ListView(
                               shrinkWrap: true,
                               children:
-                                  List.generate(10, (index) => follower_card()),
+                                  List.generate(10, (index) => const follower_card()),
                             ),
                           ],
                         ),

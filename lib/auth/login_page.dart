@@ -1,21 +1,19 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:savet/auth/Register.dart';
 import 'package:savet/homepage.dart';
+
 import '../Services/user_db.dart';
+import 'Register.dart';
 import 'ResetPassword.dart';
 import 'auth_repository.dart';
-import 'package:provider/provider.dart';
-import 'Register.dart';
-import 'package:flutter/gestures.dart';
-import 'dart:async';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/src/painting/image_provider.dart';
-import 'facebookLogin.dart';
+import 'googleLogin.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -53,13 +51,13 @@ class _LoginState extends State<Login> {
               if (snapshot.hasError) {
                 return Center(child: Text(snapshot.error.toString()));
               } else if (snapshot.connectionState == ConnectionState.done) {
-                return homepage();
+                return const homepage();
               }
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             })
         : Scaffold(
             appBar: AppBar(
-              title: Text('Login'),
+              title: const Text('Login'),
               centerTitle: false,
               automaticallyImplyLeading: false,
             ),
@@ -73,265 +71,257 @@ class _LoginState extends State<Login> {
   Widget LoginScreen() {
     final user = Provider.of<AuthRepository>(context);
     UserModel? userModel = _currentUser;
-    if (userModel != null) {
-      return Padding(
-        padding: const EdgeInsets.all(12.0),
+    // if(user.isAuthenticated)
+    //   user.signOut();
+    // if (userModel != null) {
+    //   return Padding(
+    //     padding: const EdgeInsets.all(12.0),
+    //     child: Column(
+    //       children: [
+    //         ListTile(
+    //           leading: CircleAvatar(
+    //             radius: userModel.picture!.width! / 6,
+    //             backgroundImage: NetworkImage(userModel.picture!.url!),
+    //           ),
+    //           title: Text(userModel.name!),
+    //           subtitle: Text(userModel.email!),
+    //         ),
+    //         const SizedBox(height: 20),
+    //         const Text('sign in successfully', style: TextStyle(fontSize: 20)),
+    //         const SizedBox(
+    //           height: 10,
+    //         ),
+    //         ElevatedButton(onPressed: signOutFace, child: Text('sign out'))
+    //       ],
+    //     ),
+    //   );
+    // } else {
+    return SingleChildScrollView(
+      child: Center(
+          child: SizedBox(
+        // width:  height: MediaQuery.of(context).size.width*0.1,
+        width: MediaQuery.of(context).size.width * 0.9,
         child: Column(
-          children: [
-            ListTile(
-              leading: CircleAvatar(
-                radius: userModel.picture!.width! / 6,
-                backgroundImage: NetworkImage(userModel.picture!.url!),
-              ),
-              title: Text(userModel.name!),
-              subtitle: Text(userModel.email!),
-            ),
+          children: <Widget>[
             const SizedBox(height: 20),
-            const Text('sign in successfully', style: TextStyle(fontSize: 20)),
-            const SizedBox(
-              height: 10,
+            const Text(''),
+            const SizedBox(height: 20),
+
+            Padding(
+              //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Material(
+                elevation: 3,
+                shadowColor: Colors.black,
+                child: TextField(
+                  controller: _email,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(25.0, 15.0, 20.0, 15.0),
+                    labelText: 'Email',
+                    fillColor: Colors.black12,
+                    filled: true,
+                    prefixIcon: Icon(Icons.email),
+                    hintText: 'Please enter your Email',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
             ),
-            ElevatedButton(onPressed: signOutFace, child: Text('sign out'))
-          ],
-        ),
-      );
-    } else {
-      return SingleChildScrollView(
-        child: Center(
-            child: SizedBox(
-          // width:  height: MediaQuery.of(context).size.width*0.1,
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 20),
-              const Text(''),
-              const SizedBox(height: 20),
-
-              Padding(
-                //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Material(
-                  elevation: 3,
-                  shadowColor: Colors.black,
-                  child: TextField(
-                    controller: _email,
-                    decoration: const InputDecoration(
-                      contentPadding:
-                          EdgeInsets.fromLTRB(25.0, 15.0, 20.0, 15.0),
-                      labelText: 'Email',
-                      fillColor: Colors.black12,
-                      filled: true,
-                      prefixIcon: Icon(Icons.email),
-                      hintText: 'Please enter your Email',
-                      border: OutlineInputBorder(),
-                    ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
+              child: Material(
+                elevation: 3,
+                shadowColor: Colors.black,
+                child: TextField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(25.0, 15.0, 20.0, 15.0),
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock),
+                    hintText: 'Enter your password',
+                    fillColor: Colors.black12,
+                    filled: true,
+                    border: OutlineInputBorder(),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 0),
-                child: Material(
-                  elevation: 3,
-                  shadowColor: Colors.black,
-                  child: TextField(
-                    controller: _password,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      contentPadding:
-                          EdgeInsets.fromLTRB(25.0, 15.0, 20.0, 15.0),
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
-                      hintText: 'Enter your password',
-                      fillColor: Colors.black12,
-                      filled: true,
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              ),
+            ),
 
-              Padding(
-                  padding: const EdgeInsets.only(left: 215.0),
-                  child: TextButton(
-                      child: Text("forgot password?"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ResetPassword()));
-                      })),
+            Padding(
+                padding: const EdgeInsets.only(left: 215.0),
+                child: TextButton(
+                    child: const Text("forgot password?"),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ResetPassword()));
+                    })),
 
-              const Text(''),
-              user.status == Status.Authenticating
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Container(
-                      height: MediaQuery.of(context).size.width * 0.1,
-                      width: MediaQuery.of(context).size.width,
-                      child: TextButton(
-                        child: const Text(
-                          'Log in',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                        onPressed: () async {
-                          await user.signIn(_email.text, _password.text);
-                          _email.text = "";
-                          _password.text = "";
-                          (user.isAuthenticated)
-                              ? Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => FutureBuilder(
-                                          future: Provider.of<UserDB>(context)
-                                              .fetchData(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasError) {
-                                              return Center(
-                                                  child: Text(snapshot.error
-                                                      .toString()));
-                                            } else if (snapshot
-                                                    .connectionState ==
-                                                ConnectionState.done) {
-                                              return homepage();
-                                            }
-                                            return Center(
-                                                child:
-                                                    CircularProgressIndicator());
-                                          })))
-                              : ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Incorrect credentials. Try again.')));
-                        },
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.deepOrange,
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-
-              Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  //padding:  EdgeInsets.symmetric(horizontal: 15),
-                  child: TextButton(
+            const Text(''),
+            user.status == Status.Authenticating
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width,
+                    child: TextButton(
                       child: const Text(
-                        "Login as a guest",
-                        style: TextStyle(color: Colors.black54),
+                        'Log in',
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FutureBuilder(
-                                    future: Provider.of<UserDB>(context)
-                                        .fetchData(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasError) {
-                                        return Center(
-                                            child: Text(
-                                                snapshot.error.toString()));
-                                      } else if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return homepage();
-                                      }
-                                      return Center(
-                                          child: CircularProgressIndicator());
-                                    })));
-                      })),
+                      onPressed: () async {
+                        await user.signIn(_email.text, _password.text);
+                        (user.isAuthenticated)
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FutureBuilder(
+                                        future: Provider.of<UserDB>(context)
+                                            .fetchData(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                                child: Text(
+                                                    snapshot.error.toString()));
+                                          } else if (snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                            return const homepage();
+                                          }
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        })))
+                            : ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Incorrect credentials. Try again.')));
+                      },
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.deepOrange,
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
 
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 16.0, right: 15.0, top: 80.0),
-                child: Row(children: <Widget>[
-                  Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: loginFace,
-                        child: Image.asset(
-                          'assets/image/facebook.png',
-                          width: 80,
-                          height: 80,
-                        ),
-                      )),
-                  Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: () {
+            Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                //padding:  EdgeInsets.symmetric(horizontal: 15),
+                child: TextButton(
+                    child: const Text(
+                      "Login as a guest",
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FutureBuilder(
+                                  future:
+                                      Provider.of<UserDB>(context).fetchData(),
+                                  builder: (context, snapshot) {
+                                    // if (snapshot.hasError) {
+                                    //   return Center(
+                                    //       child: Text(
+                                    //           snapshot.error.toString()));
+                                    // } else if (snapshot.connectionState ==
+                                    //     ConnectionState.done) {
+                                    return const homepage();
+
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  })));
+                    })),
+
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 15.0, right: 15.0, top: 80.0),
+              child: Row(children: <Widget>[
+                Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: loginFace,
+                      child: Image.asset(
+                        'assets/image/facebook.png',
+                        width: 80,
+                        height: 80,
+                      ),
+                    )),
+                Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        print('Register Tap');
+                        setState(() {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => FutureBuilder(
-                                      future: Provider.of<UserDB>(context)
-                                          .fetchData(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasError) {
-                                          return Center(
-                                              child: Text(
-                                                  snapshot.error.toString()));
-                                        } else if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          return homepage();
-                                        }
-                                        return Center(
-                                            child: CircularProgressIndicator());
-                                      })));
-                        }, // Image tapped
-                        child: Image.asset(
-                          'assets/image/google.png',
-                          width: 100,
-                          height: 100,
-                        ),
-                      )),
-                ]),
-              ),
+                                  builder: (context) => GoogleLogin()));
+                        });
+                      }, // Image tapped
+                      child: Image.asset(
+                        'assets/image/google.png',
+                        width: 100,
+                        height: 100,
+                      ),
+                    )),
+              ]),
+            ),
 
-              //Register
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 120),
-                //padding:  EdgeInsets.symmetric(horizontal: 15),
+            //Register
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 120),
+              //padding:  EdgeInsets.symmetric(horizontal: 15),
 
-                child: RichText(
-                  text: TextSpan(
-                    // Note: Styles for TextSpans must be explicitly defined.
-                    // Child text spans will inherit styles from parent
-                    style: const TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.black,
-                    ),
-                    children: [
-                      const TextSpan(
-                          text: "Don't have an account ? ",
-                          style: TextStyle(color: Colors.black)),
-                      TextSpan(
-                          text: 'Register',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepOrange),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              print('Register Tap');
-                              setState(() {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Register()));
-                              });
-                            }),
-                    ],
+              child: RichText(
+                text: TextSpan(
+                  // Note: Styles for TextSpans must be explicitly defined.
+                  // Child text spans will inherit styles from parent
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black,
                   ),
+                  children: [
+                    const TextSpan(
+                        text: "Don't have an account ? ",
+                        style: TextStyle(color: Colors.black)),
+                    TextSpan(
+                        text: 'Register',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepOrange),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            print('Register Tap');
+                            setState(() {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Register()));
+                            });
+                          }),
+                  ],
                 ),
               ),
-            ],
-          ),
-        )),
-      );
-    }
+            ),
+          ],
+        ),
+      )),
+    );
+    // }
   }
 
   Future<void> loginFace() async {
+    //ListTile(
+    //           leading: CircleAvatar(
+    //             radius: userModel.picture!.width! / 6,
+    //             backgroundImage: NetworkImage(userModel.picture!.url!),
+    //           ),
+    //           title: Text(userModel.name!),
+    //           subtitle: Text(userModel.email!),
+    //         ),
     final LoginResult login_res = await FacebookAuth.i.login();
     if (login_res.status == LoginStatus.success) {
       _accessToken = login_res.accessToken;

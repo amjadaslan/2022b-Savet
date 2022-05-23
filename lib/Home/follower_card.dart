@@ -14,7 +14,7 @@ class _follower_cardState extends State<follower_card> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Flex(direction: Axis.horizontal, children: [
               Flexible(
                 child: Row(
@@ -34,7 +34,7 @@ class _follower_cardState extends State<follower_card> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("MichaelHendley",
+                                  const Text("MichaelHendley",
                                       maxLines: 1,
                                       style: TextStyle(
                                           decoration: TextDecoration.none,
@@ -42,19 +42,19 @@ class _follower_cardState extends State<follower_card> {
                                           fontFamily: 'arial',
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black)),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text("1.3k followers",
-                                          style: TextStyle(
+                                      const Text("1.3k followers",
+                                          style: const TextStyle(
                                               decoration: TextDecoration.none,
                                               fontSize: 12,
                                               fontFamily: 'arial',
                                               color: Colors.black45)),
-                                      SizedBox(width: 40),
-                                      Text("524 following",
-                                          style: TextStyle(
+                                      const SizedBox(width: 40),
+                                      const Text("524 following",
+                                          style: const TextStyle(
                                               decoration: TextDecoration.none,
                                               fontSize: 12,
                                               fontFamily: 'arial',
@@ -70,8 +70,8 @@ class _follower_cardState extends State<follower_card> {
                 ),
               )
             ]),
-            SizedBox(height: 5),
-            Divider()
+            const SizedBox(height: 5),
+            const Divider()
           ],
         ));
   }
