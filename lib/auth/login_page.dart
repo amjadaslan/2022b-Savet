@@ -242,7 +242,7 @@ class _LoginState extends State<Login> {
 
               Padding(
                 padding:
-                    const EdgeInsets.only(left: 15.0, right: 15.0, top: 80.0),
+                    const EdgeInsets.only(left: 16.0, right: 15.0, top: 80.0),
                 child: Row(children: <Widget>[
                   Expanded(
                       flex: 1,
