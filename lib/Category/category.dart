@@ -133,43 +133,4 @@ class _categoryState extends State<category> {
           ),
         ]));
   }
-
-  // void _getDialog() async {
-  //   await showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: Text("Change Title"),
-  //           content: TextField(
-  //               controller: _cont,
-  //               decoration: const InputDecoration(
-  //                 hintText: 'new title',
-  //               )),
-  //           actions: [
-  //             TextButton(
-  //               child: Text("Yes"),
-  //               style: ButtonStyle(
-  //                   foregroundColor: MaterialStateProperty.all(Colors.white),
-  //                   backgroundColor:
-  //                       MaterialStateProperty.all(Colors.deepOrange)),
-  //               onPressed: () {
-  //                 setState(() {
-  //                   Provider.of<UserDB>(context)
-  //                       .changeCategoryTitle(id, _cont.text);
-  //                   Navigator.pop(context);
-  //                 });
-  //               },
-  //             ),
-  //             TextButton(
-  //               child: Text("No"),
-  //               style: ButtonStyle(
-  //                   foregroundColor: MaterialStateProperty.all(Colors.white),
-  //                   backgroundColor:
-  //                       MaterialStateProperty.all(Colors.deepOrange)),
-  //               onPressed: () => Navigator.pop(context),
-  //             ),
-  //           ],
-  //         );
-  //       });
-  // }
 }

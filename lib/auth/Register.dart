@@ -163,8 +163,8 @@ class _RegisterState extends State<Register> {
                                   _password.text != '' &&
                                   _confirmpassword.text != ''
                               ? {
-                                  await user.signUp(_email!.text,
-                                      _password.text, _username!.text),
+                                  await user.signUp(_email.text, _password.text,
+                                      _username.text),
                                   print('Register is done'),
                                   setState(() {
                                     Navigator.push(
