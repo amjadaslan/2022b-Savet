@@ -87,24 +87,21 @@ class _homeState extends State<home> {
                 child: StaggeredGrid.count(
                     crossAxisCount: 3,
                     children: List.generate(cats.length, (i) {
+                      var cat = cats[i];
                       return InkWell(
                         onTap: () {
                           Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => category(
-                                          id: Provider.of<UserDB>(context)
-                                              .categories[i]['id'])))
-                              .then((_) => setState(() {}));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      category(id: cat['id'])));
                         },
                         child: Container(
                             padding: EdgeInsets.all(10),
                             height: MediaQuery.of(context).size.width / 2.5,
                             width: MediaQuery.of(context).size.width / 3.2,
                             child: category_card(
-                                url: (Provider.of<UserDB>(context)
-                                    .categories[i])['image'],
-                                title: (cats[i])['title'])),
+                                url: cat['image'], title: cat['title'])),
                       );
                     }))),
           ),

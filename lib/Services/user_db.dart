@@ -81,7 +81,7 @@ import '../auth/auth_repository.dart';
 
 class UserDB extends ChangeNotifier {
   int category_id = 0;
-  int p_id = 0;
+  int post_id = 0;
   int tot_posts = 0;
 
   String? username = "";
@@ -181,6 +181,7 @@ class UserDB extends ChangeNotifier {
       }
     });
     userDocument.update({'categories': categories});
+    notifyListeners();
   }
 
   void changeCategoryTitle(int cat_id, String new_title) async {
@@ -205,6 +206,7 @@ class UserDB extends ChangeNotifier {
 
     avatar_path = path;
     userDocument.update({'avatar_path': avatar_path});
+    notifyListeners();
   }
 
   void addCategory(String title, String desc, String profile_img) async {
@@ -213,13 +215,13 @@ class UserDB extends ChangeNotifier {
     await FirebaseStorage.instance.ref('$c').putFile(imageFile);
     String path =
         await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
-    int cat_id = categories.length;
+    category_id++;
     categories.add({
       'title': title,
       'description': desc,
       'image': path,
       'posts': [],
-      'id': cat_id
+      'id': category_id
     });
     userDocument.update({'categories': categories});
     notifyListeners();
@@ -233,17 +235,71 @@ class UserDB extends ChangeNotifier {
         await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
     categories.forEach((e) {
       if (e['id'] == c_i) {
-        int post_id = e['posts'].length;
-        e['posts']
-            .add({'title': t, 'description': d, 'image': path, 'id': post_id});
+        e['posts'].add({
+          'title': t,
+          'description': d,
+          'image': path,
+          'id': post_id,
+          'cat_id': c_i
+        });
         tot_posts++;
-        categories[0]['posts'].insert(
-            0, {'title': t, 'description': d, 'image': path, 'id': post_id});
+        categories[0]['posts'].insert(0, {
+          'title': t,
+          'description': d,
+          'image': path,
+          'id': post_id,
+          'cat_id': c_i
+        });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
         }
       }
     });
+    post_id++;
+    userDocument.update({'categories': categories});
+    notifyListeners();
+  }
+
+  Future<void> removeCategory(int c_id) async {
+    String? pathToDelete = "";
+    for (var e in categories) {
+      if (e['id'] == c_id) {
+        pathToDelete = e['image'];
+        pathToDelete =
+            RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+        await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        for (var p in e['posts']) {
+          pathToDelete = p['image'];
+          pathToDelete =
+              RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+          await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        }
+      }
+    }
+    categories.removeWhere((c) => c_id == c['id']);
+
+    //removes all deleted posts from recently added category
+    categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id);
+
+    userDocument.update({'categories': categories});
+    notifyListeners();
+  }
+
+  Future<void> removePost(int p_id, int c_id) async {
+    String? pathToDelete = "";
+    categories.forEach((e) {
+      if (e['id'] == c_id) {
+        categories[c_id]['posts'].forEach((p) {
+          if (p_id == p['id']) {
+            pathToDelete = p['image'];
+          }
+        });
+        categories[c_id]['posts'].removeWhere((p) => p_id == p['id']);
+      }
+    });
+    categories[0]['posts'].removeWhere((p) => p_id == p['id']);
+    pathToDelete = RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+    await FirebaseStorage.instance.ref('$pathToDelete').delete();
 
     userDocument.update({'categories': categories});
     notifyListeners();

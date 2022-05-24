@@ -1,12 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/Comment_Section/comment_card.dart';
 
+import '../../Services/user_db.dart';
 import '../Comment_Section/comment_card.dart';
 
 class public_post_comments extends StatefulWidget {
-  const public_post_comments({Key? key}) : super(key: key);
+  public_post_comments({Key? key, required this.cat_id, required this.post_id})
+      : super(key: key);
+  int cat_id;
+  int post_id;
 
   @override
   _public_post_commentsState createState() => _public_post_commentsState();
@@ -15,14 +20,57 @@ class public_post_comments extends StatefulWidget {
 class _public_post_commentsState extends State<public_post_comments> {
   @override
   Widget build(BuildContext context) {
+    Map post = Provider.of<UserDB>(context).categories[widget.cat_id]['posts']
+        [widget.post_id];
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Post Title'),
           actions: [
-            Icon(Icons.add_alert),
-            SizedBox(width: 20),
-            Icon(Icons.share),
-            SizedBox(width: 20)
+            const Icon(Icons.add_alert),
+            const SizedBox(width: 20),
+            const Icon(Icons.share),
+            const SizedBox(width: 20),
+            IconButton(
+                onPressed: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Delete Post"),
+                          content: const Text(
+                              "Are you sure you want to delete this post?"),
+                          actions: [
+                            TextButton(
+                              child: const Text("Yes"),
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.deepOrange)),
+                              onPressed: () {
+                                setState(() {
+                                  Provider.of<UserDB>(context, listen: false)
+                                      .removePost(post['id'], post['cat_id']);
+                                  Navigator.pop(context);
+                                });
+                              },
+                            ),
+                            TextButton(
+                              child: const Text("No"),
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.deepOrange)),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                icon: const Icon(Icons.delete)),
+            const SizedBox(width: 20)
           ],
         ),
         body: SingleChildScrollView(

@@ -80,7 +80,9 @@ class _explore_cardState extends State<explore_card> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const public_post_comments()));
+                                                    public_post_comments(
+                                                        post_id: 0,
+                                                        cat_id: 0)));
                                       },
                                       icon: Icon(Icons.mode_comment_outlined,
                                           color: Colors.grey[400])),

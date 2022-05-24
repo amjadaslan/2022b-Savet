@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import '../Services/user_db.dart';
 import '../homepage.dart';
 import 'auth_repository.dart';
+import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -164,15 +164,39 @@ class _RegisterState extends State<Register> {
                                   _password.text != '' &&
                                   _confirmpassword.text != ''
                               ? {
-                                  await user.signUp(_email.text, _password.text,
-                                      _username.text),
+                                  if (await user.signUp(_email.text,
+                                          _password.text, _username.text) !=
+                                      null)
+                                    {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(_email.text)
+                                          .set({'username': _username.text})
+                                    },
                                   print('Register is done'),
                                   setState(() {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const homepage()));
+                                            builder: (context) => FutureBuilder(
+                                                future:
+                                                    Provider.of<UserDB>(context)
+                                                        .fetchData(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasError) {
+                                                    return Center(
+                                                        child: Text(snapshot
+                                                            .error
+                                                            .toString()));
+                                                  } else if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.done) {
+                                                    return const homepage();
+                                                  }
+                                                  return const Center(
+                                                      child:
+                                                          CircularProgressIndicator());
+                                                })));
                                   })
                                 }
                               : {
