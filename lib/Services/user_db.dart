@@ -260,6 +260,31 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> removeCategory(int c_id) async {
+    String? pathToDelete = "";
+    for (var e in categories) {
+      if (e['id'] == c_id) {
+        pathToDelete = e['image'];
+        pathToDelete =
+            RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+        await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        for (var p in e['posts']) {
+          pathToDelete = p['image'];
+          pathToDelete =
+              RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+          await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        }
+      }
+    }
+    categories.removeWhere((c) => c_id == c['id']);
+
+    //removes all deleted posts from recently added category
+    categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id);
+
+    userDocument.update({'categories': categories});
+    notifyListeners();
+  }
+
   Future<void> removePost(int p_id, int c_id) async {
     String? pathToDelete = "";
     categories.forEach((e) {

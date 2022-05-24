@@ -37,11 +37,6 @@ class AuthRepository with ChangeNotifier {
       String email, String password, String userName) async {
     try {
       _status = Status.Authenticating;
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(email)
-          .set({'username': userName});
-      notifyListeners();
       return await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
