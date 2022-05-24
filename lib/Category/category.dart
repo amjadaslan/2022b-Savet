@@ -103,14 +103,20 @@ class _categoryState extends State<category> {
             child: SingleChildScrollView(
               child: StaggeredGrid.count(
                 crossAxisCount: 3,
-                children: List.generate(cat['posts'].length, (index) {
+                children: List.generate(
+                    Provider.of<UserDB>(context)
+                        .categories[widget.id]['posts']
+                        .length, (index) {
                   return InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => private_post(
-                                    cat_id: cat['id'], post_id: index)));
+                        if (index < cat.length) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => private_post(
+                                      cat_id: cat['id'],
+                                      post_id: cat['posts'][index]['id'])));
+                        }
                       },
                       child: Container(
                         padding: EdgeInsets.all(5),
@@ -122,7 +128,8 @@ class _categoryState extends State<category> {
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                           child: FadeInImage.memoryNetwork(
                             placeholder: kTransparentImage,
-                            image: cat['posts'][index]['image'],
+                            image: Provider.of<UserDB>(context)
+                                .categories[widget.id]['posts'][index]['image'],
                             fit: BoxFit.fill,
                           ),
                         ),

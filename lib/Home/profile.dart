@@ -35,9 +35,10 @@ class _profileState extends State<profile> {
                     Provider.of<AuthRepository>(context, listen: false)
                         .signOut();
                   });
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                      const Login()), (Route<dynamic> route) => false);
-                 // Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const Login()),
+                      (Route<dynamic> route) => false);
+                  // Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.logout)),
             const SizedBox(width: 20)
@@ -47,7 +48,11 @@ class _profileState extends State<profile> {
             color: Colors.white,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               const SizedBox(height: 20),
-              profileImage(pWrap: pWrap, shape: "circle", network_flag: true),
+              profileImage(
+                  pWrap: pWrap,
+                  shape: "circle",
+                  network_flag: true,
+                  profile_pic: true),
               const SizedBox(height: 10),
               Container(
                 child: const Text(
@@ -79,13 +84,13 @@ class _profileState extends State<profile> {
                           children: [
                             ListView(
                               shrinkWrap: true,
-                              children:
-                                  List.generate(10, (index) => const follower_card()),
+                              children: List.generate(
+                                  10, (index) => const follower_card()),
                             ),
                             ListView(
                               shrinkWrap: true,
-                              children:
-                                  List.generate(10, (index) => const follower_card()),
+                              children: List.generate(
+                                  10, (index) => const follower_card()),
                             ),
                           ],
                         ),
