@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../auth/auth_repository.dart';
 
@@ -159,6 +159,63 @@ class UserDB extends ChangeNotifier {
       //       });
       // }
     }
+  }
+
+  fetchDataGoogleFacebook() async {
+    user_email = FirebaseAuth.instance.currentUser?.email;
+    //username = FirebaseAuth.instance.currentUser?.displayName;
+    //avatar_path = "";
+
+    print("1");
+    print(FirebaseAuth.instance.currentUser?.photoURL);
+    print(FirebaseAuth.instance.currentUser?.email);
+    print(FirebaseAuth.instance.currentUser?.displayName);
+
+    print("Fetching Data");
+    userDocument =
+        FirebaseFirestore.instance.collection('users').doc(user_email);
+    DocumentSnapshot userSnapshot = await userDocument.get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    // if (userData.length == 1) {
+    //String username = userData['username'];
+    await userDocument.set({
+      'avatar_path': FirebaseAuth.instance.currentUser?.photoURL,
+      'notifications': notifications,
+      'followers': followers,
+      'followers_count': followers_count,
+      'following': following,
+      'following_count': followers_count,
+      'categories': categories,
+      'username': FirebaseAuth.instance.currentUser?.displayName,
+    });
+    // } else {
+    //   //fetching username & avatarImage
+    //   username = userData['username'];
+    //   avatar_path = userData['avatar_path'];
+    //   categories = userData['categories'];
+    //   //fetching Notifications
+    //   List<dynamic> notif = userData['notifications'];
+    //   notifications = notif;
+
+    //notif.forEach((e) => {notifications.add(e)});
+
+    //fetching list of followers
+    // List<dynamic> flwrs = userData['followers'];
+
+    //   flwrs.forEach((e) => {
+    //         followers.add(userwithFollowers_Following(e['followers'],
+    //             e['following'], e['username'], e['avatar_path']))
+    //       });
+    //
+    //   //fetching list of followers
+    //   List<dynamic> flwng = userData['following'];
+    //
+    //   flwng.forEach((e) => {
+    //         following.add(userwithFollowers_Following(e['followers'],
+    //             e['following'], e['username'], e['avatar_path']))
+    //       });
+    // }
+    //}
   }
 
   void addNotification(String s) {

@@ -1,20 +1,16 @@
-import 'dart:ffi';
-import 'dart:io';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Home/profile.dart';
 import 'package:savet/auth/auth_repository.dart';
+
+import '/Category/category.dart';
 import '../Category/add_category.dart';
 import '../Category/category_card.dart';
 import '../Services/user_db.dart';
 import '../auth/login_page.dart';
-import '/Category/category.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class home extends StatefulWidget {
   home({Key? key}) : super(key: key);
@@ -41,7 +37,7 @@ class _homeState extends State<home> {
           title: const Text('Home'),
           automaticallyImplyLeading: false,
           actions: <Widget>[
-            (Provider.of<AuthRepository>(context).isAuthenticated)
+            (Provider.of<AuthRepository>(context) != null)
                 ? (IconButton(
                     onPressed: () {
                       Navigator.of(context).push(

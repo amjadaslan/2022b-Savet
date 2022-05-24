@@ -8,18 +8,22 @@ import 'package:savet/auth/auth_repository.dart';
 import '../Services/user_db.dart';
 import '../homepage.dart';
 
+enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
+
 class GoogleLogin extends StatefulWidget {
   const GoogleLogin({Key? key}) : super(key: key);
 
   @override
   State<GoogleLogin> createState() => _GoogleLoginState();
+  Future signOut() => _GoogleLoginState().signOut();
+  //GoogleLogin.instance() : _auth = FirebaseAuth.instance {
+
 }
 
 class _GoogleLoginState extends State<GoogleLogin> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   GoogleSignInAccount? _currentUser;
-  FirebaseAuth? _auth = FirebaseAuth.instance;
-  bool isUserSignedIn = false;
+  Status _status = Status.Uninitialized;
 
   void initState() {
     _googleSignIn.onCurrentUserChanged.listen((account) {
@@ -50,7 +54,7 @@ class _GoogleLoginState extends State<GoogleLogin> {
     print(Provider.of<AuthRepository>(context).user);
     if (user != null) {
       return FutureBuilder(
-          future: Provider.of<UserDB>(context).fetchData(),
+          future: Provider.of<UserDB>(context).fetchDataGoogleFacebook(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
@@ -60,33 +64,19 @@ class _GoogleLoginState extends State<GoogleLogin> {
             return const Center(child: CircularProgressIndicator());
           });
     } else {
-      return Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              "you are not signed in",
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            ElevatedButton(onPressed: signIn, child: const Text("Sign In")),
-          ],
-        ),
-      );
+      signIn();
+      //Navigator.pop(context);
+      return SizedBox.shrink();
     }
   }
 
-  void signOut() {
+  Future signOut() async {
     print("Sign Out Google");
     _googleSignIn.disconnect();
     setState(() {
       _currentUser = null;
     });
+    return Future.delayed(Duration.zero);
   }
 
   Future<void> signIn() async {
@@ -102,7 +92,9 @@ class _GoogleLoginState extends State<GoogleLogin> {
         idToken: googleAuth?.idToken,
       );
       if (FirebaseAuth.instance == null) print("Null FireBase");
+      _status = Status.Authenticating;
       await FirebaseAuth.instance.signInWithCredential(credential);
+      _status = Status.Authenticated;
     } catch (e) {
       print("ERROR signing in $e");
     }

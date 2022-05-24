@@ -15,11 +15,16 @@ import 'ResetPassword.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
 
+enum LogFrom { Anonymous, Facebook, Google, Email }
+late LogFrom _logFrom;
+
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
+  LogFrom get logFtom => _logFrom;
+  Future signOut() => _LoginState().signOutFace();
 }
 
 class _LoginState extends State<Login> {
@@ -33,6 +38,7 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     AuthRepository.instance();
+    _logFrom = LogFrom.Anonymous;
     _email = TextEditingController(text: "");
     _password = TextEditingController(text: "");
   }
@@ -161,50 +167,50 @@ class _LoginState extends State<Login> {
                     })),
 
             const Text(''),
-            user.status == Status.Authenticating
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Container(
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    width: MediaQuery.of(context).size.width,
-                    child: TextButton(
-                      child: const Text(
-                        'Log in',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                      onPressed: () async {
-                        await user.signIn(_email.text, _password.text);
-                        (user.isAuthenticated)
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FutureBuilder(
-                                        future: Provider.of<UserDB>(context)
-                                            .fetchData(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                                child: Text(
-                                                    snapshot.error.toString()));
-                                          } else if (snapshot.connectionState ==
-                                              ConnectionState.done) {
-                                            return const homepage();
-                                          }
-                                          return const Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        })))
-                            : ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Incorrect credentials. Try again.')));
-                      },
-                    ),
-                    decoration: BoxDecoration(
-                        color: Colors.deepOrange,
-                        borderRadius: BorderRadius.circular(20)),
-                  ),
+            // user.status == Status.Authenticating
+            //     ? const Center(
+            //         child: CircularProgressIndicator(),
+            //       )
+            //     :
+            Container(
+              height: MediaQuery.of(context).size.width * 0.1,
+              width: MediaQuery.of(context).size.width,
+              child: TextButton(
+                child: const Text(
+                  'Log in',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+                onPressed: () async {
+                  await user.signIn(_email.text, _password.text);
+                  (user.isAuthenticated)
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FutureBuilder(
+                                  future:
+                                      Provider.of<UserDB>(context).fetchData(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                          child:
+                                              Text(snapshot.error.toString()));
+                                    } else if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      return const homepage();
+                                    }
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  })))
+                      : ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content:
+                                  Text('Incorrect credentials. Try again.')));
+                },
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.deepOrange,
+                  borderRadius: BorderRadius.circular(20)),
+            ),
 
             Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
@@ -215,6 +221,7 @@ class _LoginState extends State<Login> {
                       style: TextStyle(color: Colors.black54),
                     ),
                     onPressed: () {
+                      _logFrom = LogFrom.Anonymous;
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -253,8 +260,9 @@ class _LoginState extends State<Login> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        print('Register Tap');
+                        print('Google Tap');
                         setState(() {
+                          _logFrom = LogFrom.Google;
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -295,6 +303,7 @@ class _LoginState extends State<Login> {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             print('Register Tap');
+                            _logFrom = LogFrom.Email;
                             setState(() {
                               Navigator.push(
                                   context,
@@ -316,6 +325,8 @@ class _LoginState extends State<Login> {
   Future<void> loginFace() async {
     final LoginResult login_res = await FacebookAuth.i.login();
     if (login_res.status == LoginStatus.success) {
+      _logFrom = LogFrom.Facebook;
+
       _accessToken = login_res.accessToken;
       final data = await FacebookAuth.i.getUserData();
       UserModel model = UserModel.fromJson(data);
@@ -328,7 +339,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Future<void> signOutFace() async {
+  Future signOutFace() async {
     await FacebookAuth.i.logOut();
     _currentUser = null;
     _accessToken = null;
