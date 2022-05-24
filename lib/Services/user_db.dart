@@ -222,6 +222,7 @@ class UserDB extends ChangeNotifier {
       'id': cat_id
     });
     userDocument.update({'categories': categories});
+    notifyListeners();
   }
 
   void addPost(String t, String d, String image_path, int c_i) async {
