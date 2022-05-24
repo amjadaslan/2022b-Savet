@@ -96,13 +96,18 @@ class _GoogleLoginState extends State<GoogleLogin> {
 
   Future<void> signIn() async {
     try {
-      //notifyListeners();
       print("SignIn Google");
       await _googleSignIn.signIn();
       setState(() {
         _currentUser = _googleSignIn.currentUser;
       });
-      //notifyListeners();
+      final googleAuth = await _currentUser?.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      if (FirebaseAuth.instance == null) print("Null FireBase");
+      await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
       print("ERROR signing in $e");
     }
