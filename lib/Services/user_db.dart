@@ -237,7 +237,6 @@ class UserDB extends ChangeNotifier {
         e['posts']
             .add({'title': t, 'description': d, 'image': path, 'id': post_id});
         tot_posts++;
-        print(tot_posts);
         categories[0]['posts'].insert(
             0, {'title': t, 'description': d, 'image': path, 'id': post_id});
         if (tot_posts > 20) {
