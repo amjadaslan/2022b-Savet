@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "68786890149-pjn57s9ibmmu3fbld2r2sjpidukpel8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.technion.savet",
+            "certificate_hash": "f6b114ae7b0c7f55b080020660a71935d3470230"
+          }
+        },
+        {
           "client_id": "68786890149-37vbqfcehjb8627ro4n5vrso4h3to3cr.apps.googleusercontent.com",
           "client_type": 3
         }

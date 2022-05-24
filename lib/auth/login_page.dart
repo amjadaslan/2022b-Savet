@@ -314,14 +314,6 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> loginFace() async {
-    //ListTile(
-    //           leading: CircleAvatar(
-    //             radius: userModel.picture!.width! / 6,
-    //             backgroundImage: NetworkImage(userModel.picture!.url!),
-    //           ),
-    //           title: Text(userModel.name!),
-    //           subtitle: Text(userModel.email!),
-    //         ),
     final LoginResult login_res = await FacebookAuth.i.login();
     if (login_res.status == LoginStatus.success) {
       _accessToken = login_res.accessToken;

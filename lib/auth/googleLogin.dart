@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -11,6 +13,8 @@ class GoogleLogin extends StatefulWidget {
 class _GoogleLoginState extends State<GoogleLogin> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   GoogleSignInAccount? _currentUser;
+  FirebaseAuth? _auth = FirebaseAuth.instance;
+  bool isUserSignedIn = false;
 
   void initStart() {
     _googleSignIn.onCurrentUserChanged.listen((account) {
@@ -49,7 +53,7 @@ class _GoogleLoginState extends State<GoogleLogin> {
               title: Text(user.displayName ?? ''),
               subtitle: Text(user.email),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             const Text("Sign in Successfully",
@@ -83,13 +87,22 @@ class _GoogleLoginState extends State<GoogleLogin> {
   }
 
   void signOut() {
+    print("Sign Out Google");
     _googleSignIn.disconnect();
+    setState(() {
+      _currentUser = null;
+    });
   }
 
   Future<void> signIn() async {
     try {
-      await _googleSignIn.signIn();
+      //notifyListeners();
       print("SignIn Google");
+      await _googleSignIn.signIn();
+      setState(() {
+        _currentUser = _googleSignIn.currentUser;
+      });
+      //notifyListeners();
     } catch (e) {
       print("ERROR signing in $e");
     }
