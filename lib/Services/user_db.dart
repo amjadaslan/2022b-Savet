@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
+import '../auth/auth_repository.dart';
+
 //
 // class Chat {
 //   String avatar = '';
@@ -118,7 +120,6 @@ class UserDB extends ChangeNotifier {
 
     userDocument =
         FirebaseFirestore.instance.collection('users').doc(user_email);
-    print(userDocument);
     DocumentSnapshot userSnapshot = await userDocument.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
     print("Fetching Data");
@@ -298,7 +299,7 @@ class UserDB extends ChangeNotifier {
     categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id);
 
     userDocument.update({'categories': categories});
-    notifyListeners(); //TODO: hi
+    notifyListeners();
   }
 
   Future<void> removePost(int p_id, int c_id) async {
