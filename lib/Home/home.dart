@@ -49,15 +49,13 @@ class _homeState extends State<home> {
                     },
                     icon: Icon(Icons.account_circle)))
                 : (IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Login()));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text(
-                              'Please login')));
-                },
-                icon: Icon(Icons.account_circle)))
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Login()));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please login')));
+                    },
+                    icon: Icon(Icons.account_circle)))
           ]),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -94,7 +92,9 @@ class _homeState extends State<home> {
                           Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => category(id: i)))
+                                      builder: (context) => category(
+                                          id: Provider.of<UserDB>(context)
+                                              .categories[i]['id'])))
                               .then((_) => setState(() {}));
                         },
                         child: Container(
