@@ -7,7 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 class Google extends ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   GoogleSignInAccount? _currentUser;
-  Status _status = Status.Uninitialized;
 
   GoogleSignInAccount? cureentUser() => _currentUser;
 
