@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 
-import 'Explore/explore.dart';
 import 'Community/community.dart';
-import 'Notifications/notifications.dart';
+import 'Explore/explore.dart';
 import 'Home/home.dart';
+import 'Notifications/notifications.dart';
 
 class homepage extends StatefulWidget {
-  const homepage({Key? key}) : super(key: key);
+  homepage({Key? key, required this.LoginFrom}) : super(key: key);
+  String LoginFrom;
 
   @override
   _homepageState createState() => _homepageState();
 }
 
 class _homepageState extends State<homepage> {
+  void initState() {
+    super.initState();
+    // s = widget.LoginFrom;
+  }
+
+//late String s;
   final List<Widget> _pages = <Widget>[
-    home(),
+    home(LoginFrom: "Google"), //TODO: maybe need to change the  LoginFrom
     const explore(),
     const notifications(),
     const community()

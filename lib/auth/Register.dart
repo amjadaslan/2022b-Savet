@@ -8,7 +8,8 @@ import '../homepage.dart';
 import 'auth_repository.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  Register({Key? key, required this.LogFrom}) : super(key: key);
+  String LogFrom;
 
   @override
   State<Register> createState() => _RegisterState();
@@ -193,7 +194,8 @@ class _RegisterState extends State<Register> {
                                                   } else if (snapshot
                                                           .connectionState ==
                                                       ConnectionState.done) {
-                                                    return const homepage();
+                                                    return homepage(
+                                                        LoginFrom: "Email");
                                                   }
                                                   return const Center(
                                                       child:

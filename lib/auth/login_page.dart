@@ -10,20 +10,17 @@ import 'package:savet/auth/Register.dart';
 import 'package:savet/homepage.dart';
 
 import '../Services/user_db.dart';
+import '../homepage.dart';
 import 'Register.dart';
 import 'ResetPassword.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
-
-enum LogFrom { Anonymous, Facebook, Google, Email }
-late LogFrom _logFrom;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
-  LogFrom get logFtom => _logFrom;
   Future signOut() => _LoginState().signOutFace();
 }
 
@@ -33,12 +30,12 @@ class _LoginState extends State<Login> {
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   TextEditingController _password = new TextEditingController();
   TextEditingController _email = new TextEditingController();
+  String LogFrom = "";
 
   @override
   void initState() {
     super.initState();
     AuthRepository.instance();
-    _logFrom = LogFrom.Anonymous;
     _email = TextEditingController(text: "");
     _password = TextEditingController(text: "");
   }
@@ -50,14 +47,16 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return (Provider.of<AuthRepository>(context).isAuthenticated)
+    return (FirebaseAuth.instance.currentUser != null)
         ? FutureBuilder(
             future: Provider.of<UserDB>(context).fetchData(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text(snapshot.error.toString()));
               } else if (snapshot.connectionState == ConnectionState.done) {
-                return const homepage();
+                return homepage(
+                  LoginFrom: LogFrom,
+                );
               }
               return const Center(child: CircularProgressIndicator());
             })
@@ -176,14 +175,15 @@ class _LoginState extends State<Login> {
               height: MediaQuery.of(context).size.width * 0.1,
               width: MediaQuery.of(context).size.width,
               child: TextButton(
-                child: const Text(
-                  'Log in',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                onPressed: () async {
-                  await user.signIn(_email.text, _password.text);
-                  (user.isAuthenticated)
-                      ? Navigator.push(
+                  child: const Text(
+                    'Log in',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    await user.signIn(_email.text, _password.text);
+                    if (user.isAuthenticated) {
+                      LogFrom = "Email";
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => FutureBuilder(
@@ -196,17 +196,17 @@ class _LoginState extends State<Login> {
                                               Text(snapshot.error.toString()));
                                     } else if (snapshot.connectionState ==
                                         ConnectionState.done) {
-                                      return const homepage();
+                                      return homepage(LoginFrom: LogFrom);
                                     }
                                     return const Center(
                                         child: CircularProgressIndicator());
-                                  })))
-                      : ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content:
-                                  Text('Incorrect credentials. Try again.')));
-                },
-              ),
+                                  })));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Incorrect credentials. Try again.')));
+                    }
+                    ;
+                  }),
               decoration: BoxDecoration(
                   color: Colors.deepOrange,
                   borderRadius: BorderRadius.circular(20)),
@@ -221,7 +221,7 @@ class _LoginState extends State<Login> {
                       style: TextStyle(color: Colors.black54),
                     ),
                     onPressed: () {
-                      _logFrom = LogFrom.Anonymous;
+                      LogFrom = "Anonymous";
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -235,7 +235,9 @@ class _LoginState extends State<Login> {
                                     //           snapshot.error.toString()));
                                     // } else if (snapshot.connectionState ==
                                     //     ConnectionState.done) {
-                                    return const homepage();
+                                    return homepage(
+                                      LoginFrom: LogFrom,
+                                    );
 
                                     return const Center(
                                         child: CircularProgressIndicator());
@@ -259,15 +261,35 @@ class _LoginState extends State<Login> {
                 Expanded(
                     flex: 1,
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         print('Google Tap');
-                        setState(() {
-                          _logFrom = LogFrom.Google;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => GoogleLogin()));
-                        });
+                        LogFrom = "Google";
+
+                        await Google.instance().signIn();
+
+                        if (Google.instance().cureentUser() != null) {
+                          setState(() {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FutureBuilder(
+                                        future: Provider.of<UserDB>(context)
+                                            .fetchData(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                                child: Text(
+                                                    snapshot.error.toString()));
+                                          } else if (snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                            return homepage(LoginFrom: LogFrom);
+                                          }
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        })));
+                          });
+                        }
                       }, // Image tapped
                       child: Image.asset(
                         'assets/image/google.png',
@@ -303,12 +325,12 @@ class _LoginState extends State<Login> {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             print('Register Tap');
-                            _logFrom = LogFrom.Email;
                             setState(() {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const Register()));
+                                      builder: (context) =>
+                                          Register(LogFrom: "Email")));
                             });
                           }),
                   ],
@@ -325,16 +347,14 @@ class _LoginState extends State<Login> {
   Future<void> loginFace() async {
     final LoginResult login_res = await FacebookAuth.i.login();
     if (login_res.status == LoginStatus.success) {
-      _logFrom = LogFrom.Facebook;
-
       _accessToken = login_res.accessToken;
       final data = await FacebookAuth.i.getUserData();
       UserModel model = UserModel.fromJson(data);
       final facebook =
           FacebookAuthProvider.credential(login_res.accessToken!.token);
       await FirebaseAuth.instance.signInWithCredential(facebook);
-      //await FirebaseFiretore.instance.
       _currentUser = model;
+      LogFrom = "Facebook";
       setState(() {});
     }
   }
@@ -343,6 +363,7 @@ class _LoginState extends State<Login> {
     await FacebookAuth.i.logOut();
     _currentUser = null;
     _accessToken = null;
+    FirebaseAuth.instance.signOut();
     setState(() {});
   }
 }

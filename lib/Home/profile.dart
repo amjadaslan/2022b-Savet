@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Home/follower_card.dart';
 import 'package:savet/auth/auth_repository.dart';
+import 'package:savet/auth/googleLogin.dart';
 
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
@@ -9,7 +10,8 @@ import '../Services/user_db.dart';
 import '../auth/login_page.dart';
 
 class profile extends StatefulWidget {
-  const profile({Key? key}) : super(key: key);
+  profile({Key? key, required this.LoginFrom}) : super(key: key);
+  String LoginFrom;
 
   @override
   _profileState createState() => _profileState();
@@ -36,31 +38,31 @@ class _profileState extends State<profile> {
     var pWrap = pathWrapper(Provider.of<UserDB>(context).avatar_path);
     var username = Provider.of<UserDB>(context).username;
     //var loginFrom = Provider.of<Login>(context).logFtom;
+    // final email = FirebaseAuth.instance.currentUser!.email;
+    // var methods =
+    //     FirebaseAuth.instance.fetchSignInMethodsForEmail(email.toString());
     return Scaffold(
         appBar: AppBar(
           title: const Text("Profile"),
           actions: [
             IconButton(
-                onPressed: () {
-                  setState(() {
+                onPressed: () async {
+                  print("debug");
+                  //print(widget.LoginFrom);
+                  if (widget.LoginFrom == "Email") {
                     Provider.of<AuthRepository>(context, listen: false)
                         .signOut();
+                  } else if (widget.LoginFrom == "Google") {
+                    print("try to log out from google");
+                    await Google.instance().signOut();
+                  } else if (widget.LoginFrom == "Facebook") {
+                    Provider.of<Login>(context, listen: false).signOut();
+                  }
+                  setState(() {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => const Login()),
+                        (Route<dynamic> route) => false);
                   });
-                  /*
-                   if (loginFrom == LogFrom.Email) {
-                      //Provider.of<AuthRepository>(context, listen: false)
-                      AuthRepository.instance().signOut();
-                    } else if (loginFrom == LogFrom.Google) {
-                      //Provider.of<GoogleLogin>(context, listen: false)
-                      GoogleLogin().signOut();
-                    } else if (loginFrom == LogFrom.Facebook) {
-                      // Provider.of<Login>(context, listen: false).signOut();
-                      Login().signOut();
-                    }
-                   */
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const Login()),
-                      (Route<dynamic> route) => false);
                 },
                 icon: const Icon(Icons.logout)),
             const SizedBox(width: 20)
@@ -99,7 +101,7 @@ class _profileState extends State<profile> {
                     ],
                   ),
                   LimitedBox(
-                      maxHeight: MediaQuery.of(context).size.height * 0.5813,
+                      maxHeight: MediaQuery.of(context).size.height * 0.55,
                       child: Container(
                         color: Colors.transparent,
                         child: TabBarView(

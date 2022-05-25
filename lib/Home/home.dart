@@ -13,7 +13,8 @@ import '../Services/user_db.dart';
 import '../auth/login_page.dart';
 
 class home extends StatefulWidget {
-  home({Key? key}) : super(key: key);
+  home({Key? key, required this.LoginFrom}) : super(key: key);
+  String LoginFrom;
 
   @override
   _homeState createState() => _homeState();
@@ -40,8 +41,9 @@ class _homeState extends State<home> {
             (Provider.of<AuthRepository>(context) != null)
                 ? (IconButton(
                     onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => profile()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              profile(LoginFrom: widget.LoginFrom)));
                     },
                     icon: Icon(Icons.account_circle)))
                 : (IconButton(
