@@ -21,7 +21,21 @@ class _add_categoryState extends State<add_category> {
   TextEditingController _name = new TextEditingController();
 
   var pWrap = new pathWrapper("");
-  List<String> tags = ["Private", "Clothing", "Cars", "Food", "A", "B"];
+  List<String> tags = [
+    "Private",
+    "Home décor",
+    "DIY and crafts",
+    "Entertainment",
+    "Education",
+    "Art",
+    "Men’s fashion",
+    "Women’s fashion",
+    "Food and drinks",
+    "Beauty",
+    "Event planning",
+    "Gardening",
+    "Cars"
+  ];
   String tag = "Private";
 
   @override
@@ -80,36 +94,40 @@ class _add_categoryState extends State<add_category> {
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
-                            dropdownOverButton: true,
-                            scrollbarRadius: const Radius.circular(10),
-                            scrollbarAlwaysShow: true,
-                            dropdownDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: Colors.black26,
-                                )),
-                            isExpanded: true,
-                            value: tags[0],
-                            buttonDecoration: BoxDecoration(
+                          dropdownOverButton: true,
+                          scrollbarRadius: const Radius.circular(10),
+                          scrollbarAlwaysShow: true,
+                          dropdownDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
                                 color: Colors.black26,
-                              ),
-                              color: Colors.transparent,
+                              )),
+                          isExpanded: true,
+                          buttonDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.black26,
                             ),
-                            items: List.generate(
-                                tags.length,
-                                (index) => DropdownMenuItem(
-                                    value: tags[index],
-                                    child: Row(
-                                      children: [
-                                        SizedBox(width: 20),
-                                        Text(tags[index])
-                                      ],
-                                    ))),
-                            onChanged: (val) {
+                            color: Colors.transparent,
+                          ),
+                          items: List.generate(
+                              tags.length,
+                              (index) => DropdownMenuItem(
+                                  value: tags[index],
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 20),
+                                      Text(tags[index])
+                                    ],
+                                  ))),
+                          onChanged: (val) {
+                            setState(() {
                               tag = val!;
-                            }),
+                              print(tag);
+                            });
+                          },
+                          value: tag,
+                        ),
                       )),
                   SizedBox(height: 40),
                   Padding(

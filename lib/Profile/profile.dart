@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:savet/Home/follower_card.dart';
+import 'package:savet/Profile/follower_card.dart';
 import 'package:savet/auth/auth_repository.dart';
 
 import '../Category/add_category.dart';
@@ -55,8 +55,8 @@ class _profileState extends State<profile> {
                   profile_pic: true),
               const SizedBox(height: 10),
               Container(
-                child: const Text(
-                  'John',
+                child: Text(
+                  '${Provider.of<UserDB>(context).username}',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                 ),
@@ -85,12 +85,24 @@ class _profileState extends State<profile> {
                             ListView(
                               shrinkWrap: true,
                               children: List.generate(
-                                  10, (index) => const follower_card()),
+                                  Provider.of<UserDB>(context, listen: false)
+                                      .followers_count,
+                                  (index) => follower_card(
+                                      user: Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .followers[index],
+                                      flag: false)),
                             ),
                             ListView(
                               shrinkWrap: true,
                               children: List.generate(
-                                  10, (index) => const follower_card()),
+                                  Provider.of<UserDB>(context, listen: false)
+                                      .following_count,
+                                  (index) => follower_card(
+                                      user: Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .following[index],
+                                      flag: false)),
                             ),
                           ],
                         ),
