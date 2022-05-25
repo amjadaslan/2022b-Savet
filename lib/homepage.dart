@@ -14,18 +14,17 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
-  void initState() {
-    super.initState();
-    // s = widget.LoginFrom;
-  }
+  late final List<Widget> _pages;
 
-//late String s;
-  final List<Widget> _pages = <Widget>[
-    home(LoginFrom: "Google"), //TODO: maybe need to change the  LoginFrom
-    const explore(),
-    const notifications(),
-    const community()
-  ];
+  void initState() {
+    _pages = <Widget>[
+      home(LoginFrom: widget.LoginFrom),
+      const explore(),
+      const notifications(),
+      const community()
+    ];
+    super.initState();
+  }
 
   int _selectedIndex = 0;
   void _onItemTapped(int index) {

@@ -75,36 +75,9 @@ class _LoginState extends State<Login> {
 
   Widget LoginScreen() {
     final user = Provider.of<AuthRepository>(context);
-    UserModel? userModel = _currentUser;
-    // if(user.isAuthenticated)
-    //   user.signOut();
-    // if (userModel != null) {
-    //   return Padding(
-    //     padding: const EdgeInsets.all(12.0),
-    //     child: Column(
-    //       children: [
-    //         ListTile(
-    //           leading: CircleAvatar(
-    //             radius: userModel.picture!.width! / 6,
-    //             backgroundImage: NetworkImage(userModel.picture!.url!),
-    //           ),
-    //           title: Text(userModel.name!),
-    //           subtitle: Text(userModel.email!),
-    //         ),
-    //         const SizedBox(height: 20),
-    //         const Text('sign in successfully', style: TextStyle(fontSize: 20)),
-    //         const SizedBox(
-    //           height: 10,
-    //         ),
-    //         ElevatedButton(onPressed: signOutFace, child: Text('sign out'))
-    //       ],
-    //     ),
-    //   );
-    // } else {
     return SingleChildScrollView(
       child: Center(
           child: SizedBox(
-        // width:  height: MediaQuery.of(context).size.width*0.1,
         width: MediaQuery.of(context).size.width * 0.9,
         child: Column(
           children: <Widget>[
@@ -113,7 +86,6 @@ class _LoginState extends State<Login> {
             const SizedBox(height: 20),
 
             Padding(
-              //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Material(
                 elevation: 3,
@@ -166,11 +138,7 @@ class _LoginState extends State<Login> {
                     })),
 
             const Text(''),
-            // user.status == Status.Authenticating
-            //     ? const Center(
-            //         child: CircularProgressIndicator(),
-            //       )
-            //     :
+
             Container(
               height: MediaQuery.of(context).size.width * 0.1,
               width: MediaQuery.of(context).size.width,
@@ -363,7 +331,7 @@ class _LoginState extends State<Login> {
     await FacebookAuth.i.logOut();
     _currentUser = null;
     _accessToken = null;
-    FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
     setState(() {});
   }
 }

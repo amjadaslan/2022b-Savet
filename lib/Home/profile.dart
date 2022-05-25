@@ -56,7 +56,7 @@ class _profileState extends State<profile> {
                     print("try to log out from google");
                     await Google.instance().signOut();
                   } else if (widget.LoginFrom == "Facebook") {
-                    Provider.of<Login>(context, listen: false).signOut();
+                    Login().signOut();
                   }
                   setState(() {
                     Navigator.of(context).pushAndRemoveUntil(

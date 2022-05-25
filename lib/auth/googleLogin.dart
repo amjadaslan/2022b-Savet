@@ -3,12 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:savet/auth/auth_repository.dart';
 
 class Google extends ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   GoogleSignInAccount? _currentUser;
-  Status _status = Status.Uninitialized;
 
   GoogleSignInAccount? cureentUser() => _currentUser;
 
@@ -39,10 +37,8 @@ class Google extends ChangeNotifier {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      _status = Status.Authenticating;
       await FirebaseAuth.instance.signInWithCredential(credential);
-      _status = Status.Authenticated;
-
+      notifyListeners();
       if (!(await FirebaseFirestore.instance
               .collection('users')
               .doc(FirebaseAuth.instance.currentUser?.email)
@@ -56,7 +52,7 @@ class Google extends ChangeNotifier {
           'avatar_path': FirebaseAuth.instance.currentUser?.photoURL
         });
         notifyListeners();
-        return Future.delayed(Duration(milliseconds: 15));
+        return Future.delayed(Duration(seconds: 2));
       }
     } catch (e) {
       print("ERROR signing in $e");
