@@ -28,9 +28,9 @@ class Google extends ChangeNotifier {
   Future<void> signIn() async {
     try {
       notifyListeners();
-
       print("SignIn Google");
       await _googleSignIn.signIn();
+
       _currentUser = _googleSignIn.currentUser;
       final googleAuth = await _currentUser?.authentication;
       final credential = GoogleAuthProvider.credential(
