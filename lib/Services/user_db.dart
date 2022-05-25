@@ -102,7 +102,8 @@ class UserDB extends ChangeNotifier {
       'image':
           "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/recently_added.png?alt=media&token=0b4a0d57-c19f-4f7a-bb49-ce67a6a20386",
       'posts': [],
-      'id': 0
+      'id': 0,
+      'tag': "Private"
     }
   ];
 
@@ -215,7 +216,8 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCategory(String title, String desc, String profile_img) async {
+  void addCategory(
+      String title, String desc, String profile_img, String tag) async {
     File imageFile = File(profile_img);
     String c = profile_img.hashCode.toString();
     await FirebaseStorage.instance.ref('$c').putFile(imageFile);
@@ -227,7 +229,8 @@ class UserDB extends ChangeNotifier {
       'description': desc,
       'image': path,
       'posts': [],
-      'id': category_id
+      'id': category_id,
+      'tag': tag
     });
     userDocument.update({'categories': categories});
     notifyListeners();

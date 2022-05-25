@@ -1,7 +1,9 @@
 import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:provider/provider.dart';
 
+import '../Services/user_db.dart';
 import 'explore_card.dart';
 
 class explore extends StatefulWidget {
@@ -19,22 +21,22 @@ class _exploreState extends State<explore> {
     });
   }
 
-  List<bool> clicked_flags = List.generate(10, (index) => false);
+  List<String> tags = ["Private", "Clothes", "Cars", "Food"];
+  List<bool> clicked_flags = List.generate(4, (index) => true);
   @override
   Widget build(BuildContext context) {
-    List<String> arr = [
-      'https://cdn.pixabay.com/photo/2019/03/15/09/49/girl-4056684_960_720.jpg',
-      'https://cdn.pixabay.com/photo/2020/12/15/16/25/clock-5834193__340.jpg',
-      'https://cdn.pixabay.com/photo/2020/09/18/19/31/laptop-5582775_960_720.jpg',
-      'https://media.istockphoto.com/photos/woman-kayaking-in-fjord-in-norway-picture-id1059380230?b=1&k=6&m=1059380230&s=170667a&w=0&h=kA_A_XrhZJjw2bo5jIJ7089-VktFK0h0I4OWDqaac0c=',
-      'https://cdn.pixabay.com/photo/2019/11/05/00/53/cellular-4602489_960_720.jpg',
-      'https://cdn.pixabay.com/photo/2017/02/12/10/29/christmas-2059698_960_720.jpg',
-      'https://cdn.pixabay.com/photo/2020/01/29/17/09/snowboard-4803050_960_720.jpg',
-      'https://cdn.pixabay.com/photo/2020/02/06/20/01/university-library-4825366_960_720.jpg',
-      'https://cdn.pixabay.com/photo/2020/11/22/17/28/cat-5767334_960_720.jpg',
-      'https://cdn.pixabay.com/photo/2020/12/13/16/22/snow-5828736_960_720.jpg',
-      'https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg',
-    ];
+    List curr_tags = [];
+    for (int i = 0; i < clicked_flags.length; i++) {
+      if (clicked_flags[i] == true) curr_tags.add(tags[i]);
+    }
+    List arr = [];
+    Provider.of<UserDB>(context).categories.forEach((c) {
+      if (curr_tags.contains(c['tag']))
+        c['posts'].forEach((p) {
+          arr.add(p);
+        });
+    });
+
     return Scaffold(
       endDrawer: Drawer(
           child: Scaffold(
@@ -54,7 +56,7 @@ class _exploreState extends State<explore> {
             ListView(
                 shrinkWrap: true,
                 children: List.generate(
-                  10,
+                  tags.length,
                   (index) {
                     return Align(
                       child: TextButton(
@@ -63,7 +65,7 @@ class _exploreState extends State<explore> {
                             clicked_flags[index] = !clicked_flags[index];
                           });
                         },
-                        child: Text("Tag #1"),
+                        child: Text(tags[index]),
                         style: TextButton.styleFrom(
                             primary: (clicked_flags[index])
                                 ? Colors.black
@@ -103,7 +105,6 @@ class _exploreState extends State<explore> {
           Builder(
               builder: (context) => IconButton(
                   onPressed: () {
-                    print("hi");
                     Scaffold.of(context).openEndDrawer();
                   },
                   icon: Icon(Icons.filter_list))),
@@ -120,8 +121,8 @@ class _exploreState extends State<explore> {
                     // horizontal, this produces 2 rows.
                     crossAxisCount: 2,
                     // Generate 100 widgets that display their index in the List.
-                    children: List.generate(10, (index) {
-                      return explore_card(url: arr[index]);
+                    children: List.generate(arr.length, (index) {
+                      return explore_card(url: arr[index]['image']);
                     }),
                   ),
                 ),
