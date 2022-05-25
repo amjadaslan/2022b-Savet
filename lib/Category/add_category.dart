@@ -22,6 +22,7 @@ class _add_categoryState extends State<add_category> {
 
   var pWrap = new pathWrapper("");
   List<String> tags = ["Private", "Clothing", "Cars", "Food", "A", "B"];
+  String tag = "Private";
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +107,9 @@ class _add_categoryState extends State<add_category> {
                                         Text(tags[index])
                                       ],
                                     ))),
-                            onChanged: (val) {}),
+                            onChanged: (val) {
+                              tag = val!;
+                            }),
                       )),
                   SizedBox(height: 40),
                   Padding(
@@ -143,8 +146,8 @@ class _add_categoryState extends State<add_category> {
                                               "Please write a title for the category")));
                               } else {
                                 Provider.of<UserDB>(context, listen: false)
-                                    .addCategory(
-                                        _name.text, _desc.text, pWrap.value);
+                                    .addCategory(_name.text, _desc.text,
+                                        pWrap.value, tag);
                                 Navigator.of(context).pop();
                               }
                             },
