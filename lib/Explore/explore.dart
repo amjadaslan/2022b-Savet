@@ -19,6 +19,7 @@ class _exploreState extends State<explore> {
     });
   }
 
+  List<bool> clicked_flags = List.generate(10, (index) => false);
   @override
   Widget build(BuildContext context) {
     List<String> arr = [
@@ -35,10 +36,79 @@ class _exploreState extends State<explore> {
       'https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg',
     ];
     return Scaffold(
+      endDrawer: Drawer(
+          child: Scaffold(
+        appBar: AppBar(
+          title: Text("Choose tags"),
+          leading: IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        body: Center(
+            child: Column(
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+            ListView(
+                shrinkWrap: true,
+                children: List.generate(
+                  10,
+                  (index) {
+                    return Align(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            clicked_flags[index] = !clicked_flags[index];
+                          });
+                        },
+                        child: Text("Tag #1"),
+                        style: TextButton.styleFrom(
+                            primary: (clicked_flags[index])
+                                ? Colors.black
+                                : Colors.white,
+                            fixedSize: Size(
+                              MediaQuery.of(context).size.width * 0.4,
+                              MediaQuery.of(context).size.width * 0.1,
+                            ),
+                            shape: const StadiumBorder(),
+                            backgroundColor: (clicked_flags[index])
+                                ? Colors.deepOrange
+                                : Colors.grey),
+                      ),
+                    );
+                  },
+                )),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+            TextButton(
+              onPressed: () {},
+              child: Text("Confirm"),
+              style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  fixedSize: Size(
+                    MediaQuery.of(context).size.width * 0.3,
+                    MediaQuery.of(context).size.width * 0.1,
+                  ),
+                  shape: const StadiumBorder(),
+                  backgroundColor: Colors.deepOrange),
+            )
+          ],
+        )),
+      )),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Explore', textAlign: TextAlign.center),
-        actions: [Icon(Icons.filter_list), SizedBox(width: 20)],
+        actions: [
+          Builder(
+              builder: (context) => IconButton(
+                  onPressed: () {
+                    print("hi");
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  icon: Icon(Icons.filter_list))),
+          SizedBox(width: 20)
+        ],
       ),
       body: Center(
           child: Container(

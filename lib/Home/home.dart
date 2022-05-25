@@ -55,7 +55,8 @@ class _homeState extends State<home> {
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Please login')));
                     },
-                    icon: Icon(Icons.account_circle)))
+                    icon: Icon(Icons.account_circle))),
+            SizedBox(width: 15)
           ]),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
