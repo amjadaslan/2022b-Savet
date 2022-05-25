@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class Google extends ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   GoogleSignInAccount? _currentUser;
+  Status _status = Status.Uninitialized;
 
   GoogleSignInAccount? cureentUser() => _currentUser;
 
@@ -14,7 +15,43 @@ class Google extends ChangeNotifier {
     _googleSignIn.onCurrentUserChanged.listen((account) {});
     _googleSignIn.signInSilently();
     print("Google init");
+    super.initState();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Google sign in Test"),
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: _bulidWidget(),
+      ),
+    );
+  }
+
+  Widget _bulidWidget() {
+    GoogleSignInAccount? user = _currentUser;
+    print(Provider.of<AuthRepository>(context).user);
+    if (user != null) {
+      return FutureBuilder(
+          future: Provider.of<UserDB>(context).fetchDataGoogleFacebook(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              return const homepage();
+            }
+            return const Center(child: CircularProgressIndicator());
+          });
+    } else {
+      signIn();
+      //Navigator.pop(context);
+      return SizedBox.shrink();
+    }
+  }
+
   Future signOut() async {
     notifyListeners();
     print("Sign Out From Google account");

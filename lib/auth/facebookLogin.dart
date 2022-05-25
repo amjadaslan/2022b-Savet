@@ -75,3 +75,52 @@ class UserModel {
    */
 
 }
+
+Future signOutFace() async {
+await FacebookAuth.i.logOut();
+_currentUser = null;
+_accessToken = null;
+setState(() {});
+}
+}
+
+class PictureModel {
+  final String? url;
+  final int? height;
+  final int? width;
+
+  const PictureModel({this.width, this.height, this.url});
+  factory PictureModel.fromJson(Map<String, dynamic> json) => PictureModel(
+      url: json['url'], width: json['width'], height: json['height']);
+}
+
+class UserModel {
+  final String? name;
+  final String? id;
+  final String? email;
+  final PictureModel? picture;
+  const UserModel({this.name, this.picture, this.email, this.id});
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+      email: json['email'],
+      id: json['id'] as String?,
+      name: json['name'],
+      picture: PictureModel.fromJson(json['picture']['data']));
+/*
+  {
+ {
+  "id": "USER-ID",
+  "name": "EXAMPLE NAME",
+  "email": "EXAMPLE@EMAIL.COM",
+  "picture": {
+    "data": {
+      "height": 50,
+      "is_silhouette": false,
+      "url": "URL-FOR-USER-PROFILE-PICTURE",
+      "width": 50
+    }
+  }
+}
+   */
+
+}
+}
