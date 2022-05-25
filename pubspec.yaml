@@ -54,6 +54,7 @@ dependencies:
   flutter_search_bar: ^2.1.0
   material_floating_search_bar: ^0.3.7
   google_sign_in: ^5.3.1
+  dropdown_button2: ^1.4.0
 
 
 
