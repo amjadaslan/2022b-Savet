@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
-import 'package:savet/Home/profile.dart';
+import 'package:savet/Profile/profile.dart';
 import 'package:savet/auth/auth_repository.dart';
 
 import '/Category/category.dart';
 import '../Category/add_category.dart';
 import '../Category/category_card.dart';
+import '../Profile/profile.dart';
 import '../Services/user_db.dart';
 import '../auth/login_page.dart';
 

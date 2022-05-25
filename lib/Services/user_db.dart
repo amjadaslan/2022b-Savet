@@ -115,6 +115,7 @@ class UserDB extends ChangeNotifier {
     user_email = auth?.email;
 
     print("Fetching Data");
+
     userDocument =
         FirebaseFirestore.instance.collection('users').doc(user_email);
     print(userDocument);
@@ -136,16 +137,22 @@ class UserDB extends ChangeNotifier {
         'following': following,
         'following_count': followers_count,
         'categories': categories,
-        'username': username
+        'username': username,
+        'email': user_email
       });
     } else {
       //fetching username & avatarImage
       username = userData['username'];
       avatar_path = userData['avatar_path'];
       categories = userData['categories'];
+      following_count = userData['following_count'];
+      following = userData['following'];
+      followers = userData['followers'];
+      followers_count = userData['followers_count'];
+
       //fetching Notifications
-      List<dynamic> notif = userData['notifications'];
-      notifications = notif;
+      // List<dynamic> notif = userData['notifications'];
+      // notifications = notif;
 
       //notif.forEach((e) => {notifications.add(e)});
 
@@ -314,7 +321,77 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void addFollower() {}
+  Future<Map> getUserByEmail(String email) async {
+    var s = FirebaseFirestore.instance.collection('users').doc(user_email);
+    DocumentSnapshot userSnapshot = await s.get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+
+    return userData;
+  }
+
+  Future<void> addFollower(String email, Map him) async {
+    print("Adding a follow");
+    var s = FirebaseFirestore.instance.collection('users').doc(email);
+    DocumentSnapshot userSnapshot = await s.get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    var followers_list = userData['followers'];
+
+    int followers_cnt = userData['followers_count'];
+    followers_list.add({
+      'username': username,
+      'followers_count': followers_count,
+      'following_count': following_count + 1,
+      'avatar_path': avatar_path
+    });
+    s.update(
+        {'followers': followers_list, 'followers_count': followers_cnt + 1});
+
+    userSnapshot = await userDocument.get();
+    userData = userSnapshot.data() as Map<String, dynamic>;
+    int myFollowing_cnt = userData['following_count'];
+    var myFollowing_list = userData['following'];
+    var to_add = {
+      'username': him['username'],
+      'followers_count': him['followers_count'] + 1,
+      'following_count': him['following_count'],
+      'avatar_path': him['avatar_path']
+    };
+    myFollowing_list.add(to_add);
+    following.add(to_add);
+    following_count++;
+    userDocument.update({
+      'following': myFollowing_list,
+      'following_count': myFollowing_cnt + 1
+    });
+
+    fetchData();
+  }
+
+  Future<void> removeFollower(String email, Map him) async {
+    print("removing a follow");
+    var s = FirebaseFirestore.instance.collection('users').doc(email);
+    DocumentSnapshot userSnapshot = await s.get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    var followers_list = userData['followers'];
+    int followers_cnt = userData['followers_count'];
+    followers_list.removeWhere((user) => (user['username'] == username));
+    s.update(
+        {'followers': followers_list, 'followers_count': followers_cnt - 1});
+
+    userSnapshot = await userDocument.get();
+    userData = userSnapshot.data() as Map<String, dynamic>;
+    int myFollowing_cnt = userData['following_count'];
+    var myFollowing_list = userData['following'];
+    myFollowing_list
+        .removeWhere((user) => (user['username'] == him['username']));
+    following.removeWhere((user) => (user['username'] == him['username']));
+    following_count--;
+    userDocument.update({
+      'following': myFollowing_list,
+      'following_count': myFollowing_cnt - 1
+    });
+    fetchData();
+  }
 
   // void addComment(
   //     int c_id, int post_id, String a_p, String us, String content) {

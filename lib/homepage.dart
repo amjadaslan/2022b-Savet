@@ -27,11 +27,6 @@ class _homepageState extends State<homepage> {
   }
 
   int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +47,11 @@ class _homepageState extends State<homepage> {
           unselectedItemColor: (Colors.black54),
           backgroundColor: Colors.deepOrange,
           type: BottomNavigationBarType.fixed,
-          onTap: _onItemTapped,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ));
   }
 }

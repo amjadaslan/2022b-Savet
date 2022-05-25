@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:savet/Home/follower_card.dart';
+import 'package:savet/Profile/follower_card.dart';
 import 'package:savet/auth/auth_repository.dart';
 import 'package:savet/auth/googleLogin.dart';
 
@@ -20,27 +24,8 @@ class profile extends StatefulWidget {
 class _profileState extends State<profile> {
   @override
   Widget build(BuildContext context) {
-    // var userDocument = FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc(Provider.of<UserDB>(context).user_email)
-    //     .get();
-    // print(userDocument["username"]);
-    // var user = userDocument['username'];
-    // print(FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc(AuthRepository.instance().user?.email)
-    //     .collection('username'));
-    //     .then((QuerySnapshot querySnapshot) {
-    //   querySnapshot.docs.forEach((doc) {
-    //     print(doc["first_name"]);
-    //   });
-    // });
     var pWrap = pathWrapper(Provider.of<UserDB>(context).avatar_path);
-    var username = Provider.of<UserDB>(context).username;
-    //var loginFrom = Provider.of<Login>(context).logFtom;
-    // final email = FirebaseAuth.instance.currentUser!.email;
-    // var methods =
-    //     FirebaseAuth.instance.fetchSignInMethodsForEmail(email.toString());
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("Profile"),
@@ -80,7 +65,7 @@ class _profileState extends State<profile> {
               const SizedBox(height: 10),
               Container(
                 child: Text(
-                  '$username',
+                  '${Provider.of<UserDB>(context).username}',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                 ),
@@ -109,12 +94,24 @@ class _profileState extends State<profile> {
                             ListView(
                               shrinkWrap: true,
                               children: List.generate(
-                                  10, (index) => const follower_card()),
+                                  Provider.of<UserDB>(context, listen: false)
+                                      .followers_count,
+                                  (index) => follower_card(
+                                      user: Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .followers[index],
+                                      flag: false)),
                             ),
                             ListView(
                               shrinkWrap: true,
                               children: List.generate(
-                                  10, (index) => const follower_card()),
+                                  Provider.of<UserDB>(context, listen: false)
+                                      .following_count,
+                                  (index) => follower_card(
+                                      user: Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .following[index],
+                                      flag: false)),
                             ),
                           ],
                         ),
