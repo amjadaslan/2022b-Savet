@@ -66,7 +66,12 @@ class _profile_ext_viewState extends State<profile_ext_view> {
             onPressed: () async {
               clicked = 1 - clicked;
               flag = !flag;
-              if (clicked == 1 || flag) {
+              if (!flag && clicked == 0) {
+                await Provider.of<UserDB>(context, listen: false)
+                    .removeFollower(widget.user['email'], widget.user);
+                widget.user['followers'].where((f) => (f['username'] ==
+                    Provider.of<UserDB>(context, listen: false).username));
+              } else {
                 await Provider.of<UserDB>(context, listen: false)
                     .addFollower(widget.user['email'], widget.user);
                 widget.user['followers'].add({
@@ -79,11 +84,6 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                   'following_count': Provider.of<UserDB>(context, listen: false)
                       .following_count,
                 });
-              } else {
-                await Provider.of<UserDB>(context, listen: false)
-                    .removeFollower(widget.user['email'], widget.user);
-                widget.user['followers'].where((f) => (f['username'] ==
-                    Provider.of<UserDB>(context, listen: false).username));
               }
               setState(() {});
             },

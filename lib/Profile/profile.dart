@@ -95,7 +95,8 @@ class _profileState extends State<profile> {
                               shrinkWrap: true,
                               children: List.generate(
                                   Provider.of<UserDB>(context, listen: false)
-                                      .followers_count,
+                                      .followers
+                                      .length,
                                   (index) => follower_card(
                                       user: Provider.of<UserDB>(context,
                                               listen: false)
@@ -106,7 +107,8 @@ class _profileState extends State<profile> {
                               shrinkWrap: true,
                               children: List.generate(
                                   Provider.of<UserDB>(context, listen: false)
-                                      .following_count,
+                                      .following
+                                      .length,
                                   (index) => follower_card(
                                       user: Provider.of<UserDB>(context,
                                               listen: false)
