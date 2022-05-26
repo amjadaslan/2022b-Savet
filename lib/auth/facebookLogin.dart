@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
+//TODO: until now all the function for login&& logout form facebook i call from Loginpage
+
 class FacebookLogin extends ChangeNotifier {
   AccessToken? _accessToken;
   UserModel? _currentUser;
