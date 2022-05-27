@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../Services/user_db.dart';
 import '../homepage.dart';
 import 'auth_repository.dart';
-import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  Register({Key? key, required this.LogFrom}) : super(key: key);
+  String LogFrom;
 
   @override
   State<Register> createState() => _RegisterState();
@@ -192,7 +194,8 @@ class _RegisterState extends State<Register> {
                                                   } else if (snapshot
                                                           .connectionState ==
                                                       ConnectionState.done) {
-                                                    return const homepage();
+                                                    return homepage(
+                                                        LoginFrom: "Email");
                                                   }
                                                   return const Center(
                                                       child:

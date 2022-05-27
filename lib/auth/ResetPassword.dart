@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../homepage.dart';
 import 'auth_repository.dart';
-import 'package:provider/provider.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
@@ -103,7 +104,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                             ? Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const homepage()))
+                                    builder: (context) =>
+                                        homepage(LoginFrom: "Email")))
                             : ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('Error to Log in')));

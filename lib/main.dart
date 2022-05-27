@@ -1,15 +1,15 @@
 // @dart=2.9
 
 import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
-import 'auth/login_page.dart';
-import 'auth/auth_repository.dart';
-import 'Services/user_db.dart';
 
-import 'homepage.dart';
+import 'Services/user_db.dart';
+import 'auth/auth_repository.dart';
+import 'auth/login_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,8 +56,8 @@ class Splash2 extends StatelessWidget {
       child: SplashScreen(
         seconds: 3,
         useLoader: true,
-        navigateAfterSeconds: Login(),
-        title: new Text(
+        navigateAfterSeconds: const Login(),
+        title: const Text(
           '',
           textScaleFactor: 2,
           style: TextStyle(color: Colors.white),

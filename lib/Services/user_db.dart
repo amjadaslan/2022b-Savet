@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../auth/auth_repository.dart';
 
 //
 // class Chat {
@@ -112,17 +110,25 @@ class UserDB extends ChangeNotifier {
   late DocumentReference userDocument;
 
   fetchData() async {
-    final auth = AuthRepository.instance();
-    user_email = auth.user?.email;
+    final auth = FirebaseAuth.instance.currentUser;
+
+    user_email = auth?.email;
 
     print("Fetching Data");
 
     userDocument =
         FirebaseFirestore.instance.collection('users').doc(user_email);
+    print(userDocument);
     DocumentSnapshot userSnapshot = await userDocument.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-    if (userData.length == 1) {
-      String username = userData['username'];
+    print("Fetching Data");
+    print(userData);
+
+    if (userData.length <= 2) {
+      if (userData.length == 2) {
+        avatar_path = userData['avatar_path'];
+      }
+      username = userData['username'];
       await userDocument.set({
         'avatar_path': avatar_path,
         'notifications': notifications,
@@ -292,7 +298,7 @@ class UserDB extends ChangeNotifier {
     categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id);
 
     userDocument.update({'categories': categories});
-    notifyListeners();
+    notifyListeners(); //TODO: hi
   }
 
   Future<void> removePost(int p_id, int c_id) async {
