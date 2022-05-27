@@ -298,7 +298,7 @@ class UserDB extends ChangeNotifier {
     categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id);
 
     userDocument.update({'categories': categories});
-    notifyListeners();
+    notifyListeners(); //TODO: hi
   }
 
   Future<void> removePost(int p_id, int c_id) async {
