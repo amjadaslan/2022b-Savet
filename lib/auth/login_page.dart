@@ -13,7 +13,6 @@ import 'package:savet/homepage.dart';
 import '../Services/user_db.dart';
 import '../homepage.dart';
 import 'Register.dart';
-import 'ResetPassword.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
 
@@ -132,10 +131,14 @@ class _LoginState extends State<Login> {
                 child: TextButton(
                     child: const Text("forgot password?"),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ResetPassword()));
+                      //TODO: need to implement it
+
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const ResetPassword()));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Not implemented yet')));
                     })),
 
             const Text(''),
@@ -198,18 +201,9 @@ class _LoginState extends State<Login> {
                                   future:
                                       Provider.of<UserDB>(context).fetchData(),
                                   builder: (context, snapshot) {
-                                    // if (snapshot.hasError) {
-                                    //   return Center(
-                                    //       child: Text(
-                                    //           snapshot.error.toString()));
-                                    // } else if (snapshot.connectionState ==
-                                    //     ConnectionState.done) {
                                     return homepage(
                                       LoginFrom: LogFrom,
                                     );
-
-                                    return const Center(
-                                        child: CircularProgressIndicator());
                                   })));
                     })),
 
