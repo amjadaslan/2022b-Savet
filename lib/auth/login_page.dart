@@ -137,10 +137,14 @@ class _LoginState extends State<Login> {
                 child: TextButton(
                     child: const Text("Forgot password?"),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ResetPassword()));
+                      //TODO: need to implement it
+
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const ResetPassword()));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Not implemented yet')));
                     })),
 
             const Text(''),
