@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Profile/follower_card.dart';
 import 'package:savet/auth/auth_repository.dart';
@@ -43,11 +39,9 @@ class _profileState extends State<profile> {
                   } else if (widget.LoginFrom == "Facebook") {
                     await Login().signOut();
                   }
-                  setState(() {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => const Login()),
-                        (Route<dynamic> route) => false);
-                  });
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const Login()),
+                      (Route<dynamic> route) => false);
                 },
                 icon: const Icon(Icons.logout)),
             const SizedBox(width: 20)

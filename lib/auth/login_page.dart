@@ -35,7 +35,6 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    AuthRepository.instance();
     _email = TextEditingController(text: "");
     _password = TextEditingController(text: "");
   }
@@ -48,18 +47,9 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return (FirebaseAuth.instance.currentUser != null)
-        ? FutureBuilder(
-            future: Provider.of<UserDB>(context).fetchData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                return homepage(
-                  LoginFrom: LogFrom,
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            })
+        ? homepage(
+            LoginFrom: LogFrom,
+          )
         : Scaffold(
             appBar: AppBar(
               title: const Text('Login'),
@@ -220,27 +210,24 @@ class _LoginState extends State<Login> {
                         await loginFace();
 
                         if (FirebaseAuth.instance.currentUser != null) {
-                          setState(() {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FutureBuilder(
-                                        future: Provider.of<UserDB>(context)
-                                            .fetchData(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                                child: Text(
-                                                    snapshot.error.toString()));
-                                          } else if (snapshot.connectionState ==
-                                              ConnectionState.done) {
-                                            return homepage(LoginFrom: LogFrom);
-                                          }
-                                          return const Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        })));
-                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FutureBuilder(
+                                      future: Provider.of<UserDB>(context)
+                                          .fetchData(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  snapshot.error.toString()));
+                                        } else if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return homepage(LoginFrom: LogFrom);
+                                        }
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      })));
                         }
                       },
                       child: Image.asset(
@@ -255,31 +242,33 @@ class _LoginState extends State<Login> {
                       onTap: () async {
                         print('Google Tap');
                         LogFrom = "Google";
+                        var x = Google.instance();
+                        await x.signIn();
 
-                        await Google.instance().signIn();
-
-                        if (Google.instance().cureentUser() != null) {
-                          setState(() {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FutureBuilder(
-                                        future: Provider.of<UserDB>(context)
-                                            .fetchData(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                                child: Text(
-                                                    snapshot.error.toString()));
-                                          } else if (snapshot.connectionState ==
-                                              ConnectionState.done) {
-                                            return homepage(LoginFrom: LogFrom);
-                                          }
-                                          return const Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        })));
-                          });
+                        // Provider.of<UserDB>(context,listen:false).userDocument
+                        var boo = await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser?.email)
+                            .get();
+                        if (x.currentUser() != null && boo.exists) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FutureBuilder(
+                                      future: Provider.of<UserDB>(context)
+                                          .fetchData(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return homepage(LoginFrom: LogFrom);
+                                        } else if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  snapshot.error.toString()));
+                                        }
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      })));
                         }
                       }, // Image tapped
                       child: Image.asset(
@@ -347,9 +336,7 @@ class _LoginState extends State<Login> {
         final facebook =
             FacebookAuthProvider.credential(login_res.accessToken!.token);
         await FirebaseAuth.instance.signInWithCredential(facebook);
-        print(134);
-        print(model.picture?.url);
-        print(FirebaseAuth.instance.currentUser?.displayName);
+
         if (!(await FirebaseFirestore.instance
                 .collection('users')
                 .doc(FirebaseAuth.instance.currentUser?.email)

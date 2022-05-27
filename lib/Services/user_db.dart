@@ -111,21 +111,15 @@ class UserDB extends ChangeNotifier {
 
   fetchData() async {
     final auth = FirebaseAuth.instance.currentUser;
-
     user_email = auth?.email;
-
-    print("Fetching Data");
-
     userDocument =
         FirebaseFirestore.instance.collection('users').doc(user_email);
     print(userDocument);
     DocumentSnapshot userSnapshot = await userDocument.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
     print("Fetching Data");
-    print(userData);
-
     if (userData.length <= 2) {
-      if (userData.length == 2) {
+      if (userData != null && userData.length == 2) {
         avatar_path = userData['avatar_path'];
       }
       username = userData['username'];
