@@ -29,7 +29,7 @@ class _profileState extends State<profile> {
             IconButton(
                 onPressed: () async {
                   print("debug");
-                  //print(widget.LoginFrom);
+                  print(widget.LoginFrom);
                   if (widget.LoginFrom == "Email") {
                     Provider.of<AuthRepository>(context, listen: false)
                         .signOut();

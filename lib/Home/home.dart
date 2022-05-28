@@ -5,7 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Profile/profile.dart';
 import 'package:savet/auth/auth_repository.dart';
-
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import '/Category/category.dart';
 import '../Category/add_category.dart';
 import '../Category/category_card.dart';
@@ -29,10 +29,27 @@ class _homeState extends State<home> {
 
   @override
   Widget build(BuildContext context) {
-    final userDB = Provider.of<UserDB>(context);
-
-    List cats = userDB.categories;
-
+    print("rebuilding");
+    List cats = Provider.of<UserDB>(context).categories;
+    List<Widget> categories = List.generate(cats.length, (i) {
+      var cat = cats[i];
+      return InkWell(
+        key: Key('$i'),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      category(id: cat['id'])));
+        },
+        child: Container(
+            padding: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.width / 2.5,
+            width: MediaQuery.of(context).size.width / 3.2,
+            child: category_card(
+                url: cat['image'], title: cat['title'])),
+      );
+    });
     TextEditingController editingController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
@@ -84,30 +101,28 @@ class _homeState extends State<home> {
           SizedBox(height: 10),
           Center(
             child: Container(
-                child: StaggeredGrid.count(
-                    crossAxisCount: 3,
-                    children: List.generate(cats.length, (i) {
-                      var cat = cats[i];
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      category(id: cat['id'])));
-                        },
-                        child: Container(
-                            padding: EdgeInsets.all(10),
-                            height: MediaQuery.of(context).size.width / 2.5,
-                            width: MediaQuery.of(context).size.width / 3.2,
-                            child: category_card(
-                                url: cat['image'], title: cat['title'])),
-                      );
-                    }))),
-          ),
-        ],
-      ),
-    );
+    child: ReorderableGridView.count(shrinkWrap: true,
+    crossAxisCount: 3,
+    onReorder: (int oldIndex, int newIndex)  async {
+    var oldp = categories[oldIndex];
+    categories.removeAt(oldIndex);
+    categories.insert(newIndex, oldp);
+
+    var t = Provider.of<UserDB>(context,listen: false).categories[oldIndex];
+
+    Provider.of<UserDB>(context,listen: false).categories[oldIndex] = Provider.of<UserDB>(context,listen: false).categories[newIndex];
+    Provider.of<UserDB>(context,listen: false).categories[newIndex]=t;
+
+    await Provider.of<UserDB>(context,listen:false).updateData();
+    setState(() {
+    });
+    },
+    children: categories,childAspectRatio: 0.8,)
+    )
+    )
+  ]
+  )
+  );
   }
 }
 
