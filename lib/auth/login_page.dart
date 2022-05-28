@@ -47,9 +47,22 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return (FirebaseAuth.instance.currentUser != null)
-        ? homepage(
-            LoginFrom: LogFrom,
-          )
+        ?   FutureBuilder(
+        future:
+        Provider.of<UserDB>(context).fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+                child:
+                Text(snapshot.error.toString()));
+          } else if (snapshot.connectionState ==
+              ConnectionState.done) {
+            return homepage(LoginFrom: LogFrom);
+          }
+          return const Center(
+              child: CircularProgressIndicator());
+        })
+
         : Scaffold(
             appBar: AppBar(
               title: const Text('Login'),

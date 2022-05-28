@@ -447,6 +447,20 @@ class UserDB extends ChangeNotifier {
     fetchData();
   }
 
+  Future<void> updateData() async {
+    print("updating data");
+    await userDocument.update({
+      'avatar_path': avatar_path,
+      'notifications': notifications,
+      'followers': followers,
+      'followers_count': followers_count,
+      'following': following,
+      'following_count': followers_count,
+      'categories': categories,
+      'username': username
+    });
+  }
+
   // void addComment(
   //     int c_id, int post_id, String a_p, String us, String content) {
   //   bool flag = false;

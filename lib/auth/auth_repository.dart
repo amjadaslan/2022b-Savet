@@ -34,6 +34,7 @@ class AuthRepository with ChangeNotifier {
       _status = Status.Authenticating;
       return await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+
     } catch (e) {
       print(e);
       _status = Status.Unauthenticated;

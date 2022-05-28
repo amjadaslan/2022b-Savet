@@ -55,6 +55,7 @@ dependencies:
   material_floating_search_bar: ^0.3.7
   google_sign_in: ^5.3.1
   dropdown_button2: ^1.4.0
+  reorderable_grid_view: ^2.2.2
 
 
 
