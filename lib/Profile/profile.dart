@@ -31,14 +31,14 @@ class _profileState extends State<profile> {
                   print("debug");
                   //print(widget.LoginFrom);
                   if (widget.LoginFrom == "Email") {
-                    Provider.of<AuthRepository>(context, listen: false)
-                        .signOut();
+                    await AuthRepository.instance().signOut();
                   } else if (widget.LoginFrom == "Google") {
                     print("try to log out from google");
                     await Google.instance().signOut();
                   } else if (widget.LoginFrom == "Facebook") {
                     await Login().signOut();
                   }
+                  //TODO: reset fetch data
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const Login()),
                       (Route<dynamic> route) => false);

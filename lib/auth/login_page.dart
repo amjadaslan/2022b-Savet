@@ -352,7 +352,6 @@ class _LoginState extends State<Login> {
         }
         _currentUser = model;
         LogFrom = "Facebook";
-        setState(() {});
       }
     } catch (e) {
       print("ERROR Facebook login $e");

@@ -16,10 +16,10 @@ class Google extends ChangeNotifier {
 
     print("Google init");
   }
+
   Future signOut() async {
     print("Sign Out From Google account");
     _googleSignIn.disconnect();
-    _currentUser = null;
     await FirebaseAuth.instance.signOut();
     notifyListeners();
   }

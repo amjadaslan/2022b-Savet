@@ -2,3 +2,5 @@
 .idea/libraries/Flutter_Plugins.xml
 .idea/libraries/Flutter_Plugins2.xml
 .idea/libraries/Dart_Packages.xml
+./android/key.properties
+./android/app/upload-keystore.jks
