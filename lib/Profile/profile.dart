@@ -37,7 +37,6 @@ class _profileState extends State<profile> {
                   } else if (widget.LoginFrom == "Facebook") {
                     await Login().signOut();
                   }
-                  //TODO: reset fetch data
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const Login()),
                       (Route<dynamic> route) => false);
