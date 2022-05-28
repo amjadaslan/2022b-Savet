@@ -13,7 +13,6 @@ class Google extends ChangeNotifier {
   Google.instance() {
     _googleSignIn.onCurrentUserChanged.listen((account) {});
     _googleSignIn.signInSilently();
-
     print("Google init");
   }
 
@@ -26,6 +25,8 @@ class Google extends ChangeNotifier {
 
   Future<void> signIn() async {
     try {
+      var auth = FirebaseAuth.instance;
+      var store = FirebaseFirestore.instance;
       print("SignIn Google");
       await _googleSignIn.signIn();
       _currentUser = _googleSignIn.currentUser;
@@ -34,19 +35,14 @@ class Google extends ChangeNotifier {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      var boo = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.email)
-          .get();
+      await auth.signInWithCredential(credential);
+      var boo =
+          await store.collection('users').doc(auth.currentUser?.email).get();
 
       if (!(boo).exists) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.email)
-            .set({
-          'username': FirebaseAuth.instance.currentUser?.displayName,
-          'avatar_path': FirebaseAuth.instance.currentUser?.photoURL
+        await store.collection('users').doc(auth.currentUser?.email).set({
+          'username': auth.currentUser?.displayName,
+          'avatar_path': auth.currentUser?.photoURL
         });
       }
     } catch (e) {

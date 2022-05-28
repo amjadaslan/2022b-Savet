@@ -30,7 +30,6 @@ class AuthRepository with ChangeNotifier {
   Future<UserCredential?> signUp(
       String email, String password, String userName) async {
     try {
-      // _logFrom = LogFrom.Email;
       _status = Status.Authenticating;
       return await _auth.createUserWithEmailAndPassword(
           email: email, password: password);

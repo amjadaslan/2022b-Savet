@@ -117,9 +117,9 @@ class UserDB extends ChangeNotifier {
     print(userDocument);
     DocumentSnapshot userSnapshot = await userDocument.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-    print("Fetching Data");
+    print(userData.length);
     if (userData.length <= 2) {
-      if (userData != null && userData.length == 2) {
+      if (userData.length == 2) {
         avatar_path = userData['avatar_path'];
       }
       username = userData['username'];
@@ -170,63 +170,34 @@ class UserDB extends ChangeNotifier {
   }
 
   resetFetchData() async {
-    final auth = FirebaseAuth.instance.currentUser;
-    user_email = auth?.email;
-    userDocument =
-        FirebaseFirestore.instance.collection('users').doc(user_email);
-    print(userDocument);
-    DocumentSnapshot userSnapshot = await userDocument.get();
-    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-    print("Fetching Data");
-    if (userData.length <= 2) {
-      if (userData != null && userData.length == 2) {
-        avatar_path = userData['avatar_path'];
+    category_id = 0;
+    post_id = 0;
+    tot_posts = 0;
+
+    username = "";
+    avatar_path = "";
+    user_email = "";
+
+    notifications = [];
+
+    recently_added = [];
+
+    followers = [];
+    followers_count = 0;
+    following = [];
+    following_count = 0;
+
+    categories = [
+      {
+        'title': "Recently Added",
+        'description': "Most Recent 20 Posts",
+        'image':
+            "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/recently_added.png?alt=media&token=0b4a0d57-c19f-4f7a-bb49-ce67a6a20386",
+        'posts': [],
+        'id': 0,
+        'tag': "Private"
       }
-      username = userData['username'];
-      await userDocument.set({
-        'avatar_path': avatar_path,
-        'notifications': notifications,
-        'followers': followers,
-        'followers_count': followers_count,
-        'following': following,
-        'following_count': followers_count,
-        'categories': categories,
-        'username': username,
-        'email': user_email
-      });
-    } else {
-      //fetching username & avatarImage
-      username = userData['username'];
-      avatar_path = userData['avatar_path'];
-      categories = userData['categories'];
-      following_count = userData['following_count'];
-      following = userData['following'];
-      followers = userData['followers'];
-      followers_count = userData['followers_count'];
-
-      //fetching Notifications
-      // List<dynamic> notif = userData['notifications'];
-      // notifications = notif;
-
-      //notif.forEach((e) => {notifications.add(e)});
-
-      //fetching list of followers
-      // List<dynamic> flwrs = userData['followers'];
-
-      //   flwrs.forEach((e) => {
-      //         followers.add(userwithFollowers_Following(e['followers'],
-      //             e['following'], e['username'], e['avatar_path']))
-      //       });
-      //
-      //   //fetching list of followers
-      //   List<dynamic> flwng = userData['following'];
-      //
-      //   flwng.forEach((e) => {
-      //         following.add(userwithFollowers_Following(e['followers'],
-      //             e['following'], e['username'], e['avatar_path']))
-      //       });
-      // }
-    }
+    ];
   }
 
   void addNotification(String s) {

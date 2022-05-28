@@ -28,8 +28,7 @@ class _profileState extends State<profile> {
           actions: [
             IconButton(
                 onPressed: () async {
-                  print("debug");
-                  print(widget.LoginFrom);
+                  Provider.of<UserDB>(context, listen: false).resetFetchData();
                   if (widget.LoginFrom == "Email") {
                     await AuthRepository.instance().signOut();
                   } else if (widget.LoginFrom == "Google") {

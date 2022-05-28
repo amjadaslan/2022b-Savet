@@ -46,23 +46,22 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return (FirebaseAuth.instance.currentUser != null)
-        ?   FutureBuilder(
-        future:
-        Provider.of<UserDB>(context).fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-                child:
-                Text(snapshot.error.toString()));
-          } else if (snapshot.connectionState ==
-              ConnectionState.done) {
-            return homepage(LoginFrom: LogFrom);
-          }
-          return const Center(
-              child: CircularProgressIndicator());
-        })
+    var auth = FirebaseAuth.instance;
 
+    print(auth.currentUser);
+    return (auth.currentUser != null)
+        ? FutureBuilder(
+            future: Provider.of<UserDB>(context).fetchData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                return homepage(
+                  LoginFrom: LogFrom,
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            })
         : Scaffold(
             appBar: AppBar(
               title: const Text('Login'),
@@ -78,6 +77,7 @@ class _LoginState extends State<Login> {
 
   Widget LoginScreen() {
     final user = Provider.of<AuthRepository>(context);
+    var auth = FirebaseAuth.instance;
     return SingleChildScrollView(
       child: Center(
           child: SizedBox(
@@ -155,8 +155,8 @@ class _LoginState extends State<Login> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   onPressed: () async {
-                    await user.signIn(_email.text, _password.text);
-                    if (user.isAuthenticated) {
+                    //await user.signIn(_email.text, _password.text);
+                    if ((await user.signIn(_email.text, _password.text))) {
                       LogFrom = "Email";
                       Navigator.push(
                           context,
@@ -222,7 +222,7 @@ class _LoginState extends State<Login> {
                         LogFrom = "Facebook";
                         await loginFace();
 
-                        if (FirebaseAuth.instance.currentUser != null) {
+                        if (auth.currentUser != null) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -261,7 +261,7 @@ class _LoginState extends State<Login> {
                         // Provider.of<UserDB>(context,listen:false).userDocument
                         var boo = await FirebaseFirestore.instance
                             .collection('users')
-                            .doc(FirebaseAuth.instance.currentUser?.email)
+                            .doc(auth.currentUser?.email)
                             .get();
                         if (x.currentUser() != null && boo.exists) {
                           Navigator.push(
@@ -339,6 +339,7 @@ class _LoginState extends State<Login> {
 
   Future<void> loginFace() async {
     final LoginResult login_res = await FacebookAuth.i.login();
+    var auth = FirebaseAuth.instance;
     //final googleAuth = await login_res?.authentication;
     try {
       if (login_res.status == LoginStatus.success) {
@@ -348,18 +349,18 @@ class _LoginState extends State<Login> {
 
         final facebook =
             FacebookAuthProvider.credential(login_res.accessToken!.token);
-        await FirebaseAuth.instance.signInWithCredential(facebook);
+        await auth.signInWithCredential(facebook);
 
         if (!(await FirebaseFirestore.instance
                 .collection('users')
-                .doc(FirebaseAuth.instance.currentUser?.email)
+                .doc(auth.currentUser?.email)
                 .get())
             .exists) {
           await FirebaseFirestore.instance
               .collection('users')
-              .doc(FirebaseAuth.instance.currentUser?.email)
+              .doc(auth.currentUser?.email)
               .set({
-            'username': FirebaseAuth.instance.currentUser?.displayName,
+            'username': auth.currentUser?.displayName,
             'avatar_path': model.picture?.url
           });
         }
@@ -372,10 +373,11 @@ class _LoginState extends State<Login> {
   }
 
   Future signOutFace() async {
+    var auth = FirebaseAuth.instance;
     await FacebookAuth.i.logOut();
     _currentUser = null;
     _accessToken = null;
-    await FirebaseAuth.instance.signOut();
+    await auth.signOut();
   }
 }
 
