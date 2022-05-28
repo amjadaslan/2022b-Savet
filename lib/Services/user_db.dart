@@ -110,62 +110,67 @@ class UserDB extends ChangeNotifier {
   late DocumentReference userDocument;
 
   fetchData() async {
-    final auth = FirebaseAuth.instance.currentUser;
-    user_email = auth?.email;
-    userDocument =
-        FirebaseFirestore.instance.collection('users').doc(user_email);
-    print(userDocument);
-    DocumentSnapshot userSnapshot = await userDocument.get();
-    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-    print(userData.length);
-    if (userData.length <= 2) {
-      if (userData.length == 2) {
+    try {
+      final auth = FirebaseAuth.instance.currentUser;
+      user_email = auth?.email;
+      userDocument =
+          FirebaseFirestore.instance.collection('users').doc(user_email);
+      print(userDocument);
+      DocumentSnapshot userSnapshot = await userDocument.get();
+      Map<String, dynamic> userData =
+          userSnapshot.data() as Map<String, dynamic>;
+      print(userData.length);
+      if (userData.length <= 2) {
+        if (userData.length == 2) {
+          avatar_path = userData['avatar_path'];
+        }
+        username = userData['username'];
+        await userDocument.set({
+          'avatar_path': avatar_path,
+          'notifications': notifications,
+          'followers': followers,
+          'followers_count': followers_count,
+          'following': following,
+          'following_count': followers_count,
+          'categories': categories,
+          'username': username,
+          'email': user_email
+        });
+      } else {
+        //fetching username & avatarImage
+        username = userData['username'];
         avatar_path = userData['avatar_path'];
+        categories = userData['categories'];
+        following_count = userData['following_count'];
+        following = userData['following'];
+        followers = userData['followers'];
+        followers_count = userData['followers_count'];
+
+        //fetching Notifications
+        // List<dynamic> notif = userData['notifications'];
+        // notifications = notif;
+
+        //notif.forEach((e) => {notifications.add(e)});
+
+        //fetching list of followers
+        // List<dynamic> flwrs = userData['followers'];
+
+        //   flwrs.forEach((e) => {
+        //         followers.add(userwithFollowers_Following(e['followers'],
+        //             e['following'], e['username'], e['avatar_path']))
+        //       });
+        //
+        //   //fetching list of followers
+        //   List<dynamic> flwng = userData['following'];
+        //
+        //   flwng.forEach((e) => {
+        //         following.add(userwithFollowers_Following(e['followers'],
+        //             e['following'], e['username'], e['avatar_path']))
+        //       });
+        // }
       }
-      username = userData['username'];
-      await userDocument.set({
-        'avatar_path': avatar_path,
-        'notifications': notifications,
-        'followers': followers,
-        'followers_count': followers_count,
-        'following': following,
-        'following_count': followers_count,
-        'categories': categories,
-        'username': username,
-        'email': user_email
-      });
-    } else {
-      //fetching username & avatarImage
-      username = userData['username'];
-      avatar_path = userData['avatar_path'];
-      categories = userData['categories'];
-      following_count = userData['following_count'];
-      following = userData['following'];
-      followers = userData['followers'];
-      followers_count = userData['followers_count'];
-
-      //fetching Notifications
-      // List<dynamic> notif = userData['notifications'];
-      // notifications = notif;
-
-      //notif.forEach((e) => {notifications.add(e)});
-
-      //fetching list of followers
-      // List<dynamic> flwrs = userData['followers'];
-
-      //   flwrs.forEach((e) => {
-      //         followers.add(userwithFollowers_Following(e['followers'],
-      //             e['following'], e['username'], e['avatar_path']))
-      //       });
-      //
-      //   //fetching list of followers
-      //   List<dynamic> flwng = userData['following'];
-      //
-      //   flwng.forEach((e) => {
-      //         following.add(userwithFollowers_Following(e['followers'],
-      //             e['following'], e['username'], e['avatar_path']))
-      //       });
-      // }
+    } catch (e) {
+      print("ERROR Facebook login $e");
     }
   }
 

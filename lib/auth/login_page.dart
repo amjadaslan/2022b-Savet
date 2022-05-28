@@ -135,7 +135,6 @@ class _LoginState extends State<Login> {
                     child: const Text("forgot password?"),
                     onPressed: () {
                       //TODO: need to implement it
-
                       // Navigator.push(
                       //     context,
                       //     MaterialPageRoute(
@@ -221,7 +220,6 @@ class _LoginState extends State<Login> {
                         print('Facebook Tap');
                         LogFrom = "Facebook";
                         await loginFace();
-
                         if (auth.currentUser != null) {
                           Navigator.push(
                               context,
