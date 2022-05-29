@@ -28,13 +28,18 @@ class _profileState extends State<profile> {
           actions: [
             IconButton(
                 onPressed: () async {
-                  Provider.of<UserDB>(context, listen: false).resetFetchData();
                   if (widget.LoginFrom == "Email") {
+                    Provider.of<UserDB>(context, listen: false)
+                        .resetFetchData();
                     await AuthRepository.instance().signOut();
                   } else if (widget.LoginFrom == "Google") {
+                    Provider.of<UserDB>(context, listen: false)
+                        .resetFetchData();
                     print("try to log out from google");
                     await Google.instance().signOut();
                   } else if (widget.LoginFrom == "Facebook") {
+                    Provider.of<UserDB>(context, listen: false)
+                        .resetFetchData();
                     await Login().signOut();
                   }
                   Navigator.of(context).pushAndRemoveUntil(

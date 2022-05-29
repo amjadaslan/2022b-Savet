@@ -17,15 +17,15 @@ import 'Register.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class LoginAnonymous extends StatefulWidget {
+  const LoginAnonymous({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
-  Future signOut() => _LoginState().signOutFace();
+  State<LoginAnonymous> createState() => _LoginAnonymousState();
+  Future signOut() => _LoginAnonymousState().signOutFace();
 }
 
-class _LoginState extends State<Login> {
+class _LoginAnonymousState extends State<LoginAnonymous> {
   AccessToken? _accessToken;
   UserModel? _currentUser;
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
@@ -47,39 +47,21 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    var auth = FirebaseAuth.instance;
-
-    print(auth.currentUser);
-
-    return (auth.currentUser != null)
-        ? FutureBuilder(
-            future: Provider.of<UserDB>(context).fetchData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                return homepage(
-                  LoginFrom: LogFrom,
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            })
-        : Scaffold(
-            appBar: AppBar(
-              title: const Text('Login'),
-              centerTitle: false,
-              automaticallyImplyLeading: false,
-            ),
-            body: FutureBuilder(
-                future: _initializeFirebase(),
-                builder: (context, snapshot) {
-                  return LoginScreen();
-                }));
+    print("Anonymous login");
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Login'),
+          centerTitle: false,
+        ),
+        body: FutureBuilder(builder: (context, snapshot) {
+          return LoginScreen();
+        }));
   }
 
   Widget LoginScreen() {
     final user = Provider.of<AuthRepository>(context);
     var auth = FirebaseAuth.instance;
+    var last = auth.currentUser?.uid;
     return SingleChildScrollView(
       child: Center(
           child: SizedBox(
@@ -134,7 +116,7 @@ class _LoginState extends State<Login> {
             Padding(
                 padding: const EdgeInsets.only(left: 215.0),
                 child: TextButton(
-                    child: const Text("forgot password?"),
+                    child: const Text("Forgot password?"),
                     onPressed: () {
                       //TODO: need to implement it
                       // Navigator.push(
@@ -156,7 +138,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   onPressed: () async {
-                    //await user.signIn(_email.text, _password.text);
+                    Anonymous.instance().signOut();
                     if ((await user.signIn(_email.text, _password.text))) {
                       LogFrom = "Email";
                       Navigator.push(
@@ -189,30 +171,6 @@ class _LoginState extends State<Login> {
             ),
 
             Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                //padding:  EdgeInsets.symmetric(horizontal: 15),
-                child: TextButton(
-                    child: const Text(
-                      "Login as a guest",
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                    onPressed: () async {
-                      LogFrom = "Anonymous";
-                      await Anonymous.instance().signIn();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FutureBuilder(
-                                  future:
-                                      Provider.of<UserDB>(context).fetchData(),
-                                  builder: (context, snapshot) {
-                                    return homepage(
-                                      LoginFrom: LogFrom,
-                                    );
-                                  })));
-                    })),
-
-            Padding(
               padding:
                   const EdgeInsets.only(left: 15.0, right: 15.0, top: 80.0),
               child: Row(children: <Widget>[
@@ -222,6 +180,7 @@ class _LoginState extends State<Login> {
                       onTap: () async {
                         print('Facebook Tap');
                         LogFrom = "Facebook";
+                        Anonymous.instance().signOut();
                         await loginFace();
                         if (auth.currentUser != null) {
                           Navigator.push(
@@ -254,12 +213,11 @@ class _LoginState extends State<Login> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () async {
-                        print('Google Tap');
+                        print('Google Tap Anonymous');
                         LogFrom = "Google";
                         var x = Google.instance();
+                        Anonymous.instance().signOut();
                         await x.signIn();
-
-                        // Provider.of<UserDB>(context,listen:false).userDocument
                         var boo = await FirebaseFirestore.instance
                             .collection('users')
                             .doc(auth.currentUser?.email)
@@ -403,21 +361,4 @@ class UserModel {
       id: json['id'] as String?,
       name: json['name'],
       picture: PictureModel.fromJson(json['picture']['data']));
-/*
-  {
- {
-  "id": "USER-ID",
-  "name": "EXAMPLE NAME",
-  "email": "EXAMPLE@EMAIL.COM",
-  "picture": {
-    "data": {
-      "height": 50,
-      "is_silhouette": false,
-      "url": "URL-FOR-USER-PROFILE-PICTURE",
-      "width": 50
-    }
-  }
-}
-   */
-
 }
