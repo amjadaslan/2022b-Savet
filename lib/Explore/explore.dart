@@ -58,9 +58,9 @@ class _exploreState extends State<explore> {
       endDrawer: Drawer(
           child: Scaffold(
         appBar: AppBar(
-          title: Text("Choose tags"),
+          title: const Text("Choose tags"),
           leading: IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -102,23 +102,24 @@ class _exploreState extends State<explore> {
             TextButton(
                 onPressed: () {
                   setState(() {
-                    for (int i = 0; i < clicked_flags.length; i++)
+                    for (int i = 0; i < clicked_flags.length; i++) {
                       clicked_flags[i] = false;
+                    }
                   });
                 },
-                child: Text("Unpick all tags"))
+                child: const Text("Unpick all tags"))
           ],
         )),
       )),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Explore', textAlign: TextAlign.center),
+        title: const Text('Explore', textAlign: TextAlign.center),
         actions: [
           IconButton(
               onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => SearchPage())),
-              icon: Icon(Icons.search)),
-          SizedBox(
+                  .push(MaterialPageRoute(builder: (_) => const SearchPage())),
+              icon: const Icon(Icons.search)),
+          const SizedBox(
             width: 10,
           ),
           Builder(
@@ -126,8 +127,8 @@ class _exploreState extends State<explore> {
                   onPressed: () {
                     Scaffold.of(context).openEndDrawer();
                   },
-                  icon: Icon(Icons.filter_list))),
-          SizedBox(width: 20)
+                  icon: const Icon(Icons.filter_list))),
+          const SizedBox(width: 20)
         ],
       ),
       body: Center(
@@ -153,14 +154,14 @@ class _exploreState extends State<explore> {
                               color: Colors.grey,
                               width: MediaQuery.of(context).size.width * 0.2,
                               height: MediaQuery.of(context).size.width * 0.2,
-                              image: NetworkImage(
+                              image: const NetworkImage(
                                   "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/no_posts.png?alt=media&token=87d70511-20b2-4f8a-bcd5-77f61e02df9a")),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
-                          Text(
+                          const Text(
                             "No Posts Yet",
-                            style: TextStyle(color: Colors.grey),
+                            style: const TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
@@ -196,9 +197,9 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             controller: _userControl,
             decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.clear),
+                  icon: const Icon(Icons.clear),
                   onPressed: () {
                     _userControl.text = "";
                   },
@@ -224,7 +225,8 @@ class _SearchPageState extends State<SearchPage> {
         (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
             .hasMatch(user['username'])) ||
         (user['username'] ==
-            Provider.of<UserDB>(context, listen: false).username));
+            Provider.of<UserDB>(context, listen: false).username) ||
+        (!user['email'].contains('@')));
 
     setState(() {});
   }

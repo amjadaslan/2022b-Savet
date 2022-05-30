@@ -31,7 +31,6 @@ class _categoryState extends State<category> {
     Provider.of<UserDB>(context).categories.forEach((e) {
       if (e['id'] == widget.id) cat = e;
     });
-    print(cat);
     var pWrap = pathWrapper(cat['image']);
     var t = cat['title'];
     TextEditingController _cont = TextEditingController();
@@ -166,7 +165,6 @@ class _categoryState extends State<category> {
                 crossAxisCount: 3,
                 children: List.generate(cat['posts'].length, (index) {
                   return InkWell(
-
                       onTap: () {
                         if (index < cat.length) {
                           Navigator.push(

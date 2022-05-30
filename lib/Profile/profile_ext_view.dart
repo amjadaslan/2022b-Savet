@@ -36,43 +36,41 @@ class _profile_ext_viewState extends State<profile_ext_view> {
           IconButton(
               icon: const Icon(Icons.send),
               onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => chat()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const chat()));
               }),
-          SizedBox(width: 20)
+          const SizedBox(width: 20)
         ],
       ),
       body: Center(
-        child: Container(
-            child: Column(children: <Widget>[
-          SizedBox(height: 20),
+        child: Column(children: <Widget>[
+          const SizedBox(height: 20),
           (widget.user['avatar_path'] == "")
-              ? CircleAvatar(
+              ? const CircleAvatar(
                   radius: 80,
-                  backgroundImage: const AssetImage('assets/images/avatar.jpg'))
+                  backgroundImage: AssetImage('assets/images/avatar.jpg'))
               : CircleAvatar(
                   radius: 80,
                   backgroundImage: NetworkImage(widget.user['avatar_path'])),
-          SizedBox(height: 10),
-          Container(
-            child: Text(
-              '${widget.user['username']}',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-            ),
+          const SizedBox(height: 10),
+          Text(
+            '${widget.user['username']}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextButton(
             onPressed: () async {
               clicked = 1 - clicked;
               flag = !flag;
-              if (!flag && clicked == 0) {
+              if (!flag) {
+                //remove follow
                 await Provider.of<UserDB>(context, listen: false)
                     .removeFollower(widget.user['email'], widget.user);
                 widget.user['followers'].where((f) => (f['username'] ==
                     Provider.of<UserDB>(context, listen: false).username));
               } else {
-                print(widget.user['email']);
+                //perform follow
                 await Provider.of<UserDB>(context, listen: false)
                     .addFollower(widget.user['email'], widget.user);
                 widget.user['followers'].add({
@@ -88,7 +86,9 @@ class _profile_ext_viewState extends State<profile_ext_view> {
               }
               setState(() {});
             },
-            child: (!flag && clicked == 0) ? Text("Follow") : Text("Unfollow"),
+            child: (!flag && clicked == 0)
+                ? const Text("Follow")
+                : const Text("Unfollow"),
             style: TextButton.styleFrom(
                 primary: Colors.white,
                 fixedSize: Size(
@@ -100,9 +100,9 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                     ? Colors.deepOrange
                     : Colors.lightBlue),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
-              margin: EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -119,7 +119,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                         width: 100,
                         child: Text(
                           '${widget.user['followers_count'] + clicked}\nFollowers',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               color: Colors.deepOrange),
                           textAlign: TextAlign.center,
@@ -139,7 +139,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                         width: 100,
                         child: Text(
                           '${widget.user['following_count']}\nFollowing',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               color: Colors.deepOrange),
                           textAlign: TextAlign.center,
@@ -147,8 +147,8 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                   ),
                 ],
               )),
-          SizedBox(height: 10),
-          Divider(thickness: 2),
+          const SizedBox(height: 10),
+          const Divider(thickness: 2),
           Center(
             child: Container(
                 child: StaggeredGrid.count(
@@ -164,7 +164,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                                       category(id: cat['id'])));
                         },
                         child: Container(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             height: MediaQuery.of(context).size.width / 2.5,
                             width: MediaQuery.of(context).size.width / 3.2,
                             child: category_card(
@@ -172,7 +172,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                       );
                     }))),
           ),
-        ])),
+        ]),
       ),
     );
   }
