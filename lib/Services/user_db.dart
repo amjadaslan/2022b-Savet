@@ -343,10 +343,15 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addPost(String t, String d, String image_path, int c_i) async {
-    File imageFile = File(image_path);
+  void addPost(
+      String t, String d, String image_path, int c_i, bool videoFlag) async {
+    final file = File(image_path);
     String c = image_path.hashCode.toString();
-    await FirebaseStorage.instance.ref('$c').putFile(imageFile);
+    final ref = await FirebaseStorage.instance.ref('$c');
+    (videoFlag)
+        ? await ref.putFile(file, SettableMetadata(contentType: 'video/mp4'))
+        : await ref.putFile(file);
+
     String path =
         await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
     categories.forEach((e) {
@@ -356,7 +361,8 @@ class UserDB extends ChangeNotifier {
           'description': d,
           'image': path,
           'id': post_id,
-          'cat_id': c_i
+          'cat_id': c_i,
+          'videoFlag': videoFlag
         });
         tot_posts++;
         categories[0]['posts'].insert(0, {
@@ -364,7 +370,8 @@ class UserDB extends ChangeNotifier {
           'description': d,
           'image': path,
           'id': post_id,
-          'cat_id': c_i
+          'cat_id': c_i,
+          'videoFlag': videoFlag
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();

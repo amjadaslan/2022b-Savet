@@ -13,6 +13,7 @@ class add_category extends StatefulWidget {
 
 class pathWrapper {
   var value;
+  bool videoFlag = false;
   pathWrapper(this.value);
 }
 

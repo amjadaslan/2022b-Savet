@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
+import 'package:savet/Posts/videoPlayer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../Posts/Private_Post/private_post.dart';
@@ -164,6 +165,7 @@ class _categoryState extends State<category> {
               child: StaggeredGrid.count(
                 crossAxisCount: 3,
                 children: List.generate(cat['posts'].length, (index) {
+                  print(cat['posts'][index]);
                   return InkWell(
                       onTap: () {
                         if (index < cat.length) {
@@ -184,11 +186,22 @@ class _categoryState extends State<category> {
                         child: ClipRRect(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(15)),
-                          child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            image: cat['posts'][index]['image'],
-                            fit: BoxFit.fill,
-                          ),
+                          child: (cat['posts'][index]['videoFlag'])
+                              ? Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  //height: 200,
+                                  child: FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: VideoPlayerScreen(
+                                        networkFlag: true,
+                                        url: cat['posts'][index]['image']),
+                                  ),
+                                )
+                              : FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: cat['posts'][index]['image'],
+                                  fit: BoxFit.fill,
+                                ),
                         ),
                       ));
                 }),
