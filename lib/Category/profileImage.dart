@@ -103,7 +103,7 @@ class _profileImageState extends State<profileImage> {
                         image: (widget.network_flag)
                             ? NetworkImage(path)
                             : ((path == "")
-                                ? const AssetImage('assets/images/avatar.jpg')
+                                ? const AssetImage('assets/images/default.jpg')
                                     as ImageProvider
                                 : FileImage(File(path)))),
                   ),

@@ -225,6 +225,7 @@ class _SearchPageState extends State<SearchPage> {
             .hasMatch(user['username'])) ||
         (user['username'] ==
             Provider.of<UserDB>(context, listen: false).username));
+
     setState(() {});
   }
 }

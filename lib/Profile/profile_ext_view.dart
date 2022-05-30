@@ -72,6 +72,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                 widget.user['followers'].where((f) => (f['username'] ==
                     Provider.of<UserDB>(context, listen: false).username));
               } else {
+                print(widget.user['email']);
                 await Provider.of<UserDB>(context, listen: false)
                     .addFollower(widget.user['email'], widget.user);
                 widget.user['followers'].add({

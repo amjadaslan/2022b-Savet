@@ -104,6 +104,13 @@ class _homeState extends State<home> {
             shrinkWrap: true,
             crossAxisCount: 3,
             onReorder: (int oldIndex, int newIndex) async {
+              if (newIndex == 0 || oldIndex == 0) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.grey[300],
+                    content: const Text("Cannot Move Recently Added Category!",
+                        style: TextStyle(color: Colors.black54))));
+                return;
+              }
               var oldp = categories[oldIndex];
               categories.removeAt(oldIndex);
               categories.insert(newIndex, oldp);
