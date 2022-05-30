@@ -42,7 +42,8 @@ class Google extends ChangeNotifier {
       if (!(boo).exists) {
         await store.collection('users').doc(auth.currentUser?.email).set({
           'username': auth.currentUser?.displayName,
-          'avatar_path': auth.currentUser?.photoURL
+          'avatar_path': auth.currentUser?.photoURL,
+          'log_from': "Google",
         });
       }
     } catch (e) {

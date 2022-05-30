@@ -60,39 +60,39 @@ class _homepageState extends State<homepage> {
           ));
     } else {
       //Anonymous
+      return Scaffold(
+          body: _pages[_selectedIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.search_off,
+                  ),
+                  label: "Explore"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.notifications_off), label: "Notification"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.close_sharp), label: "Community"),
+            ],
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: (Colors.black54),
+            backgroundColor: Colors.deepOrange,
+            type: BottomNavigationBarType.fixed,
+            onTap: (index) {
+              setState(() {
+                if (index != 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please login')));
+                } else {
+                  _selectedIndex = 0;
+                }
+              });
+            },
+          ));
     }
-    return Scaffold(
-        body: _pages[_selectedIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.search_off,
-                ),
-                label: "Explore"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.notifications_off), label: "Notification"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.close_sharp), label: "Community"),
-          ],
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: (Colors.black54),
-          backgroundColor: Colors.deepOrange,
-          type: BottomNavigationBarType.fixed,
-          onTap: (index) {
-            setState(() {
-              if (index != 0) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please login')));
-              } else {
-                _selectedIndex = 0;
-              }
-            });
-          },
-        ));
   }
 }

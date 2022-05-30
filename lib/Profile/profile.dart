@@ -21,23 +21,26 @@ class _profileState extends State<profile> {
   @override
   Widget build(BuildContext context) {
     var pWrap = pathWrapper(Provider.of<UserDB>(context).avatar_path);
-
+    var logfrom = (Provider.of<UserDB>(context).log_from);
+    // print(logfrom);
     return Scaffold(
         appBar: AppBar(
           title: const Text("Profile"),
           actions: [
             IconButton(
                 onPressed: () async {
-                  if (widget.LoginFrom == "Email") {
+                  if (widget.LoginFrom == "Email" || logfrom == "Email") {
                     Provider.of<UserDB>(context, listen: false)
                         .resetFetchData();
                     await AuthRepository.instance().signOut();
-                  } else if (widget.LoginFrom == "Google") {
+                  } else if (widget.LoginFrom == "Google" ||
+                      logfrom == "Google") {
                     Provider.of<UserDB>(context, listen: false)
                         .resetFetchData();
                     print("try to log out from google");
                     await Google.instance().signOut();
-                  } else if (widget.LoginFrom == "Facebook") {
+                  } else if (widget.LoginFrom == "Facebook" ||
+                      logfrom == "Facebook") {
                     Provider.of<UserDB>(context, listen: false)
                         .resetFetchData();
                     await Login().signOut();

@@ -85,7 +85,7 @@ class UserDB extends ChangeNotifier {
   String? username = "";
   String avatar_path = "";
   String? user_email = "";
-
+  String? log_from = "";
   List notifications = [];
 
   List recently_added = [];
@@ -111,18 +111,20 @@ class UserDB extends ChangeNotifier {
 
   fetchData() async {
     try {
-      print("Fetching Data..");
       final auth = FirebaseAuth.instance.currentUser;
       user_email = auth?.email ?? auth?.uid;
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
+      print(userDocument);
       DocumentSnapshot userSnapshot = await userDocument.get();
       Map<String, dynamic> userData =
           userSnapshot.data() as Map<String, dynamic>;
-      if (userData.length <= 2) {
-        if (userData.length == 2) {
+      print(userData);
+      if (userData.length <= 3) {
+        if (userData.length == 3) {
           avatar_path = userData['avatar_path'];
         }
+        log_from = userData['log_from'];
         username = userData['username'];
         await userDocument.set({
           'avatar_path': avatar_path,
@@ -133,11 +135,13 @@ class UserDB extends ChangeNotifier {
           'following_count': followers_count,
           'categories': categories,
           'username': username,
-          'email': user_email
+          'email': user_email,
+          'log_from': log_from
         });
       } else {
         //fetching username & avatarImage
         username = userData['username'];
+        log_from = userData['log_from'];
         avatar_path = userData['avatar_path'];
         categories = userData['categories'];
         following_count = userData['following_count'];
@@ -191,11 +195,12 @@ class UserDB extends ChangeNotifier {
       print("fetchDataAfterAnonymous");
       categories = userDataAno['categories'];
       print(userData.length);
-      if (userData.length <= 2) {
-        if (userData.length == 2) {
+      if (userData.length <= 3) {
+        if (userData.length == 3) {
           avatar_path = userData['avatar_path'];
         }
         username = userData['username'];
+        //log_from = userData['log_from'];
         await userDocument.set({
           'avatar_path': avatar_path,
           'notifications': notifications,
@@ -205,7 +210,8 @@ class UserDB extends ChangeNotifier {
           'following_count': followers_count,
           'categories': categories,
           'username': username,
-          'email': user_email
+          'email': user_email,
+          //'log_from': log_from
         });
       } else {
         //fetching username & avatarImage
@@ -215,6 +221,7 @@ class UserDB extends ChangeNotifier {
         following = userData['following'];
         followers = userData['followers'];
         followers_count = userData['followers_count'];
+        //log_from = userData['log_from'];
 
         //fetching Notifications
         // List<dynamic> notif = userData['notifications'];
@@ -252,7 +259,7 @@ class UserDB extends ChangeNotifier {
     username = "";
     avatar_path = "";
     user_email = "";
-
+    log_from = "";
     notifications = [];
 
     recently_added = [];
@@ -510,7 +517,8 @@ class UserDB extends ChangeNotifier {
       'following': following,
       'following_count': followers_count,
       'categories': categories,
-      'username': username
+      'username': username,
+      //'log_from': log_from
     });
   }
 

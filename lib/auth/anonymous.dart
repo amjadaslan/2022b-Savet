@@ -22,7 +22,7 @@ class Anonymous extends ChangeNotifier {
       await store
           .collection('users')
           .doc(auth.currentUser?.uid)
-          .set({'username': 'Anonymous'});
+          .set({'username': 'Anonymous', 'log_from': "Anonymous"});
     } catch (e) {
       print("ERROR signing in $e");
     }

@@ -174,7 +174,10 @@ class _RegisterState extends State<Register> {
                                       FirebaseFirestore.instance
                                           .collection('users')
                                           .doc(_email.text)
-                                          .set({'username': _username.text})
+                                          .set({
+                                        'username': _username.text,
+                                        'log_from': "Email"
+                                      })
                                     },
                                   print('Register is done'),
                                   setState(() {
