@@ -23,5 +23,5 @@ Lately, we've been surrounded by many social media apps, and with that many inte
 
 ## Tables of Contents
 
-* [ ] Application structure
-* [ ] Firebase structure
+* [Application structure] 
+* [Firebase structure]
