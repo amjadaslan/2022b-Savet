@@ -134,7 +134,7 @@ class _LoginState extends State<Login> {
             Padding(
                 padding: const EdgeInsets.only(left: 215.0),
                 child: TextButton(
-                    child: const Text("forgot password?"),
+                    child: const Text("Forgot password?"),
                     onPressed: () {
                       //TODO: need to implement it
                       // Navigator.push(

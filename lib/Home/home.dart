@@ -50,13 +50,14 @@ class _homeState extends State<home> {
             child: category_card(url: cat['image'], title: cat['title'])),
       );
     });
+    bool isAnonymous = auth!.isAnonymous;
 
     return Scaffold(
         appBar: AppBar(
             title: const Text('Home'),
             automaticallyImplyLeading: false,
             actions: <Widget>[
-              (auth?.email != null)
+              (!(isAnonymous))
                   ? (IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -64,15 +65,14 @@ class _homeState extends State<home> {
                                 profile(LoginFrom: widget.LoginFrom)));
                       },
                       icon: const Icon(Icons.account_circle)))
-                  : (ElevatedButton.icon(
+                  : (IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const LoginAnonymous()));
                       },
-                      label: const Text("Login"),
                       icon: const Icon(
                         Icons.login,
-                        color: Colors.white,
+                        //color: Colors.white,
                       ),
                     )),
               const SizedBox(width: 15)
