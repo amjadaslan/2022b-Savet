@@ -12,9 +12,9 @@ class explore_card extends StatefulWidget {
 }
 
 class _explore_cardState extends State<explore_card> {
+  bool isPressed = false;
   @override
   Widget build(BuildContext context) {
-    bool isPressed = false;
     return Container(
       padding: EdgeInsets.fromLTRB(2, 3, 2, 3),
       child: Column(
@@ -76,13 +76,13 @@ class _explore_cardState extends State<explore_card> {
                                   IconButton(
                                       iconSize: 15,
                                       onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    public_post_comments(
-                                                        post_id: 0,
-                                                        cat_id: 0)));
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             public_post_comments(
+                                        //                 post_id: 0,
+                                        //                 cat_id: 0)));
                                       },
                                       icon: Icon(Icons.mode_comment_outlined,
                                           color: Colors.grey[400])),
@@ -97,7 +97,7 @@ class _explore_cardState extends State<explore_card> {
                                           ? Icon(Icons.favorite_border,
                                               color: Colors.grey[400])
                                           : Icon(Icons.favorite,
-                                              color: Colors.grey[400]))
+                                              color: Colors.red))
                                 ])),
                           ],
                         ),
