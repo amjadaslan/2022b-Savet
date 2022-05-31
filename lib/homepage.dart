@@ -32,7 +32,8 @@ class _homepageState extends State<homepage> {
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance.currentUser;
-    if (auth?.email != null) {
+    bool isAnonymous = auth!.isAnonymous;
+    if (!isAnonymous) {
       return Scaffold(
           body: _pages[_selectedIndex],
           bottomNavigationBar: BottomNavigationBar(
@@ -60,6 +61,7 @@ class _homepageState extends State<homepage> {
           ));
     } else {
       //Anonymous
+      print(auth.uid);
       return Scaffold(
           body: _pages[_selectedIndex],
           bottomNavigationBar: BottomNavigationBar(

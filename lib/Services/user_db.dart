@@ -112,7 +112,8 @@ class UserDB extends ChangeNotifier {
   fetchData() async {
     try {
       final auth = FirebaseAuth.instance.currentUser;
-      user_email = auth?.email ?? auth?.uid;
+
+      user_email = !(auth!.isAnonymous) ? auth.email : auth.uid;
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
       print(userDocument);
