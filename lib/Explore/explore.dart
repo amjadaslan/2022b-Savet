@@ -41,6 +41,7 @@ class _exploreState extends State<explore> {
   ];
   List<bool> clicked_flags = List.generate(14, (index) => true);
   List arr = [], users = [], curr_tags = [];
+  bool pick_all = true;
   @override
   Widget build(BuildContext context) {
     curr_tags.clear();
@@ -67,26 +68,43 @@ class _exploreState extends State<explore> {
                       Navigator.of(context).pop();
                     },
                   ),
+                  actions: [
+                    (pick_all)
+                        ? TextButton(
+                            onPressed: () {
+                              setState(() {
+                                for (int i = 0; i < clicked_flags.length; i++) {
+                                  clicked_flags[i] = false;
+                                }
+                                pick_all = !pick_all;
+                              });
+                            },
+                            child: const Text(
+                              "clear all",
+                              style: TextStyle(color: Colors.white),
+                            ))
+                        : TextButton(
+                            onPressed: () {
+                              setState(() {
+                                for (int i = 0; i < clicked_flags.length; i++) {
+                                  clicked_flags[i] = true;
+                                }
+                                pick_all = !pick_all;
+                              });
+                            },
+                            child: const Text(
+                              "pick all",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                    SizedBox(width: 10)
+                  ],
                 ),
                 body: Center(
                   child: ListView(
                       shrinkWrap: true,
                       children: List.generate(
-                        tags.length + 1,
+                        tags.length,
                         (index) {
-                          if (index == tags.length) {
-                            return TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    for (int i = 0;
-                                        i < clicked_flags.length;
-                                        i++) {
-                                      clicked_flags[i] = false;
-                                    }
-                                  });
-                                },
-                                child: const Text("Unpick all tags"));
-                          }
                           return Align(
                             heightFactor: 0.9,
                             child: TextButton(
