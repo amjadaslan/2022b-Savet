@@ -27,4 +27,4 @@ Lately, we've been surrounded by many social media apps, and with that many inte
 
 * [Firebase structure](https://github.com/Technion236272/2022b-Savet/blob/main/docs/Firebase%20structure.md)
 
-* [Set up]()
+* [Set up](https://github.com/Technion236272/2022b-Savet/blob/main/docs/Setup.md)
