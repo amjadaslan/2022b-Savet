@@ -20,3 +20,8 @@ Lately, we've been surrounded by many social media apps, and with that many inte
 * [ ] Visit as a guest.
 * [ ] Sort items manually by dragging an item.
 * [ ] Share categories with family & friends.
+
+## Tables of Contents
+
+* [ ] Application structure
+* [ ] Firebase structure
