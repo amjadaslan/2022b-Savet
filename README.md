@@ -23,5 +23,6 @@ Lately, we've been surrounded by many social media apps, and with that many inte
 
 ## Tables of Contents
 
-*1. [Application structure](https://github.com/Technion236272/2022b-Savet/new/main)
-*2. [Firebase structure](docs/Firebase structure.md)
+* [Application structure](https://github.com/Technion236272/2022b-Savet/new/main)
+
+* [Firebase structure](docs/Firebase structure.md)
