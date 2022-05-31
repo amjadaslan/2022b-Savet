@@ -1,2 +1,2 @@
 
-![Alt text](/docs/Application structure.PNG)
+![My Image](docs/Application structure.PNG)
