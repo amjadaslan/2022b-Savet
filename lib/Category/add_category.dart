@@ -25,17 +25,19 @@ class _add_categoryState extends State<add_category> {
   List<String> tags = [
     "Private",
     "Home décor",
-    "DIY and crafts",
+    "DIY & crafts",
     "Entertainment",
     "Education",
     "Art",
     "Men’s fashion",
     "Women’s fashion",
-    "Food and drinks",
+    "Food & drinks",
     "Beauty",
     "Event planning",
     "Gardening",
-    "Cars"
+    "Cars",
+    "Fitness",
+    "Movies & TV Shows"
   ];
   String tag = "Private";
 

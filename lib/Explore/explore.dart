@@ -25,19 +25,21 @@ class _exploreState extends State<explore> {
 
   List<String> tags = [
     "Home décor",
-    "DIY and crafts",
+    "DIY & crafts",
     "Entertainment",
     "Education",
     "Art",
     "Men’s fashion",
     "Women’s fashion",
-    "Food and drinks",
+    "Food & drinks",
     "Beauty",
     "Event planning",
     "Gardening",
-    "Cars"
+    "Cars",
+    "Fitness",
+    "Movies & TV Shows"
   ];
-  List<bool> clicked_flags = List.generate(12, (index) => true);
+  List<bool> clicked_flags = List.generate(14, (index) => true);
   List arr = [], users = [], curr_tags = [];
   @override
   Widget build(BuildContext context) {
@@ -67,52 +69,51 @@ class _exploreState extends State<explore> {
                   ),
                 ),
                 body: Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ListView(
-                        shrinkWrap: true,
-                        children: List.generate(
-                          tags.length,
-                          (index) {
-                            return Align(
-                              child: TextButton(
+                  child: ListView(
+                      shrinkWrap: true,
+                      children: List.generate(
+                        tags.length + 1,
+                        (index) {
+                          if (index == tags.length) {
+                            return TextButton(
                                 onPressed: () {
                                   setState(() {
-                                    clicked_flags[index] =
-                                        !clicked_flags[index];
+                                    for (int i = 0;
+                                        i < clicked_flags.length;
+                                        i++) {
+                                      clicked_flags[i] = false;
+                                    }
                                   });
                                 },
-                                child: Text(tags[index]),
-                                style: TextButton.styleFrom(
-                                    primary: (clicked_flags[index])
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fixedSize: Size(
-                                      MediaQuery.of(context).size.width * 0.4,
-                                      MediaQuery.of(context).size.width *
-                                          1 /
-                                          (clicked_flags.length + 3),
-                                    ),
-                                    shape: const StadiumBorder(),
-                                    backgroundColor: (clicked_flags[index])
-                                        ? Colors.deepOrange
-                                        : Colors.grey),
-                              ),
-                            );
-                          },
-                        )),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            for (int i = 0; i < clicked_flags.length; i++) {
-                              clicked_flags[i] = false;
-                            }
-                          });
+                                child: const Text("Unpick all tags"));
+                          }
+                          return Align(
+                            heightFactor: 0.9,
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  clicked_flags[index] = !clicked_flags[index];
+                                });
+                              },
+                              child: Text(tags[index]),
+                              style: TextButton.styleFrom(
+                                  primary: (clicked_flags[index])
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fixedSize: Size(
+                                    MediaQuery.of(context).size.width * 0.4,
+                                    MediaQuery.of(context).size.width /
+                                        (2 * clicked_flags.length),
+                                  ),
+                                  shape: const StadiumBorder(),
+                                  backgroundColor: (clicked_flags[index])
+                                      ? Colors.deepOrange
+                                      : Colors.grey),
+                            ),
+                          );
                         },
-                        child: const Text("Unpick all tags"))
-                  ],
-                )),
+                      )),
+                ),
               )),
               appBar: AppBar(
                 automaticallyImplyLeading: false,
