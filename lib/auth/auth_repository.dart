@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:savet/auth/anonymous.dart';
 
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
@@ -28,8 +29,22 @@ class AuthRepository with ChangeNotifier {
       String email, String password, String userName) async {
     try {
       _status = Status.Authenticating;
-      return await _auth.createUserWithEmailAndPassword(
+
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
+
+      if (_auth.currentUser != null) {
+        final userCredential = await FirebaseAuth.instance.currentUser
+            ?.linkWithCredential(credential);
+        if (userCredential != null) {
+          Anonymous.instance().signOut();
+        } else {
+          return null;
+        }
+      }
+      var temp = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+      return temp;
     } catch (e) {
       print(e);
       _status = Status.Unauthenticated;
@@ -70,6 +85,11 @@ class AuthRepository with ChangeNotifier {
     try {
       _status = Status.Authenticating;
       notifyListeners();
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
+      if (credential != null) {
+        Anonymous.instance().signOut();
+      }
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       _status = Status.Authenticated;
       return true;

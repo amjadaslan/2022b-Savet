@@ -165,20 +165,18 @@ class _RegisterState extends State<Register> {
                         onPressed: () async {
                           _password.text == _confirmpassword.text &&
                                   _password.text != '' &&
-                                  _confirmpassword.text != ''
+                                  _confirmpassword.text != '' &&
+                                  await user.signUp(_email.text, _password.text,
+                                          _username.text) !=
+                                      null
                               ? {
-                                  if (await user.signUp(_email.text,
-                                          _password.text, _username.text) !=
-                                      null)
-                                    {
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(_email.text)
-                                          .set({
-                                        'username': _username.text,
-                                        'log_from': "Email"
-                                      })
-                                    },
+                                  FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(_email.text)
+                                      .set({
+                                    'username': _username.text,
+                                    'log_from': "Email"
+                                  }),
                                   print('Register is done'),
                                   setState(() {
                                     Navigator.push(
@@ -207,10 +205,19 @@ class _RegisterState extends State<Register> {
                                   })
                                 }
                               : {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text(('Passwords must match'))))
+                                  if (!(_password.text ==
+                                          _confirmpassword.text &&
+                                      _password.text != '' &&
+                                      _confirmpassword.text != ''))
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text(('Passwords must match'))))
+                                  else
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                ('The user is already signed up'))))
                                 };
                         }),
                     decoration: BoxDecoration(

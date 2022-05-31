@@ -138,7 +138,6 @@ class _LoginAnonymousState extends State<LoginAnonymous> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   onPressed: () async {
-                    Anonymous.instance().signOut();
                     if ((await user.signIn(_email.text, _password.text))) {
                       LogFrom = "Email";
                       Navigator.push(
@@ -180,7 +179,6 @@ class _LoginAnonymousState extends State<LoginAnonymous> {
                       onTap: () async {
                         print('Facebook Tap');
                         LogFrom = "Facebook";
-                        Anonymous.instance().signOut();
                         await loginFace();
                         if (auth.currentUser != null) {
                           Navigator.push(
@@ -308,8 +306,12 @@ class _LoginAnonymousState extends State<LoginAnonymous> {
 
         final facebook =
             FacebookAuthProvider.credential(login_res.accessToken!.token);
+        if (auth.currentUser != null) {
+          final userCredential = await FirebaseAuth.instance.currentUser
+              ?.linkWithCredential(facebook);
+          Anonymous.instance().signOut();
+        }
         await auth.signInWithCredential(facebook);
-
         if (!(await FirebaseFirestore.instance
                 .collection('users')
                 .doc(auth.currentUser?.email)

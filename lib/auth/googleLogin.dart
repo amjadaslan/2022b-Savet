@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:savet/auth/anonymous.dart';
 
 class Google extends ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
@@ -35,6 +36,11 @@ class Google extends ChangeNotifier {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
+      if (auth.currentUser != null) {
+        final userCredential = await FirebaseAuth.instance.currentUser
+            ?.linkWithCredential(credential);
+        Anonymous.instance().signOut();
+      }
       await auth.signInWithCredential(credential);
       var boo =
           await store.collection('users').doc(auth.currentUser?.email).get();
