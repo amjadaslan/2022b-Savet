@@ -90,7 +90,9 @@ class _exploreState extends State<explore> {
                                         : Colors.black,
                                     fixedSize: Size(
                                       MediaQuery.of(context).size.width * 0.4,
-                                      MediaQuery.of(context).size.width * 0.1,
+                                      MediaQuery.of(context).size.width *
+                                          1 /
+                                          (clicked_flags.length + 3),
                                     ),
                                     shape: const StadiumBorder(),
                                     backgroundColor: (clicked_flags[index])

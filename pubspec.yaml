@@ -93,6 +93,7 @@ flutter:
     - assets/image/facebook.png
     - assets/images/
     - assets/logo.png
+    - assets/preloader.gif
 
   # To add assets to your application, add an assets section, like this:
   # assets:

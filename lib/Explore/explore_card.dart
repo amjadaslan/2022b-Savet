@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../Posts/Public_Post/public_post_comments.dart';
 import '../Posts/similar_content_card.dart';
@@ -32,9 +34,12 @@ class _explore_cardState extends State<explore_card> {
                   borderRadius: BorderRadius.circular(20),
                   child: Column(
                     children: [
-                      Image(
-                          fit: BoxFit.fitWidth,
-                          image: NetworkImage(this.widget.url)),
+                      Container(
+                        color: Colors.white,
+                        child: FadeInImage.assetNetwork(
+                            placeholder: 'assets/preloader.gif',
+                            image: (this.widget.url)),
+                      ),
                       Container(
                         height: 40,
                         color: Colors.white,
