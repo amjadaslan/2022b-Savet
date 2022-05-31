@@ -111,15 +111,16 @@ class UserDB extends ChangeNotifier {
 
   fetchData() async {
     try {
+      print("Fetching Data...");
       final auth = FirebaseAuth.instance.currentUser;
       user_email = auth?.email ?? auth?.uid;
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
-      print(userDocument);
+
       DocumentSnapshot userSnapshot = await userDocument.get();
       Map<String, dynamic> userData =
           userSnapshot.data() as Map<String, dynamic>;
-      print(userData);
+
       if (userData.length <= 3) {
         if (userData.length == 3) {
           avatar_path = userData['avatar_path'];
@@ -183,7 +184,6 @@ class UserDB extends ChangeNotifier {
       user_email = auth?.email;
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
-      print(userDocument);
       var userDocumentAnony =
           FirebaseFirestore.instance.collection('users').doc(x);
       DocumentSnapshot userSnapshot = await userDocument.get();

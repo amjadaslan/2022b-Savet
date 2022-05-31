@@ -12,7 +12,8 @@ import '../Services/user_db.dart';
 import 'add_category.dart';
 
 class category extends StatefulWidget {
-  const category({Key? key, required this.id}) : super(key: key);
+  category({Key? key, required this.id, this.user}) : super(key: key);
+  Map? user;
   final int id;
   @override
   _categoryState createState() => _categoryState();
@@ -29,16 +30,21 @@ class _categoryState extends State<category> {
       'posts': [],
       'description': ""
     };
-    Provider.of<UserDB>(context).categories.forEach((e) {
+    List categories = (widget.user != null)
+        ? widget.user!['categories']
+        : Provider.of<UserDB>(context).categories;
+
+    categories.forEach((e) {
       if (e['id'] == widget.id) cat = e;
     });
+
     var pWrap = pathWrapper(cat['image']);
     var t = cat['title'];
     TextEditingController _cont = TextEditingController();
     return Scaffold(
         appBar: AppBar(
           title: Text(t),
-          actions: (widget.id != 0)
+          actions: (widget.id != 0 && widget.user == null)
               ? [
                   IconButton(
                       onPressed: () async {
@@ -101,49 +107,61 @@ class _categoryState extends State<category> {
         body: Column(children: [
           const SizedBox(height: 10),
           profileImage(
-              pWrap: pWrap, shape: "square", network_flag: true, id: cat['id']),
+              pWrap: pWrap,
+              shape: "square",
+              network_flag: true,
+              id: cat['id'],
+              outsider: true),
           const SizedBox(height: 10),
           TextButton(
-              onPressed: () async {
-                await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Change Title"),
-                        content: TextField(
-                            controller: _cont,
-                            decoration: const InputDecoration(
-                              hintText: 'new title',
-                            )),
-                        actions: [
-                          TextButton(
-                            child: const Text("Confirm"),
-                            style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.deepOrange)),
-                            onPressed: () {
-                              setState(() {
-                                Provider.of<UserDB>(context, listen: false)
-                                    .changeCategoryTitle(widget.id, _cont.text);
-                                Navigator.pop(context);
-                              });
-                            },
-                          ),
-                          TextButton(
-                            child: const Text("Cancel"),
-                            style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.deepOrange)),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    });
-              },
+              onPressed: (widget.user != null)
+                  ? () {}
+                  : () async {
+                      await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Change Title"),
+                              content: TextField(
+                                  controller: _cont,
+                                  decoration: const InputDecoration(
+                                    hintText: 'new title',
+                                  )),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Confirm"),
+                                  style: ButtonStyle(
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.white),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.deepOrange)),
+                                  onPressed: () {
+                                    setState(() {
+                                      Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .changeCategoryTitle(
+                                              widget.id, _cont.text);
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text("Cancel"),
+                                  style: ButtonStyle(
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.white),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.deepOrange)),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
+                            );
+                          });
+                    },
               child: Text("$t",
                   style: const TextStyle(
                       color: Colors.black,
@@ -165,7 +183,6 @@ class _categoryState extends State<category> {
               child: StaggeredGrid.count(
                 crossAxisCount: 3,
                 children: List.generate(cat['posts'].length, (index) {
-                  print(cat['posts'][index]);
                   return InkWell(
                       onTap: () {
                         if (index < cat.length) {
@@ -174,7 +191,8 @@ class _categoryState extends State<category> {
                               MaterialPageRoute(
                                   builder: (context) => private_post(
                                       cat_id: cat['id'],
-                                      post_id: cat['posts'][index]['id'])));
+                                      post_id: cat['posts'][index]['id'],
+                                      user: widget.user)));
                         }
                       },
                       child: Container(

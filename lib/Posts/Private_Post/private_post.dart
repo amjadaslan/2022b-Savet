@@ -5,13 +5,16 @@ import 'package:provider/provider.dart';
 import 'package:savet/Category/category.dart';
 import 'package:savet/Posts/Public_Post/public_post_comments.dart';
 import 'package:savet/Posts/similar_content_card.dart';
+import 'package:savet/Posts/videoPlayer.dart';
 
 import '../../Services/user_db.dart';
 import '../similar_content.dart';
 
 class private_post extends StatefulWidget {
-  private_post({Key? key, required this.cat_id, required this.post_id})
+  private_post(
+      {Key? key, required this.cat_id, required this.post_id, this.user})
       : super(key: key);
+  Map? user;
   int cat_id;
   int post_id;
   @override
@@ -34,8 +37,9 @@ class _private_postState extends State<private_post> {
   ];
   @override
   Widget build(BuildContext context) {
-    List posts =
-        Provider.of<UserDB>(context).categories[widget.cat_id]['posts'];
+    List posts = (widget.user != null)
+        ? widget.user!['categories'][widget.cat_id]['posts']
+        : Provider.of<UserDB>(context).categories[widget.cat_id]['posts'];
     Map post = {
       'title': "",
       'image':
@@ -106,10 +110,12 @@ class _private_postState extends State<private_post> {
           color: Colors.white,
           child: Column(
             children: [
-              Image(
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  image: NetworkImage(post['image'])),
+              (post['videoFlag'])
+                  ? VideoPlayerScreen(networkFlag: true, url: post['image'])
+                  : Image(
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      image: NetworkImage(post['image'])),
               const SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,

@@ -19,11 +19,12 @@ class profileImage extends StatefulWidget {
       required this.network_flag,
       this.id = -1,
       this.profile_pic = false,
-      this.vid = false})
+      this.vid = false,
+      this.outsider = false})
       : super(key: key);
   pathWrapper pWrap;
   bool vid;
-  bool network_flag;
+  bool network_flag, outsider;
   int id;
   bool profile_pic;
   String shape;
@@ -152,23 +153,25 @@ class _profileImageState extends State<profileImage> {
                   ),
                 ),
               )),
-        Positioned(
-          bottom: 10.0,
-          right: 15.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet),
-              ).then((value) => setState(() {}));
-            },
-            child: const Icon(
-              Icons.camera_alt,
-              color: Colors.black87,
-              size: 28.0,
-            ),
-          ),
-        ),
+        (widget.outsider)
+            ? const SizedBox()
+            : Positioned(
+                bottom: 10.0,
+                right: 15.0,
+                child: InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: ((builder) => bottomSheet),
+                    ).then((value) => setState(() {}));
+                  },
+                  child: const Icon(
+                    Icons.camera_alt,
+                    color: Colors.black87,
+                    size: 28.0,
+                  ),
+                ),
+              ),
       ]),
     );
   }

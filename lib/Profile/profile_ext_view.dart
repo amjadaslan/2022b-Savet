@@ -160,8 +160,8 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      category(id: cat['id'])));
+                                  builder: (context) => category(
+                                      id: cat['id'], user: widget.user)));
                         },
                         child: Container(
                             padding: const EdgeInsets.all(10),
