@@ -50,9 +50,6 @@ class _exploreState extends State<explore> {
         curr_tags.add(tags[i]);
       }
     }
-    print("\n\n\n\n\n");
-    print("curr_tags = $curr_tags");
-    print("\n\n\n\n\n");
 
     return FutureBuilder(
         future: getTagPosts(),
@@ -197,11 +194,9 @@ class _exploreState extends State<explore> {
 
   Future<void> getTagPosts() async {
     arr.clear();
-    users =
-        (await FirebaseFirestore.instance.collection('users').snapshots().first)
-            .docs
-            .toList();
-
+    var snapshot = (await FirebaseFirestore.instance.collection('users').get());
+    users = snapshot.docs.map((doc) => doc.data()).toList();
+    users.removeWhere((user) => (!user['email'].contains('@')));
     for (var user in users) {
       user['categories'].forEach((c) {
         if (c['id'] != 0 && curr_tags.contains(c['tag'])) {
@@ -266,10 +261,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> getUserList(String? username) async {
-    userList =
-        (await FirebaseFirestore.instance.collection('users').snapshots().first)
-            .docs
-            .toList();
+    var snapshot = (await FirebaseFirestore.instance.collection('users').get());
+    userList = snapshot.docs.map((doc) => doc.data()).toList();
     userList.removeWhere((user) =>
         (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
             .hasMatch(user['username'])) ||

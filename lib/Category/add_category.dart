@@ -153,7 +153,7 @@ class _add_categoryState extends State<add_category> {
                           ),
                           SizedBox(width: 30),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_name.text.isEmpty || pWrap.value == "") {
                                 if (pWrap.value == "")
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -166,7 +166,8 @@ class _add_categoryState extends State<add_category> {
                                           content: Text(
                                               "Please write a title for the category")));
                               } else {
-                                Provider.of<UserDB>(context, listen: false)
+                                await Provider.of<UserDB>(context,
+                                        listen: false)
                                     .addCategory(_name.text, _desc.text,
                                         pWrap.value, tag);
                                 Navigator.of(context).pop();

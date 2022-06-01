@@ -35,7 +35,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _initializeVideoPlayerFuture = _controller.initialize();
 
     // Use the controller to loop the video.
-    _controller.setLooping(true);
+    // _controller.setLooping(true);
   }
 
   @override

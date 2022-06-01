@@ -96,14 +96,16 @@ class _categoryState extends State<category> {
               : [],
           //automaticallyImplyLeading: false,
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => add_post(
-                    cat_id: this.widget.id,
-                  ))),
-          backgroundColor: Colors.deepOrange,
-        ),
+        floatingActionButton: (widget.id != 0)
+            ? FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => add_post(
+                          cat_id: this.widget.id,
+                        ))),
+                backgroundColor: Colors.deepOrange,
+              )
+            : const SizedBox(),
         body: Column(children: [
           const SizedBox(height: 10),
           profileImage(

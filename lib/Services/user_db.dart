@@ -331,7 +331,7 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCategory(
+  Future<void> addCategory(
       String title, String desc, String profile_img, String tag) async {
     File imageFile = File(profile_img);
     String c = profile_img.hashCode.toString();
