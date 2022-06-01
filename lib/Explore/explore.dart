@@ -253,8 +253,8 @@ class _SearchPageState extends State<SearchPage> {
               ),
             )),
             body: ListView(
-              children: List.generate(userList.length,
-                  (id) => follower_card(user: userList[id].data())),
+              children: List.generate(
+                  userList.length, (id) => follower_card(user: userList[id])),
             ),
           );
         });
