@@ -142,6 +142,8 @@ class UserDB extends ChangeNotifier {
         });
       } else {
         //fetching username & avatarImage
+        // TODO: maxCatId = userData['maxCatId'];
+        // tot_posts = userData['totPosts'];
         username = userData['username'];
         log_from = userData['log_from'];
         avatar_path = userData['avatar_path'];
@@ -383,11 +385,13 @@ class UserDB extends ChangeNotifier {
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
+          tot_posts--;
         }
       }
     });
     post_id++;
     userDocument.update({'categories': categories});
+
     notifyListeners();
   }
 
@@ -410,7 +414,7 @@ class UserDB extends ChangeNotifier {
     categories.removeWhere((c) => c_id == c['id']);
 
     //removes all deleted posts from recently added category
-    categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id);
+    categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id, tot_posts--);
 
     userDocument.update({'categories': categories});
     notifyListeners(); //TODO: hi
@@ -428,7 +432,7 @@ class UserDB extends ChangeNotifier {
         categories[c_id]['posts'].removeWhere((p) => p_id == p['id']);
       }
     });
-    categories[0]['posts'].removeWhere((p) => p_id == p['id']);
+    categories[0]['posts'].removeWhere((p) => p_id == p['id'], tot_posts--);
     pathToDelete = RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
     await FirebaseStorage.instance.ref('$pathToDelete').delete();
 

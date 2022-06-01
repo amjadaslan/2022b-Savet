@@ -96,7 +96,7 @@ class _categoryState extends State<category> {
               : [],
           //automaticallyImplyLeading: false,
         ),
-        floatingActionButton: (widget.id != 0)
+        floatingActionButton: (widget.user == null && widget.id != 0)
             ? FloatingActionButton(
                 child: const Icon(Icons.add),
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
@@ -105,7 +105,7 @@ class _categoryState extends State<category> {
                         ))),
                 backgroundColor: Colors.deepOrange,
               )
-            : const SizedBox(),
+            : SizedBox(),
         body: Column(children: [
           const SizedBox(height: 10),
           profileImage(

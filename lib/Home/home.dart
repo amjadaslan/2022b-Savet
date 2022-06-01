@@ -125,7 +125,7 @@ class _homeState extends State<home> {
 
               var t = Provider.of<UserDB>(context, listen: false)
                   .categories[oldIndex];
-
+              print(t);
               Provider.of<UserDB>(context, listen: false).categories[oldIndex] =
                   Provider.of<UserDB>(context, listen: false)
                       .categories[newIndex];
