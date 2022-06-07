@@ -85,8 +85,12 @@ class AuthRepository with ChangeNotifier {
     return Future.delayed(Duration.zero);
   }
 
-  Future resetPassword() async {
+  Future resetPassword({required String email}) async {
     print("resetPassword");
+    print(email);
+    await _auth.sendPasswordResetEmail(email: email);
+    return null;
+    //_auth.sendPasswordResetEmail(email: email);
     notifyListeners();
     return Future.delayed(Duration.zero);
   }
@@ -98,7 +102,6 @@ class AuthRepository with ChangeNotifier {
     } else {
       _user = firebaseUser;
       _status = Status.Authenticated;
-      // await getfavourites();
     }
     notifyListeners();
   }

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/auth/Register.dart';
+import 'package:savet/auth/ResetPassword.dart';
 import 'package:savet/auth/anonymous.dart';
 import 'package:savet/homepage.dart';
 
@@ -130,24 +131,18 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            /*
+
             Padding(
                 padding: const EdgeInsets.only(left: 215.0),
                 child: TextButton(
                     child: const Text("Forgot password?"),
                     onPressed: () {
-                      //TODO: need to implement it
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => const ResetPassword()));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Not implemented yet')));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ResetPassword()));
                     })),
-*/
-            const Text(''),
-            const Text(''),
-            const Text(''),
+
             const Text(''),
             Container(
               height: MediaQuery.of(context).size.width * 0.1,
