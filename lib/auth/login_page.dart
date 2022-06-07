@@ -130,7 +130,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-
+            /*
             Padding(
                 padding: const EdgeInsets.only(left: 215.0),
                 child: TextButton(
@@ -144,9 +144,11 @@ class _LoginState extends State<Login> {
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Not implemented yet')));
                     })),
-
+*/
             const Text(''),
-
+            const Text(''),
+            const Text(''),
+            const Text(''),
             Container(
               height: MediaQuery.of(context).size.width * 0.1,
               width: MediaQuery.of(context).size.width,
@@ -181,7 +183,6 @@ class _LoginState extends State<Login> {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text('Incorrect credentials. Try again.')));
                     }
-                    ;
                   }),
               decoration: BoxDecoration(
                   color: Colors.deepOrange,

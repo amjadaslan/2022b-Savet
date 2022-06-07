@@ -32,7 +32,8 @@ class AuthRepository with ChangeNotifier {
 
       final credential =
           EmailAuthProvider.credential(email: email, password: password);
-
+      print("Debug");
+      print(_auth.currentUser);
       if (_auth.currentUser != null) {
         final userCredential = await FirebaseAuth.instance.currentUser
             ?.linkWithCredential(credential);
@@ -42,42 +43,18 @@ class AuthRepository with ChangeNotifier {
           return null;
         }
       }
-      var temp = await _auth.signInWithEmailAndPassword(
+      var temp = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      _status = Status.Authenticated;
+      print("Debug2");
+      print(_auth.currentUser);
       return temp;
     } catch (e) {
       print(e);
       _status = Status.Unauthenticated;
       notifyListeners();
-      return null;
-      //   }
-      // }else if (status == LogFrom.Facebook) {
-      //   try {
-      //     _logFrom = LogFrom.Facebook;
-      //     _status = Status.Authenticating;
-      //     return await _auth.createUserWithEmailAndPassword(
-      //         email: email, password: password);
-      //   } catch (e) {
-      //     print(e);
-      //     _status = Status.Unauthenticated;
-      //     notifyListeners();
-      //     return null;
-      //   }
-      // }else{
-      //   if (status == LogFrom.Google) {
-      //     try {
-      //       _logFrom = LogFrom.Google;
-      //       _status = Status.Authenticating;
-      //       return await _auth.createUserWithEmailAndPassword(
-      //           email: email, password: password);
-      //     } catch (e) {
-      //       print(e);
-      //       _status = Status.Unauthenticated;
-      //       notifyListeners();
-      //       return null;
-      //     }
-      // }
 
+      rethrow;
     }
   }
 
