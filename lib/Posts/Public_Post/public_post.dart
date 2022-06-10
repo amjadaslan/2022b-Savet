@@ -156,9 +156,10 @@ class _public_postState extends State<public_post> {
                         child: IconButton(
                             iconSize: 50,
                             onPressed: () {
+
                               setState(() {
                                 isPressed = !isPressed;
-                                //ReactionButton().
+
                               });
                             },
                             icon: (!isPressed)
@@ -242,6 +243,8 @@ class _public_postState extends State<public_post> {
                 ),
               ),
               SizedBox(height: 30),
+
+
               Container(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,

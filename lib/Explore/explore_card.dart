@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_reaction_button/flutter_reaction_button.dart';
 import 'package:transparent_image/transparent_image.dart';
-
-import '../Posts/Public_Post/public_post_comments.dart';
 import '../Posts/similar_content_card.dart';
+
+
 
 class explore_card extends StatefulWidget {
   const explore_card({Key? key, required this.url}) : super(key: key);
@@ -81,6 +82,7 @@ class _explore_cardState extends State<explore_card> {
                                   IconButton(
                                       iconSize: 15,
                                       onPressed: () {
+                                        
                                         // Navigator.push(
                                         //     context,
                                         //     MaterialPageRoute(
