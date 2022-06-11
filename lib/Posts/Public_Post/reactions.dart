@@ -35,13 +35,7 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
 
   // For jump icon when release
   late AnimationController animControlIconWhenRelease;
-  late Animation zoomIconWhenRelease, moveUpIconWhenRelease,
-      moveLeftIconLikeWhenRelease,
-      moveLeftIconLoveWhenRelease,
-      moveLeftIconHahaWhenRelease,
-      moveLeftIconWowWhenRelease,
-      moveLeftIconSadWhenRelease,
-      moveLeftIconAngryWhenRelease;
+  late Animation zoomIconWhenRelease;
 
   Duration durationLongPress = Duration(milliseconds: 250);
   late Timer holdTimer;
@@ -269,47 +263,11 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
     zoomIconWhenRelease = Tween(begin: 1.8, end: 0.0)
         .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
 
-    moveUpIconWhenRelease = Tween(begin: 180.0, end: 0.0)
-        .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
-
-    moveLeftIconLikeWhenRelease = Tween(begin: 20.0, end: 10.0)
-        .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
-    moveLeftIconLoveWhenRelease = Tween(begin: 68.0, end: 10.0)
-        .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
-    moveLeftIconHahaWhenRelease = Tween(begin: 116.0, end: 10.0)
-        .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
-    moveLeftIconWowWhenRelease = Tween(begin: 164.0, end: 10.0)
-        .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
-    moveLeftIconSadWhenRelease = Tween(begin: 212.0, end: 10.0)
-        .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
-    moveLeftIconAngryWhenRelease = Tween(begin: 260.0, end: 10.0)
-        .animate(CurvedAnimation(parent: animControlIconWhenRelease, curve: Curves.decelerate));
 
     zoomIconWhenRelease.addListener(() {
       setState(() {});
     });
-    moveUpIconWhenRelease.addListener(() {
-      setState(() {});
-    });
 
-    moveLeftIconLikeWhenRelease.addListener(() {
-      setState(() {});
-    });
-    moveLeftIconLoveWhenRelease.addListener(() {
-      setState(() {});
-    });
-    moveLeftIconHahaWhenRelease.addListener(() {
-      setState(() {});
-    });
-    moveLeftIconWowWhenRelease.addListener(() {
-      setState(() {});
-    });
-    moveLeftIconSadWhenRelease.addListener(() {
-      setState(() {});
-    });
-    moveLeftIconAngryWhenRelease.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
@@ -328,134 +286,22 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
 
     return GestureDetector(
-      child: Column(
-        children: <Widget>[
-
+      child:
           Container(
             child: Stack(
+
               children: <Widget>[
-
-                   Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                       children : [renderBtnLike(),   renderComment()]),
-
                 renderIcons(),
+                Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children : [renderBtnLike(),   renderComment()]),
 
-                // Icons when jump
-                // Icon like
-                whichIconUserChoose == 1 && !isDragging
-                    ? Container(
-                  child: Transform.scale(
-                    child: Image.asset(
-                      'assets/emotions/like.gif',
-                      width: 40.0,
-                      height: 40.0,
-                    ),
-                    scale: this.zoomIconWhenRelease.value,
-                  ),
-                  margin: EdgeInsets.only(
-                    top: processTopPosition(this.moveUpIconWhenRelease.value),
-                    left: this.moveLeftIconLikeWhenRelease.value,
-                  ),
-                )
-                    : Container(),
-
-                // Icon love
-                whichIconUserChoose == 2 && !isDragging
-                    ? Container(
-                  child: Transform.scale(
-                    child: Image.asset(
-                      'assets/emotions/love.gif',
-                      width: 40.0,
-                      height: 40.0,
-                    ),
-                    scale: this.zoomIconWhenRelease.value,
-                  ),
-                  margin: EdgeInsets.only(
-                    top: processTopPosition(this.moveUpIconWhenRelease.value),
-                    left: this.moveLeftIconLoveWhenRelease.value,
-                  ),
-                )
-                    : Container(),
-
-                // Icon haha
-                whichIconUserChoose == 3 && !isDragging
-                    ? Container(
-                  child: Transform.scale(
-                    child: Image.asset(
-                      'assets/emotions/haha.gif',
-                      width: 40.0,
-                      height: 40.0,
-                    ),
-                    scale: this.zoomIconWhenRelease.value,
-                  ),
-                  margin: EdgeInsets.only(
-                    top: processTopPosition(this.moveUpIconWhenRelease.value),
-                    left: this.moveLeftIconHahaWhenRelease.value,
-                  ),
-                )
-                    : Container(),
-
-                // Icon Wow
-                whichIconUserChoose == 4 && !isDragging
-                    ? Container(
-                  child: Transform.scale(
-                    child: Image.asset(
-                      'assets/emotions/wow.gif',
-                      width: 40.0,
-                      height: 40.0,
-                    ),
-                    scale: this.zoomIconWhenRelease.value,
-                  ),
-                  margin: EdgeInsets.only(
-                    top: processTopPosition(this.moveUpIconWhenRelease.value),
-                    left: this.moveLeftIconWowWhenRelease.value,
-                  ),
-                )
-                    : Container(),
-
-                // Icon sad
-                whichIconUserChoose == 5 && !isDragging
-                    ? Container(
-                  child: Transform.scale(
-                    child: Image.asset(
-                      'assets/emotions/sad.gif',
-                      width: 40.0,
-                      height: 40.0,
-                    ),
-                    scale: this.zoomIconWhenRelease.value,
-                  ),
-                  margin: EdgeInsets.only(
-                    top: processTopPosition(this.moveUpIconWhenRelease.value),
-                    left: this.moveLeftIconSadWhenRelease.value,
-                  ),
-                )
-                    : Container(),
-
-                // Icon angry
-                whichIconUserChoose == 6 && !isDragging
-                    ? Container(
-                  child: Transform.scale(
-                    child: Image.asset(
-                      'assets/emotions/angry.gif',
-                      width: 40.0,
-                      height: 20.0,
-                    ),
-                    scale: this.zoomIconWhenRelease.value,
-                  ),
-                  margin: EdgeInsets.only(
-                    top: processTopPosition(this.moveUpIconWhenRelease.value),
-                    left: this.moveLeftIconAngryWhenRelease.value,
-                  ),
-                )
-                    : Container(),
               ],
             ),
             margin: EdgeInsets.only(left: 20.0, right: 20.0),
             width: double.infinity,
            // height: 350.0,
           ),
-        ],
-      ),
+
       onHorizontalDragEnd: onHorizontalDragEndBoxIcon,
       onHorizontalDragUpdate: onHorizontalDragUpdateBoxIcon,
 
@@ -466,34 +312,30 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
   Widget renderComment(){
 
     return Container(
-      child: GestureDetector(
 
-        child: Container(
-
-          child: Row(
-            children: <Widget>[
-
-              ElevatedButton.icon(onPressed:null, icon: Icon(Icons.comment),
-            label:const Text('Comment',style: TextStyle(
-            color:Colors.blue,
-            fontSize: 13.0,
-            fontWeight: FontWeight.bold,)),
-
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          ),
-          padding: EdgeInsets.all(10.0),
-
-        ),
+        child :TextButton(
+        // Within the `FirstRoute` widget
+        onPressed: () {    },
+    child: Container(
+      padding: EdgeInsets.all(13.0),
+    width: 100,
+    child: const Text('Comment',
+    style: TextStyle(
+    fontWeight: FontWeight.w600,
+    color: Colors.deepOrange),
+    textAlign: TextAlign.center,
+    ), decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(4.0),
+      color: Colors.white,
+      border: Border.all(color: Colors.deepOrange),
+    ),
       ),
-      //width: 55.0,
-
-      margin: EdgeInsets.only(top: 190.0),
+    ),
+      margin: EdgeInsets.only(top: 50.0),
     );
-
-
   }
+
+
   Widget renderIcons() {
     return Container(
       child: Row(
@@ -760,10 +602,9 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.center,
       ),
       width: 300.0,
-      height: 250.0,
-      margin: EdgeInsets.only(left: this.moveRightGroupIcon.value, top: 50.0),
-      // uncomment here to see area of draggable
-      // color: Colors.amber.withOpacity(0.5),
+      //height: 250.0,
+    //  margin: EdgeInsets.only(left: this.moveRightGroupIcon.value, top: 30.0),
+
     );
   }
 
@@ -819,7 +660,7 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
         color: Colors.white,
         border: Border.all(color: getColorBorderBtn()),
       ),
-      margin: EdgeInsets.only(top: 190.0),
+      margin: EdgeInsets.only(top: 50.0),
     );
   }
 
@@ -1030,8 +871,8 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
     setReverseValue();
     animControlBox.reverse();
 
-    animControlIconWhenRelease.reset();
-    animControlIconWhenRelease.forward();
+  //  animControlIconWhenRelease.reset();
+    //animControlIconWhenRelease.forward();
   }
 
   // when user short press the button

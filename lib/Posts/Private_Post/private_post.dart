@@ -120,7 +120,7 @@ class _private_postState extends State<private_post> {
               const SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Text(
                   post['description'],
                   style: const TextStyle(
@@ -130,9 +130,10 @@ class _private_postState extends State<private_post> {
                       fontSize: 15),
                 ),
               ),
-             // const SizedBox(height: 30),
+             // const SizedBox(height: 30),//const SizedBox(height: 10),
 
               Reaction(),
+              const Divider(thickness: 2),
               //const SizedBox(height: 30),
               Container(
                   child: Column(
