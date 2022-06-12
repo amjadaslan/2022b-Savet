@@ -353,8 +353,8 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addPost(
-      String t, String d, String image_path, int c_i, bool videoFlag) async {
+  void addPost(String t, String d, String image_path, int c_i, bool videoFlag,
+      DateTime? date) async {
     final file = File(image_path);
     String c = image_path.hashCode.toString();
     final ref = await FirebaseStorage.instance.ref('$c');
@@ -372,7 +372,8 @@ class UserDB extends ChangeNotifier {
           'image': path,
           'id': post_id,
           'cat_id': c_i,
-          'videoFlag': videoFlag
+          'videoFlag': videoFlag,
+          'reminder': date
         });
         tot_posts++;
         categories[0]['posts'].insert(0, {
@@ -381,7 +382,8 @@ class UserDB extends ChangeNotifier {
           'image': path,
           'id': post_id,
           'cat_id': c_i,
-          'videoFlag': videoFlag
+          'videoFlag': videoFlag,
+          'reminder': date
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
@@ -448,6 +450,18 @@ class UserDB extends ChangeNotifier {
     return userData;
   }
 
+  //TODO: change date
+  void changeDate(Timestamp t, int id) async {
+    print("changeDate");
+    var s = FirebaseFirestore.instance.collection('users').doc(user_email);
+    DocumentSnapshot userSnapshot = await s.get();
+    var userData = userSnapshot.data() as Map;
+    var posts = userData['categories'][2]['posts'][0];
+    print(posts);
+    posts.insert({'reminder': t});
+    notifyListeners();
+  }
+
   Future<void> addFollower(String email, Map him) async {
     print("Adding a follow");
     var s = FirebaseFirestore.instance.collection('users').doc(email);
@@ -462,6 +476,7 @@ class UserDB extends ChangeNotifier {
       'following_count': following_count + 1,
       'avatar_path': avatar_path
     });
+
     s.update(
         {'followers': followers_list, 'followers_count': followers_cnt + 1});
 

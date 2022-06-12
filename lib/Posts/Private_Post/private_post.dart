@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Posts/similar_content_card.dart';
@@ -43,7 +44,8 @@ class _private_postState extends State<private_post> {
           "https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg",
       'cat_id': widget.cat_id,
       'id': widget.post_id,
-      'description': ""
+      'description': "",
+      'reminder': widget.date,
     };
     for (var e in posts) {
       if (e['id'] == widget.post_id) {
@@ -57,19 +59,22 @@ class _private_postState extends State<private_post> {
           actions: [
             IconButton(
                 onPressed: () async {
+                  print(widget.date);
                   await showDatePicker(
-                      context: context,
-                      initialDate: widget.date ?? DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2050))
+                          context: context,
+                          initialDate: widget.date ?? DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2050))
                       .then((value) {
-                    setState(() {
-                      if (value != null) widget.date = value;
-                    });
+                    Provider.of<UserDB>(context, listen: false).changeDate(
+                        Timestamp.fromDate(DateTime.now()), widget.post_id);
+
+                    print(value);
+
+                    if (value != null) widget.date = value;
                   });
                 },
-                icon: const Icon(Icons.add_alert)
-            ),
+                icon: const Icon(Icons.add_alert)),
             const SizedBox(width: 10),
             const Icon(Icons.share),
             const SizedBox(width: 10),
