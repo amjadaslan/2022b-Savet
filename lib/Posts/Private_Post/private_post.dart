@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:provider/provider.dart';
-import 'package:savet/Category/category.dart';
-import 'package:savet/Posts/Public_Post/public_post_comments.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 
@@ -17,6 +13,7 @@ class private_post extends StatefulWidget {
   Map? user;
   int cat_id;
   int post_id;
+  var date;
   @override
   _private_postState createState() => _private_postState();
 }
@@ -58,10 +55,24 @@ class _private_postState extends State<private_post> {
         appBar: AppBar(
           title: Text(post['title']),
           actions: [
-            const Icon(Icons.add_alert),
-            const SizedBox(width: 20),
+            IconButton(
+                onPressed: () async {
+                  await showDatePicker(
+                      context: context,
+                      initialDate: widget.date ?? DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2050))
+                      .then((value) {
+                    setState(() {
+                      if (value != null) widget.date = value;
+                    });
+                  });
+                },
+                icon: const Icon(Icons.add_alert)
+            ),
+            const SizedBox(width: 10),
             const Icon(Icons.share),
-            const SizedBox(width: 20),
+            const SizedBox(width: 10),
             IconButton(
                 onPressed: () async {
                   await showDialog(

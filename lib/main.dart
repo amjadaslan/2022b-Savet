@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 import 'Services/user_db.dart';
-import 'Test/Test.dart';
 import 'auth/auth_repository.dart';
+import 'auth/login_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,8 +56,8 @@ class Splash2 extends StatelessWidget {
       child: SplashScreen(
         seconds: 3,
         useLoader: true,
-        // navigateAfterSeconds: const Login(),
-        navigateAfterSeconds: const test(),
+        navigateAfterSeconds: const Login(),
+        //navigateAfterSeconds: const test(), TODO:for tests
         title: const Text(
           '',
           textScaleFactor: 2,
