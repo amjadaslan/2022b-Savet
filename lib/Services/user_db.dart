@@ -184,7 +184,7 @@ class UserDB extends ChangeNotifier {
   fetchDataAfterAnonymous(var x) async {
     try {
       final auth = FirebaseAuth.instance.currentUser;
-      user_email = auth?.email ?? auth?.uid;
+      user_email = auth?.email;
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
       var userDocumentAnony =
@@ -225,77 +225,6 @@ class UserDB extends ChangeNotifier {
         followers = userData['followers'];
         followers_count = userData['followers_count'];
         //log_from = userData['log_from'];
-
-        //fetching Notifications
-        // List<dynamic> notif = userData['notifications'];
-        // notifications = notif;
-
-        //notif.forEach((e) => {notifications.add(e)});
-
-        //fetching list of followers
-        // List<dynamic> flwrs = userData['followers'];
-
-        //   flwrs.forEach((e) => {
-        //         followers.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        //
-        //   //fetching list of followers
-        //   List<dynamic> flwng = userData['following'];
-        //
-        //   flwng.forEach((e) => {
-        //         following.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        // }
-      }
-    } catch (e) {
-      print("ERROR Facebook login $e");
-    }
-  }
-
-  fetchDataAfterAnonymous(var x) async {
-    try {
-      final auth = FirebaseAuth.instance.currentUser;
-      user_email = auth?.email;
-      userDocument =
-          FirebaseFirestore.instance.collection('users').doc(user_email);
-      print(userDocument);
-      var userDocumentAnony =
-          FirebaseFirestore.instance.collection('users').doc(x);
-      DocumentSnapshot userSnapshot = await userDocument.get();
-      DocumentSnapshot userSnapshotAno = await userDocumentAnony.get();
-      Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
-      Map<String, dynamic> userDataAno =
-          userSnapshot.data() as Map<String, dynamic>;
-      print("fetchDataAfterAnonymous");
-      categories = userDataAno['categories'];
-      print(userData.length);
-      if (userData.length <= 2) {
-        if (userData.length == 2) {
-          avatar_path = userData['avatar_path'];
-        }
-        username = userData['username'];
-        await userDocument.set({
-          'avatar_path': avatar_path,
-          'notifications': notifications,
-          'followers': followers,
-          'followers_count': followers_count,
-          'following': following,
-          'following_count': followers_count,
-          'categories': categories,
-          'username': username,
-          'email': user_email
-        });
-      } else {
-        //fetching username & avatarImage
-        username = userData['username'];
-        avatar_path = userData['avatar_path'];
-        following_count = userData['following_count'];
-        following = userData['following'];
-        followers = userData['followers'];
-        followers_count = userData['followers_count'];
 
         //fetching Notifications
         // List<dynamic> notif = userData['notifications'];
