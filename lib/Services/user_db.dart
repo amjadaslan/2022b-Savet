@@ -587,7 +587,7 @@ class UserDB extends ChangeNotifier {
     print("updating data");
     await userDocument.update({
       'avatar_path': avatar_path,
-      'notifications': notifications,q
+      'notifications': notifications,
       'followers': followers,
       'followers_count': followers_count,
       'following': following,

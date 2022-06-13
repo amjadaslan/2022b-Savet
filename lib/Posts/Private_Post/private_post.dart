@@ -129,6 +129,7 @@ class _private_postState extends State<private_post> {
                       fontSize: 15),
                 ),
               ),
+             // const SizedBox(height: 30),//const SizedBox(height: 10),
               // const SizedBox(height: 30),//const SizedBox(height: 10),
 
               Reaction(),
