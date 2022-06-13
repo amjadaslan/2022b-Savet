@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/category.dart';
-import 'package:savet/Posts/Public_Post/reactions.dart';
 import 'package:savet/Posts/Public_Post/public_post_comments.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
@@ -130,10 +129,7 @@ class _private_postState extends State<private_post> {
                       fontSize: 15),
                 ),
               ),
-             // const SizedBox(height: 30),
-
-              Reaction(),
-              //const SizedBox(height: 30),
+              const SizedBox(height: 30),
               Container(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
