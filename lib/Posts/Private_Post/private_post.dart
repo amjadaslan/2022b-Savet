@@ -129,11 +129,7 @@ class _private_postState extends State<private_post> {
                       fontSize: 15),
                 ),
               ),
-<<<<<<< HEAD
               // const SizedBox(height: 30),//const SizedBox(height: 10),
-=======
-             // const SizedBox(height: 30),//const SizedBox(height: 10),
->>>>>>> origin/Reactions_to_posts
 
               Reaction(),
               const Divider(thickness: 2),
