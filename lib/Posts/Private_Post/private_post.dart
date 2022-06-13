@@ -1,16 +1,20 @@
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:savet/Category/category.dart';
 import 'package:savet/Posts/Public_Post/public_post_comments.dart';
+import 'package:savet/Posts/Public_Post/reactions.dart';
 import 'package:savet/Posts/similar_content_card.dart';
+import 'package:savet/Posts/videoPlayer.dart';
 
 import '../../Services/user_db.dart';
 import '../similar_content.dart';
 
 class private_post extends StatefulWidget {
-  private_post({Key? key, required this.cat_id, required this.post_id})
+  private_post(
+      {Key? key, required this.cat_id, required this.post_id, this.user})
       : super(key: key);
+  Map? user;
   int cat_id;
   int post_id;
   @override
@@ -33,16 +37,72 @@ class _private_postState extends State<private_post> {
   ];
   @override
   Widget build(BuildContext context) {
-    Map post = Provider.of<UserDB>(context).categories[widget.cat_id]['posts']
-        [widget.post_id];
+    List posts = (widget.user != null)
+        ? widget.user!['categories'][widget.cat_id]['posts']
+        : Provider.of<UserDB>(context).categories[widget.cat_id]['posts'];
+    Map post = {
+      'title': "",
+      'image':
+          "https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg",
+      'cat_id': widget.cat_id,
+      'id': widget.post_id,
+      'description': ""
+    };
+    for (var e in posts) {
+      if (e['id'] == widget.post_id) {
+        post = e;
+        break;
+      }
+    }
     return Scaffold(
         appBar: AppBar(
           title: Text(post['title']),
           actions: [
-            Icon(Icons.add_alert),
-            SizedBox(width: 20),
-            Icon(Icons.share),
-            SizedBox(width: 20)
+            const Icon(Icons.add_alert),
+            const SizedBox(width: 20),
+            const Icon(Icons.share),
+            const SizedBox(width: 20),
+            IconButton(
+                onPressed: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Delete Post"),
+                          content: const Text(
+                              "Are you sure you want to delete this post?"),
+                          actions: [
+                            TextButton(
+                              child: const Text("Yes"),
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.deepOrange)),
+                              onPressed: () {
+                                setState(() {
+                                  Provider.of<UserDB>(context, listen: false)
+                                      .removePost(post['id'], post['cat_id']);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                });
+                              },
+                            ),
+                            TextButton(
+                              child: const Text("No"),
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.deepOrange)),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                icon: const Icon(Icons.delete)),
+            const SizedBox(width: 20)
           ],
         ),
         body: SingleChildScrollView(
@@ -50,24 +110,31 @@ class _private_postState extends State<private_post> {
           color: Colors.white,
           child: Column(
             children: [
-              Image(
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  image: NetworkImage(post['image'])),
-              SizedBox(height: 20),
+              (post['videoFlag'])
+                  ? VideoPlayerScreen(networkFlag: true, url: post['image'])
+                  : Image(
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      image: NetworkImage(post['image'])),
+              const SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Text(
                   post['description'],
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontFamily: 'arial',
                       decoration: TextDecoration.none,
                       color: Colors.black54,
                       fontSize: 15),
                 ),
               ),
-              SizedBox(height: 30),
+             // const SizedBox(height: 30),//const SizedBox(height: 10),
+              // const SizedBox(height: 30),//const SizedBox(height: 10),
+
+              Reaction(),
+              const Divider(thickness: 2),
+              //const SizedBox(height: 30),
               Container(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -75,9 +142,9 @@ class _private_postState extends State<private_post> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "   Similar Content",
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: 'arial',
                             decoration: TextDecoration.none,
                             color: Colors.black,
@@ -86,7 +153,7 @@ class _private_postState extends State<private_post> {
                       TextButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => similar_content()));
+                                builder: (context) => const similar_content()));
                           },
                           child: const Text("VIEW ALL",
                               style: TextStyle(

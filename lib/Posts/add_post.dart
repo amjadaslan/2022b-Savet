@@ -24,7 +24,7 @@ class _add_postState extends State<add_post> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text("Add Post"),
+          title: const Text("Add Post"),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -32,28 +32,31 @@ class _add_postState extends State<add_post> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   profileImage(
-                      pWrap: pWrap, shape: "square", network_flag: false),
-                  SizedBox(height: 20),
-                  Container(
+                      pWrap: pWrap,
+                      shape: "square",
+                      network_flag: false,
+                      vid: true),
+                  const SizedBox(height: 20),
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: TextField(
                         controller: _name,
                         decoration: InputDecoration(
                             labelText: 'Post Title',
                             enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black38, width: 1.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.black38, width: 1.0),
                               borderRadius: BorderRadius.circular(25.0),
                             ),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
                                 borderRadius: BorderRadius.circular(25.0)))),
                   ),
-                  SizedBox(height: 20),
-                  Container(
+                  const SizedBox(height: 20),
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: TextField(
                         maxLines: 10,
@@ -61,17 +64,17 @@ class _add_postState extends State<add_post> {
                         decoration: InputDecoration(
                             labelText: 'Description',
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
                                 borderRadius: BorderRadius.circular(25.0)),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
                                 borderRadius: BorderRadius.circular(25.0)))),
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 30),
+                    padding: const EdgeInsets.only(bottom: 30),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -79,7 +82,7 @@ class _add_postState extends State<add_post> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Cancel"),
+                            child: const Text("Cancel"),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,
                                 fixedSize: Size(
@@ -88,28 +91,33 @@ class _add_postState extends State<add_post> {
                                 shape: const StadiumBorder(),
                                 backgroundColor: Colors.deepOrange),
                           ),
-                          SizedBox(width: 30),
+                          const SizedBox(width: 30),
                           TextButton(
                             onPressed: () {
                               if (_name.text.isEmpty || pWrap.value == "") {
-                                if (pWrap.value == "")
+                                if (pWrap.value == "") {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text(
                                               "Please pick a post image")));
-                                else
+                                } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text(
                                               "Please write a title for the Post")));
+                                }
                               } else {
                                 Provider.of<UserDB>(context, listen: false)
-                                    .addPost(_name.text, _desc.text,
-                                        pWrap.value, widget.cat_id);
+                                    .addPost(
+                                        _name.text,
+                                        _desc.text,
+                                        pWrap.value,
+                                        widget.cat_id,
+                                        pWrap.videoFlag);
                                 Navigator.of(context).pop();
                               }
                             },
-                            child: Text("Submit"),
+                            child: const Text("Submit"),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,
                                 fixedSize: Size(

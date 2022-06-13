@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/add_category.dart';
+import 'package:savet/Posts/videoPlayer.dart';
 import 'package:savet/auth/auth_repository.dart';
+import 'package:video_player/video_player.dart';
 
 import '../Services/user_db.dart';
 import 'add_category.dart';
@@ -16,10 +18,13 @@ class profileImage extends StatefulWidget {
       required this.shape,
       required this.network_flag,
       this.id = -1,
-      this.profile_pic = false})
+      this.profile_pic = false,
+      this.vid = false,
+      this.outsider = false})
       : super(key: key);
   pathWrapper pWrap;
-  bool network_flag;
+  bool vid;
+  bool network_flag, outsider;
   int id;
   bool profile_pic;
   String shape;
@@ -29,6 +34,7 @@ class profileImage extends StatefulWidget {
 
 class _profileImageState extends State<profileImage> {
   late String path;
+  String type = "Image";
 
   @override
   Widget build(BuildContext context) {
@@ -49,26 +55,36 @@ class _profileImageState extends State<profileImage> {
               fontSize: 20.0,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             TextButton.icon(
-              icon: Icon(Icons.camera),
+              icon: const Icon(Icons.camera),
               onPressed: () {
-                takePhoto(ImageSource.camera, _picker);
+                takePhoto(ImageSource.camera, _picker, "Image");
                 Navigator.pop(context);
               },
-              label: Text("Camera"),
+              label: const Text("Camera"),
             ),
             TextButton.icon(
-              icon: Icon(Icons.image),
+              icon: const Icon(Icons.image),
               onPressed: () {
-                takePhoto(ImageSource.gallery, _picker);
+                takePhoto(ImageSource.gallery, _picker, "Image");
                 Navigator.pop(context);
               },
-              label: Text("Gallery"),
+              label: const Text("Gallery"),
             ),
+            (widget.vid)
+                ? TextButton.icon(
+                    icon: const Icon(Icons.smart_display),
+                    onPressed: () {
+                      takePhoto(ImageSource.gallery, _picker, "Video");
+                      Navigator.pop(context);
+                    },
+                    label: const Text("Video"),
+                  )
+                : SizedBox()
           ])
         ],
       ),
@@ -76,7 +92,7 @@ class _profileImageState extends State<profileImage> {
 
     return Center(
       child: Stack(children: <Widget>[
-        if (widget.shape == "circle")
+        if (type == "Image" && widget.shape == "circle")
           CircleAvatar(
               radius: 70.0,
               backgroundImage: ((path == "")
@@ -84,9 +100,9 @@ class _profileImageState extends State<profileImage> {
                   : ((widget.network_flag)
                       ? NetworkImage(path)
                       : FileImage(File(path)) as ImageProvider)))
-        else if (widget.shape == "square")
+        else if (type == "Image" && widget.shape == "square")
           Container(
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -103,39 +119,73 @@ class _profileImageState extends State<profileImage> {
                         image: (widget.network_flag)
                             ? NetworkImage(path)
                             : ((path == "")
-                                ? const AssetImage('assets/images/avatar.jpg')
+                                ? const AssetImage('assets/images/default.jpg')
                                     as ImageProvider
                                 : FileImage(File(path)))),
                   ),
                 ),
+              ))
+        else if (type == "Video" && widget.shape == "square")
+          Container(
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: (Colors.black12),
+                    )),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    height: MediaQuery.of(context).size.width * 0.5,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: (path == "")
+                        ? const Image(
+                            fit: BoxFit.cover,
+                            image: AssetImage('assets/images/default.jpg'))
+                        : FittedBox(
+                            fit: BoxFit.fill,
+                            child: VideoPlayerScreen(
+                                networkFlag: widget.network_flag,
+                                url: path,
+                                addPost: true),
+                          ),
+                  ),
+                ),
               )),
-        Positioned(
-          bottom: 10.0,
-          right: 15.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet),
-              );
-            },
-            child: Icon(
-              Icons.camera_alt,
-              color: Colors.black87,
-              size: 28.0,
-            ),
-          ),
-        ),
+        (widget.outsider)
+            ? const SizedBox()
+            : Positioned(
+                bottom: 10.0,
+                right: 15.0,
+                child: InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: ((builder) => bottomSheet),
+                    ).then((value) => setState(() {}));
+                  },
+                  child: const Icon(
+                    Icons.camera_alt,
+                    color: Colors.black87,
+                    size: 28.0,
+                  ),
+                ),
+              ),
       ]),
     );
   }
 
-  void takePhoto(ImageSource source, ImagePicker picker) async {
-    final pickedFile = await picker.pickImage(
-      source: source,
-    );
+  void takePhoto(ImageSource source, ImagePicker picker, String val) async {
+    final pickedFile = (val == 'Image')
+        ? await picker.pickImage(
+            source: source,
+          )
+        : await picker.pickVideo(source: source);
+    type = val;
     if (pickedFile?.path != null) {
       widget.pWrap.value = pickedFile?.path;
+      widget.pWrap.videoFlag = (val == "Video");
       path = widget.pWrap.value;
       widget.network_flag = false;
       if (widget.id != -1) {
@@ -146,7 +196,7 @@ class _profileImageState extends State<profileImage> {
         Provider.of<UserDB>(context, listen: false)
             .changeProfileImage(widget.pWrap.value);
       }
-      setState(() {});
     }
+    setState(() {});
   }
 }

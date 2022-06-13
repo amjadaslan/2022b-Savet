@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../homepage.dart';
-import 'auth_repository.dart';
 import 'package:provider/provider.dart';
+
+import 'auth_repository.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
@@ -84,35 +84,58 @@ class _ResetPasswordState extends State<ResetPassword> {
               ),
             ),
             const Text(''),
-            user.status == Status.Authenticating
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                :
-                //width: MediaQuery.of(context).size.width * 0.55,
-                Container(
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    width: MediaQuery.of(context).size.width,
-                    child: TextButton(
-                      child: const Text(
-                        'Send to email',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                      onPressed: () async {
-                        (user.isAuthenticated)
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const homepage()))
-                            : ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Error to Log in')));
-                      },
-                    ),
-                    decoration: BoxDecoration(
-                        color: Colors.deepOrange,
-                        borderRadius: BorderRadius.circular(20)),
-                  ),
+            const Text(''),
+
+            //width: MediaQuery.of(context).size.width * 0.55,
+            Container(
+              height: MediaQuery.of(context).size.width * 0.1,
+              width: MediaQuery.of(context).size.width,
+              child: TextButton(
+                child: const Text(
+                  'Send to email',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+                onPressed: () async {
+                  user.resetPassword(email: _email.text);
+                  showDialog<void>(
+                    context: context,
+                    barrierDismissible: false, // user must tap button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Email Sent '),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Center(
+                                child: Text(
+                                    'We sent an email to ${_email.text} with a link'
+                                    ' to get back into your account '),
+                                // Text(' '),
+                              )
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          Center(
+                            child: TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  );
+                  // const SnackBar(content: Text('Error to Log in'));
+                },
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.deepOrange,
+                  borderRadius: BorderRadius.circular(20)),
+            ),
           ],
         ),
       )),

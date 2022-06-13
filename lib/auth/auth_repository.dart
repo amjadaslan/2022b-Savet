@@ -1,9 +1,7 @@
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:savet/auth/anonymous.dart';
 
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
@@ -11,17 +9,14 @@ class AuthRepository with ChangeNotifier {
   FirebaseAuth _auth;
   User? _user;
   Status _status = Status.Uninitialized;
-  //FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  //FirebaseStorage _storage = FirebaseStorage.instance;
 
   AuthRepository.instance() : _auth = FirebaseAuth.instance {
     _auth.authStateChanges().listen(_onAuthStateChanged);
     _user = _auth.currentUser;
     _onAuthStateChanged(_user);
   }
-
   Status get status => _status;
-
+  // LogFrom get logFtom => _logFrom;
   User? get user => _user;
 
   bool get isAuthenticated => status == Status.Authenticated;
@@ -30,33 +25,48 @@ class AuthRepository with ChangeNotifier {
     return _auth.authStateChanges();
   }
 
-  // Future<String> getDownloadUrl() async {
-  //   return await _storage.ref('images').child(_user!.uid).getDownloadURL();
-  // }
   Future<UserCredential?> signUp(
       String email, String password, String userName) async {
     try {
       _status = Status.Authenticating;
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(email)
-          .set({'username': userName});
-      notifyListeners();
-      return await _auth.createUserWithEmailAndPassword(
+
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
+      print("Debug");
+      print(_auth.currentUser);
+      if (_auth.currentUser != null) {
+        final userCredential = await FirebaseAuth.instance.currentUser
+            ?.linkWithCredential(credential);
+        if (userCredential != null) {
+          Anonymous.instance().signOut();
+        } else {
+          return null;
+        }
+      }
+      var temp = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      _status = Status.Authenticated;
+      print("Debug2");
+      print(_auth.currentUser);
+      return temp;
     } catch (e) {
       print(e);
       _status = Status.Unauthenticated;
       notifyListeners();
-      return null;
+
+      rethrow;
     }
   }
 
   Future<bool> signIn(String email, String password) async {
-    //_auth.signIn("facebook", )
     try {
       _status = Status.Authenticating;
       notifyListeners();
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
+      if (credential != null) {
+        Anonymous.instance().signOut();
+      }
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       _status = Status.Authenticated;
       return true;
@@ -75,8 +85,12 @@ class AuthRepository with ChangeNotifier {
     return Future.delayed(Duration.zero);
   }
 
-  Future resetPassword() async {
+  Future resetPassword({required String email}) async {
     print("resetPassword");
+    print(email);
+    await _auth.sendPasswordResetEmail(email: email);
+    return null;
+    //_auth.sendPasswordResetEmail(email: email);
     notifyListeners();
     return Future.delayed(Duration.zero);
   }
@@ -88,7 +102,6 @@ class AuthRepository with ChangeNotifier {
     } else {
       _user = firebaseUser;
       _status = Status.Authenticated;
-      // await getfavourites();
     }
     notifyListeners();
   }

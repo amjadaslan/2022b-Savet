@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
 import 'package:savet/Services/user_db.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class add_category extends StatefulWidget {
   const add_category({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class add_category extends StatefulWidget {
 
 class pathWrapper {
   var value;
+  bool videoFlag = false;
   pathWrapper(this.value);
 }
 
@@ -20,6 +22,24 @@ class _add_categoryState extends State<add_category> {
   TextEditingController _name = new TextEditingController();
 
   var pWrap = new pathWrapper("");
+  List<String> tags = [
+    "Private",
+    "Home décor",
+    "DIY & crafts",
+    "Entertainment",
+    "Education",
+    "Art",
+    "Men’s fashion",
+    "Women’s fashion",
+    "Food & drinks",
+    "Beauty",
+    "Event planning",
+    "Gardening",
+    "Cars",
+    "Fitness",
+    "Movies & TV Shows"
+  ];
+  String tag = "Private";
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +78,7 @@ class _add_categoryState extends State<add_category> {
                   Container(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: TextField(
-                        maxLines: 10,
+                        maxLines: 6,
                         controller: _desc,
                         decoration: InputDecoration(
                             labelText: 'Description',
@@ -71,6 +91,47 @@ class _add_categoryState extends State<add_category> {
                                     color: Colors.black38, width: 1.0),
                                 borderRadius: BorderRadius.circular(25.0)))),
                   ),
+                  SizedBox(height: 40),
+                  Container(
+                      color: Colors.transparent,
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          dropdownOverButton: true,
+                          scrollbarRadius: const Radius.circular(10),
+                          scrollbarAlwaysShow: true,
+                          dropdownDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: Colors.black26,
+                              )),
+                          isExpanded: true,
+                          buttonDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.black26,
+                            ),
+                            color: Colors.transparent,
+                          ),
+                          items: List.generate(
+                              tags.length,
+                              (index) => DropdownMenuItem(
+                                  value: tags[index],
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 20),
+                                      Text(tags[index])
+                                    ],
+                                  ))),
+                          onChanged: (val) {
+                            setState(() {
+                              tag = val!;
+                              print(tag);
+                            });
+                          },
+                          value: tag,
+                        ),
+                      )),
                   SizedBox(height: 40),
                   Padding(
                     padding: EdgeInsets.only(bottom: 30),
@@ -92,7 +153,7 @@ class _add_categoryState extends State<add_category> {
                           ),
                           SizedBox(width: 30),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_name.text.isEmpty || pWrap.value == "") {
                                 if (pWrap.value == "")
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -105,9 +166,10 @@ class _add_categoryState extends State<add_category> {
                                           content: Text(
                                               "Please write a title for the category")));
                               } else {
-                                Provider.of<UserDB>(context, listen: false)
-                                    .addCategory(
-                                        _name.text, _desc.text, pWrap.value);
+                                await Provider.of<UserDB>(context,
+                                        listen: false)
+                                    .addCategory(_name.text, _desc.text,
+                                        pWrap.value, tag);
                                 Navigator.of(context).pop();
                               }
                             },

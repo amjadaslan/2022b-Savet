@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
+import 'package:savet/Posts/videoPlayer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../Posts/Private_Post/private_post.dart';
@@ -11,7 +12,8 @@ import '../Services/user_db.dart';
 import 'add_category.dart';
 
 class category extends StatefulWidget {
-  const category({Key? key, required this.id}) : super(key: key);
+  category({Key? key, required this.id, this.user}) : super(key: key);
+  Map? user;
   final int id;
   @override
   _categoryState createState() => _categoryState();
@@ -20,75 +22,154 @@ class category extends StatefulWidget {
 class _categoryState extends State<category> {
   @override
   Widget build(BuildContext context) {
-    Map cat = Provider.of<UserDB>(context).categories[widget.id];
+    Map cat = {
+      'title': "",
+      'image':
+          "https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg",
+      'id': widget.id,
+      'posts': [],
+      'description': ""
+    };
+    List categories = (widget.user != null)
+        ? widget.user!['categories']
+        : Provider.of<UserDB>(context).categories;
+
+    categories.forEach((e) {
+      if (e['id'] == widget.id) cat = e;
+    });
+
     var pWrap = pathWrapper(cat['image']);
     var t = cat['title'];
     TextEditingController _cont = TextEditingController();
     return Scaffold(
         appBar: AppBar(
           title: Text(t),
+          actions: (widget.id != 0 && widget.user == null)
+              ? [
+                  IconButton(
+                      onPressed: () async {
+                        await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Delete Category"),
+                                content: const Text(
+                                    "Are you sure you want to delete this Category?"),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("Yes"),
+                                    style: ButtonStyle(
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.deepOrange)),
+                                    onPressed: () {
+                                      setState(() {
+                                        Provider.of<UserDB>(context,
+                                                listen: false)
+                                            .removeCategory(widget.id);
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text("No"),
+                                    style: ButtonStyle(
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.deepOrange)),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      icon: const Icon(Icons.delete)),
+                  const SizedBox(width: 15)
+                ]
+              : [],
           //automaticallyImplyLeading: false,
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => add_post(
-                    cat_id: this.widget.id,
-                  ))),
-          backgroundColor: Colors.deepOrange,
-        ),
+        floatingActionButton: (widget.user == null && widget.id != 0)
+            ? FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => add_post(
+                          cat_id: this.widget.id,
+                        ))),
+                backgroundColor: Colors.deepOrange,
+              )
+            : SizedBox(),
         body: Column(children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           profileImage(
-              pWrap: pWrap, shape: "square", network_flag: true, id: cat['id']),
-          SizedBox(height: 10),
+              pWrap: pWrap,
+              shape: "square",
+              network_flag: true,
+              id: cat['id'],
+              outsider: true),
+          const SizedBox(height: 10),
           TextButton(
-              onPressed: () async {
-                await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Change Title"),
-                        content: TextField(
-                            controller: _cont,
-                            decoration: const InputDecoration(
-                              hintText: 'new title',
-                            )),
-                        actions: [
-                          TextButton(
-                            child: Text("Confirm"),
-                            style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.deepOrange)),
-                            onPressed: () {
-                              setState(() {
-                                Provider.of<UserDB>(context, listen: false)
-                                    .changeCategoryTitle(widget.id, _cont.text);
-                                Navigator.pop(context);
-                              });
-                            },
-                          ),
-                          TextButton(
-                            child: Text("Cancel"),
-                            style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.deepOrange)),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    });
-              },
+              onPressed: (widget.user != null)
+                  ? () {}
+                  : () async {
+                      await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Change Title"),
+                              content: TextField(
+                                  controller: _cont,
+                                  decoration: const InputDecoration(
+                                    hintText: 'new title',
+                                  )),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Confirm"),
+                                  style: ButtonStyle(
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.white),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.deepOrange)),
+                                  onPressed: () {
+                                    setState(() {
+                                      Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .changeCategoryTitle(
+                                              widget.id, _cont.text);
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text("Cancel"),
+                                  style: ButtonStyle(
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.white),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.deepOrange)),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
+                            );
+                          });
+                    },
               child: Text("$t",
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
                       fontSize: 25))),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             width: MediaQuery.of(context).size.width * 0.7,
             child: AutoSizeText(
@@ -96,9 +177,9 @@ class _categoryState extends State<category> {
               textAlign: TextAlign.center,
             ),
           ),
-          SizedBox(height: 10),
-          Divider(),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
+          const Divider(),
+          const SizedBox(height: 10),
           Flexible(
             child: SingleChildScrollView(
               child: StaggeredGrid.count(
@@ -106,25 +187,41 @@ class _categoryState extends State<category> {
                 children: List.generate(cat['posts'].length, (index) {
                   return InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => private_post(
-                                    cat_id: cat['id'], post_id: index)));
+                        if (index < cat.length) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => private_post(
+                                      cat_id: cat['id'],
+                                      post_id: cat['posts'][index]['id'],
+                                      user: widget.user)));
+                        }
                       },
                       child: Container(
-                        padding: EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(
                             color: Colors.transparent,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            image: cat['posts'][index]['image'],
-                            fit: BoxFit.fill,
-                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15)),
+                          child: (cat['posts'][index]['videoFlag'])
+                              ? Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  //height: 200,
+                                  child: FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: VideoPlayerScreen(
+                                        networkFlag: true,
+                                        url: cat['posts'][index]['image']),
+                                  ),
+                                )
+                              : FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: cat['posts'][index]['image'],
+                                  fit: BoxFit.fill,
+                                ),
                         ),
                       ));
                 }),
@@ -133,43 +230,4 @@ class _categoryState extends State<category> {
           ),
         ]));
   }
-
-  // void _getDialog() async {
-  //   await showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: Text("Change Title"),
-  //           content: TextField(
-  //               controller: _cont,
-  //               decoration: const InputDecoration(
-  //                 hintText: 'new title',
-  //               )),
-  //           actions: [
-  //             TextButton(
-  //               child: Text("Yes"),
-  //               style: ButtonStyle(
-  //                   foregroundColor: MaterialStateProperty.all(Colors.white),
-  //                   backgroundColor:
-  //                       MaterialStateProperty.all(Colors.deepOrange)),
-  //               onPressed: () {
-  //                 setState(() {
-  //                   Provider.of<UserDB>(context)
-  //                       .changeCategoryTitle(id, _cont.text);
-  //                   Navigator.pop(context);
-  //                 });
-  //               },
-  //             ),
-  //             TextButton(
-  //               child: Text("No"),
-  //               style: ButtonStyle(
-  //                   foregroundColor: MaterialStateProperty.all(Colors.white),
-  //                   backgroundColor:
-  //                       MaterialStateProperty.all(Colors.deepOrange)),
-  //               onPressed: () => Navigator.pop(context),
-  //             ),
-  //           ],
-  //         );
-  //       });
-  // }
 }

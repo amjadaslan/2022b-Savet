@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../Posts/Public_Post/public_post_comments.dart';
+import 'package:flutter_reaction_button/flutter_reaction_button.dart';
+import 'package:transparent_image/transparent_image.dart';
 import '../Posts/similar_content_card.dart';
+
+
 
 class explore_card extends StatefulWidget {
   const explore_card({Key? key, required this.url}) : super(key: key);
@@ -12,9 +15,9 @@ class explore_card extends StatefulWidget {
 }
 
 class _explore_cardState extends State<explore_card> {
+  bool isPressed = false;
   @override
   Widget build(BuildContext context) {
-    bool isPressed = false;
     return Container(
       padding: EdgeInsets.fromLTRB(2, 3, 2, 3),
       child: Column(
@@ -32,9 +35,12 @@ class _explore_cardState extends State<explore_card> {
                   borderRadius: BorderRadius.circular(20),
                   child: Column(
                     children: [
-                      Image(
-                          fit: BoxFit.fitWidth,
-                          image: NetworkImage(this.widget.url)),
+                      Container(
+                        color: Colors.white,
+                        child: FadeInImage.assetNetwork(
+                            placeholder: 'assets/preloader.gif',
+                            image: (this.widget.url)),
+                      ),
                       Container(
                         height: 40,
                         color: Colors.white,
@@ -76,11 +82,14 @@ class _explore_cardState extends State<explore_card> {
                                   IconButton(
                                       iconSize: 15,
                                       onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const public_post_comments()));
+                                        
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             public_post_comments(
+                                        //                 post_id: 0,
+                                        //                 cat_id: 0)));
                                       },
                                       icon: Icon(Icons.mode_comment_outlined,
                                           color: Colors.grey[400])),
@@ -95,7 +104,7 @@ class _explore_cardState extends State<explore_card> {
                                           ? Icon(Icons.favorite_border,
                                               color: Colors.grey[400])
                                           : Icon(Icons.favorite,
-                                              color: Colors.grey[400]))
+                                              color: Colors.red))
                                 ])),
                           ],
                         ),

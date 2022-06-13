@@ -1,95 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:savet/auth/anonymous.dart';
 
-class GoogleLogin extends StatefulWidget {
-  const GoogleLogin({Key? key}) : super(key: key);
-
-  @override
-  State<GoogleLogin> createState() => _GoogleLoginState();
-}
-
-class _GoogleLoginState extends State<GoogleLogin> {
+class Google extends ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   GoogleSignInAccount? _currentUser;
 
-  void initStart() {
-    _googleSignIn.onCurrentUserChanged.listen((account) {
-      setState(() {
-        _currentUser = account;
-      });
-    });
+  GoogleSignInAccount? currentUser() => _currentUser;
+
+  Google.instance() {
+    _googleSignIn.onCurrentUserChanged.listen((account) {});
     _googleSignIn.signInSilently();
-    super.initState();
+    print("Google init");
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Google sign in Test"),
-      ),
-      body: Container(
-        alignment: Alignment.center,
-        child: _bulidWidget(),
-      ),
-    );
-  }
-
-  Widget _bulidWidget() {
-    GoogleSignInAccount? user = _currentUser;
-    if (user != null) {
-      return Padding(
-        padding: EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            ListTile(
-              leading: GoogleUserCircleAvatar(
-                identity: user,
-              ),
-              title: Text(user.displayName ?? ''),
-              subtitle: Text(user.email),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            const Text("Sign in Successfully",
-                style: TextStyle(
-                  fontSize: 20,
-                )),
-            ElevatedButton(onPressed: signOut, child: const Text('Sign out')),
-          ],
-        ),
-      );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              "you are not signed in",
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            ElevatedButton(onPressed: signIn, child: const Text("Sign In")),
-          ],
-        ),
-      );
-    }
-  }
-
-  void signOut() {
+  Future signOut() async {
+    print("Sign Out From Google account");
     _googleSignIn.disconnect();
+    await FirebaseAuth.instance.signOut();
+    notifyListeners();
   }
 
   Future<void> signIn() async {
     try {
-      await _googleSignIn.signIn();
+      var auth = FirebaseAuth.instance;
+      var store = FirebaseFirestore.instance;
       print("SignIn Google");
+      await _googleSignIn.signIn();
+      _currentUser = _googleSignIn.currentUser;
+      final googleAuth = await _currentUser?.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      if (auth.currentUser != null) {
+        final userCredential = await FirebaseAuth.instance.currentUser
+            ?.linkWithCredential(credential);
+        Anonymous.instance().signOut();
+      }
+      await auth.signInWithCredential(credential);
+      var boo =
+          await store.collection('users').doc(auth.currentUser?.email).get();
+
+      if (!(boo).exists) {
+        await store.collection('users').doc(auth.currentUser?.email).set({
+          'username': auth.currentUser?.displayName,
+          'avatar_path': auth.currentUser?.photoURL,
+          'log_from': "Google",
+        });
+      }
     } catch (e) {
       print("ERROR signing in $e");
     }

@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:savet/Posts/Public_Post/public_post_comments.dart';
 import 'package:savet/Posts/similar_content.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 
-class public_post extends StatefulWidget {
-  const public_post({Key? key}) : super(key: key);
+import '../../Services/user_db.dart';
 
+class public_post extends StatefulWidget {
+  public_post({Key? key, required this.cat_id, required this.post_id})
+      : super(key: key);
+  int cat_id;
+  int post_id;
   @override
   _public_postState createState() => _public_postState();
 }
@@ -30,19 +33,57 @@ class _public_postState extends State<public_post> {
 
   @override
   Widget build(BuildContext context) {
+    Map post = Provider.of<UserDB>(context).categories[widget.cat_id]['posts']
+        [widget.post_id];
     bool isPressed = false;
     return Scaffold(
         appBar: AppBar(
           title: Text('Post Title'),
           actions: [
+            const Icon(Icons.add_alert),
+            const SizedBox(width: 20),
+            const Icon(Icons.share),
+            const SizedBox(width: 20),
             IconButton(
-                onPressed: () {
-                  FlutterAlarmClock.createAlarm(23, 59);
+                onPressed: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Delete Post"),
+                          content: const Text(
+                              "Are you sure you want to delete this post?"),
+                          actions: [
+                            TextButton(
+                              child: const Text("Yes"),
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.deepOrange)),
+                              onPressed: () {
+                                setState(() {
+                                  Provider.of<UserDB>(context, listen: false)
+                                      .removePost(post['id'], post['cat_id']);
+                                  Navigator.pop(context);
+                                });
+                              },
+                            ),
+                            TextButton(
+                              child: const Text("No"),
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.deepOrange)),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      });
                 },
-                icon: Icon(Icons.add_alert)),
-            SizedBox(width: 20),
-            Icon(Icons.share),
-            SizedBox(width: 20)
+                icon: const Icon(Icons.delete)),
+            const SizedBox(width: 20)
           ],
         ),
         body: SingleChildScrollView(
@@ -115,8 +156,10 @@ class _public_postState extends State<public_post> {
                         child: IconButton(
                             iconSize: 50,
                             onPressed: () {
+
                               setState(() {
                                 isPressed = !isPressed;
+
                               });
                             },
                             icon: (!isPressed)
@@ -138,7 +181,10 @@ class _public_postState extends State<public_post> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const public_post_comments()));
+                                          public_post_comments(
+                                            post_id: post['id'],
+                                            cat_id: post['cat_id'],
+                                          )));
                             },
                             icon: Icon(Icons.mode_comment_outlined,
                                 color: Colors.white))),
@@ -157,7 +203,10 @@ class _public_postState extends State<public_post> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const public_post_comments()));
+                                          public_post_comments(
+                                            post_id: post['id'],
+                                            cat_id: post['cat_id'],
+                                          )));
                             },
                             icon: Icon(Icons.send, color: Colors.white))),
                     SizedBox(height: 100)
@@ -194,6 +243,8 @@ class _public_postState extends State<public_post> {
                 ),
               ),
               SizedBox(height: 30),
+
+
               Container(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,

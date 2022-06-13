@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../homepage.dart';
-import 'auth_repository.dart';
 import 'package:provider/provider.dart';
 
+import '../Services/user_db.dart';
+import '../homepage.dart';
+import 'auth_repository.dart';
+
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  Register({Key? key, required this.LogFrom}) : super(key: key);
+  String LogFrom;
 
   @override
   State<Register> createState() => _RegisterState();
@@ -159,27 +163,75 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                         onPressed: () async {
-                          _password.text == _confirmpassword.text &&
-                                  _password.text != '' &&
-                                  _confirmpassword.text != ''
-                              ? {
-                                  await user.signUp(_email!.text,
-                                      _password.text, _username!.text),
-                                  print('Register is done'),
-                                  setState(() {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const homepage()));
-                                  })
-                                }
-                              : {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text(('Passwords must match'))))
-                                };
+                          try {
+                            _password.text == _confirmpassword.text &&
+                                    _password.text != '' &&
+                                    _confirmpassword.text != ''
+                                ? {
+                                    if (await user.signUp(_email.text,
+                                            _password.text, _username.text) !=
+                                        null)
+                                      {
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(_email.text)
+                                            .set({
+                                          'username': _username.text,
+                                          'log_from': "Email"
+                                        }),
+                                        print('Register is done'),
+                                        setState(() {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FutureBuilder(
+                                                          future: Provider.of<
+                                                                      UserDB>(
+                                                                  context)
+                                                              .fetchData(),
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            if (snapshot
+                                                                .hasError) {
+                                                              return Center(
+                                                                  child: Text(
+                                                                      snapshot
+                                                                          .error
+                                                                          .toString()));
+                                                            } else if (snapshot
+                                                                    .connectionState ==
+                                                                ConnectionState
+                                                                    .done) {
+                                                              return homepage(
+                                                                  LoginFrom:
+                                                                      "Email");
+                                                            }
+                                                            return const Center(
+                                                                child:
+                                                                    CircularProgressIndicator());
+                                                          })));
+                                        })
+                                      }
+                                    else
+                                      {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    ('The user is already signed up'))))
+                                      }
+                                  }
+                                : {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text(('Passwords must match'))))
+                                  };
+                          } catch (e) {
+                            print(e);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(fix(e.toString()))));
+                          }
                         }),
                     decoration: BoxDecoration(
                         color: Colors.deepOrange,
@@ -189,5 +241,18 @@ class _RegisterState extends State<Register> {
         ),
       )),
     );
+  }
+
+  String fix(String s) {
+    int i = 0;
+    for (; i < s.length; i++) {
+      if (s[i] == ']') break;
+    }
+
+    String result = s.replaceRange(0, i + 2, '');
+    // String result = s.replaceAll(RegExp('([.*])'), '');
+    print(s);
+    print(result);
+    return result;
   }
 }
