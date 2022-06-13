@@ -184,7 +184,7 @@ class UserDB extends ChangeNotifier {
   fetchDataAfterAnonymous(var x) async {
     try {
       final auth = FirebaseAuth.instance.currentUser;
-      user_email = auth?.email ?? auth?.uid;
+      user_email = auth?.email;
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
       var userDocumentAnony =
@@ -225,77 +225,6 @@ class UserDB extends ChangeNotifier {
         followers = userData['followers'];
         followers_count = userData['followers_count'];
         //log_from = userData['log_from'];
-
-        //fetching Notifications
-        // List<dynamic> notif = userData['notifications'];
-        // notifications = notif;
-
-        //notif.forEach((e) => {notifications.add(e)});
-
-        //fetching list of followers
-        // List<dynamic> flwrs = userData['followers'];
-
-        //   flwrs.forEach((e) => {
-        //         followers.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        //
-        //   //fetching list of followers
-        //   List<dynamic> flwng = userData['following'];
-        //
-        //   flwng.forEach((e) => {
-        //         following.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        // }
-      }
-    } catch (e) {
-      print("ERROR Facebook login $e");
-    }
-  }
-
-  fetchDataAfterAnonymous(var x) async {
-    try {
-      final auth = FirebaseAuth.instance.currentUser;
-      user_email = auth?.email;
-      userDocument =
-          FirebaseFirestore.instance.collection('users').doc(user_email);
-      print(userDocument);
-      var userDocumentAnony =
-          FirebaseFirestore.instance.collection('users').doc(x);
-      DocumentSnapshot userSnapshot = await userDocument.get();
-      DocumentSnapshot userSnapshotAno = await userDocumentAnony.get();
-      Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
-      Map<String, dynamic> userDataAno =
-          userSnapshot.data() as Map<String, dynamic>;
-      print("fetchDataAfterAnonymous");
-      categories = userDataAno['categories'];
-      print(userData.length);
-      if (userData.length <= 2) {
-        if (userData.length == 2) {
-          avatar_path = userData['avatar_path'];
-        }
-        username = userData['username'];
-        await userDocument.set({
-          'avatar_path': avatar_path,
-          'notifications': notifications,
-          'followers': followers,
-          'followers_count': followers_count,
-          'following': following,
-          'following_count': followers_count,
-          'categories': categories,
-          'username': username,
-          'email': user_email
-        });
-      } else {
-        //fetching username & avatarImage
-        username = userData['username'];
-        avatar_path = userData['avatar_path'];
-        following_count = userData['following_count'];
-        following = userData['following'];
-        followers = userData['followers'];
-        followers_count = userData['followers_count'];
 
         //fetching Notifications
         // List<dynamic> notif = userData['notifications'];
@@ -424,8 +353,8 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addPost(
-      String t, String d, String image_path, int c_i, bool videoFlag) async {
+  void addPost(String t, String d, String image_path, int c_i, bool videoFlag,
+      DateTime? date) async {
     final file = File(image_path);
     String c = image_path.hashCode.toString();
     final ref = await FirebaseStorage.instance.ref('$c');
@@ -443,7 +372,8 @@ class UserDB extends ChangeNotifier {
           'image': path,
           'id': post_id,
           'cat_id': c_i,
-          'videoFlag': videoFlag
+          'videoFlag': videoFlag,
+          'reminder': date
         });
         tot_posts++;
         categories[0]['posts'].insert(0, {
@@ -452,7 +382,8 @@ class UserDB extends ChangeNotifier {
           'image': path,
           'id': post_id,
           'cat_id': c_i,
-          'videoFlag': videoFlag
+          'videoFlag': videoFlag,
+          'reminder': date
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
@@ -519,6 +450,18 @@ class UserDB extends ChangeNotifier {
     return userData;
   }
 
+  //TODO: change date
+  void changeDate(Timestamp t, int id) async {
+    print("changeDate");
+    var s = FirebaseFirestore.instance.collection('users').doc(user_email);
+    DocumentSnapshot userSnapshot = await s.get();
+    var userData = userSnapshot.data() as Map;
+    var posts = userData['categories'][2]['posts'][0];
+    print(posts);
+    posts.insert({'reminder': t});
+    notifyListeners();
+  }
+
   Future<void> addFollower(String email, Map him) async {
     print("Adding a follow");
     var s = FirebaseFirestore.instance.collection('users').doc(email);
@@ -533,6 +476,7 @@ class UserDB extends ChangeNotifier {
       'following_count': following_count + 1,
       'avatar_path': avatar_path
     });
+
     s.update(
         {'followers': followers_list, 'followers_count': followers_cnt + 1});
 

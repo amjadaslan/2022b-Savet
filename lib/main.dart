@@ -57,6 +57,7 @@ class Splash2 extends StatelessWidget {
         seconds: 3,
         useLoader: true,
         navigateAfterSeconds: const Login(),
+        //navigateAfterSeconds: const test(), TODO:for tests
         title: const Text(
           '',
           textScaleFactor: 2,

@@ -1,9 +1,6 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:savet/Category/category.dart';
-import 'package:savet/Posts/Public_Post/public_post_comments.dart';
-import 'package:savet/Posts/Public_Post/reactions.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 
@@ -17,6 +14,7 @@ class private_post extends StatefulWidget {
   Map? user;
   int cat_id;
   int post_id;
+  var date;
   @override
   _private_postState createState() => _private_postState();
 }
@@ -46,7 +44,8 @@ class _private_postState extends State<private_post> {
           "https://cdn.pixabay.com/photo/2020/12/09/09/27/women-5816861_960_720.jpg",
       'cat_id': widget.cat_id,
       'id': widget.post_id,
-      'description': ""
+      'description': "",
+      'reminder': widget.date,
     };
     for (var e in posts) {
       if (e['id'] == widget.post_id) {
@@ -58,10 +57,27 @@ class _private_postState extends State<private_post> {
         appBar: AppBar(
           title: Text(post['title']),
           actions: [
-            const Icon(Icons.add_alert),
-            const SizedBox(width: 20),
+            IconButton(
+                onPressed: () async {
+                  print(widget.date);
+                  await showDatePicker(
+                          context: context,
+                          initialDate: widget.date ?? DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2050))
+                      .then((value) {
+                    Provider.of<UserDB>(context, listen: false).changeDate(
+                        Timestamp.fromDate(DateTime.now()), widget.post_id);
+
+                    print(value);
+
+                    if (value != null) widget.date = value;
+                  });
+                },
+                icon: const Icon(Icons.add_alert)),
+            const SizedBox(width: 10),
             const Icon(Icons.share),
-            const SizedBox(width: 20),
+            const SizedBox(width: 10),
             IconButton(
                 onPressed: () async {
                   await showDialog(
@@ -119,7 +135,7 @@ class _private_postState extends State<private_post> {
               const SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
                 child: Text(
                   post['description'],
                   style: const TextStyle(
@@ -129,12 +145,7 @@ class _private_postState extends State<private_post> {
                       fontSize: 15),
                 ),
               ),
-             // const SizedBox(height: 30),//const SizedBox(height: 10),
-              // const SizedBox(height: 30),//const SizedBox(height: 10),
-
-              Reaction(),
-              const Divider(thickness: 2),
-              //const SizedBox(height: 30),
+              const SizedBox(height: 30),
               Container(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,

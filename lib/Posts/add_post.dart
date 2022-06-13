@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../Category/add_category.dart';
@@ -113,7 +112,8 @@ class _add_postState extends State<add_post> {
                                         _desc.text,
                                         pWrap.value,
                                         widget.cat_id,
-                                        pWrap.videoFlag);
+                                        pWrap.videoFlag,
+                                        null);
                                 Navigator.of(context).pop();
                               }
                             },
