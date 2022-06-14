@@ -5,6 +5,7 @@ import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 
 import '../../Services/user_db.dart';
+import '../edit_post.dart';
 import '../similar_content.dart';
 
 class private_post extends StatefulWidget {
@@ -57,68 +58,119 @@ class _private_postState extends State<private_post> {
         appBar: AppBar(
           title: Text(post['title']),
           actions: [
-            IconButton(
-                onPressed: () async {
-                  print(widget.date);
-                  await showDatePicker(
-                          context: context,
-                          initialDate: widget.date ?? DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2050))
-                      .then((value) {
-                    Provider.of<UserDB>(context, listen: false).changeDate(
-                        Timestamp.fromDate(DateTime.now()), widget.post_id);
+            PopupMenuButton(
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: TextButton(
+                          onPressed: () async {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => edit_post(
+                                          cat_id: widget.post_id,
+                                        )));
+                          },
+                          //prefixIcon: Icon(Icons.add_alert),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff2c2c2c),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Edit',
+                                style: TextStyle(
+                                  fontFamily: 'Arial',
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: TextButton(
+                          onPressed: () async {
+                            print(widget.date);
+                            await showDatePicker(
+                                    context: context,
+                                    initialDate: widget.date ?? DateTime.now(),
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(2050))
+                                .then((value) {
+                              Provider.of<UserDB>(context, listen: false)
+                                  .changeDate(
+                                      Timestamp.fromDate(DateTime.now()),
+                                      widget.post_id);
 
-                    print(value);
+                              print(value);
 
-                    if (value != null) widget.date = value;
-                  });
-                },
-                icon: const Icon(Icons.add_alert)),
-            const SizedBox(width: 10),
-            const Icon(Icons.share),
-            const SizedBox(width: 10),
-            IconButton(
-                onPressed: () async {
-                  await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text("Delete Post"),
-                          content: const Text(
-                              "Are you sure you want to delete this post?"),
-                          actions: [
-                            TextButton(
-                              child: const Text("Yes"),
-                              style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all(Colors.white),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.deepOrange)),
-                              onPressed: () {
-                                setState(() {
-                                  Provider.of<UserDB>(context, listen: false)
-                                      .removePost(post['id'], post['cat_id']);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
+                              if (value != null) widget.date = value;
+                            });
+                          },
+                          //prefixIcon: Icon(Icons.add_alert),
+                          child: Text(
+                            'Reminder',
+                            //style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: TextButton(
+                          onPressed: () async {
+                            await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text("Delete Post"),
+                                    content: const Text(
+                                        "Are you sure you want to delete this post?"),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("Yes"),
+                                        style: ButtonStyle(
+                                            foregroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.white),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.deepOrange)),
+                                        onPressed: () {
+                                          setState(() {
+                                            Provider.of<UserDB>(context,
+                                                    listen: false)
+                                                .removePost(
+                                                    post['id'], post['cat_id']);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          });
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text("No"),
+                                        style: ButtonStyle(
+                                            foregroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.white),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.deepOrange)),
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                    ],
+                                  );
                                 });
-                              },
-                            ),
-                            TextButton(
-                              child: const Text("No"),
-                              style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all(Colors.white),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.deepOrange)),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
-                        );
-                      });
-                },
-                icon: const Icon(Icons.delete)),
-            const SizedBox(width: 20)
+                          },
+                          // icon: const Icon(Icons.delete),
+                          child: Text(
+                            'Delete',
+                            //style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                    ]),
+            const SizedBox(width: 10),
           ],
         ),
         body: SingleChildScrollView(
