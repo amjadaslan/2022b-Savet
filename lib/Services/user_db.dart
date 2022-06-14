@@ -320,6 +320,31 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
+  void editCategory(int cat_id, String new_img, String new_title, String tag,
+      String dec) async {
+    try {
+      print("changing Category Profile");
+      File imageFile = File(new_img);
+      String c = new_img.hashCode.toString();
+      await FirebaseStorage.instance.ref('$c').putFile(imageFile);
+      String path =
+          await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+
+      categories.forEach((e) {
+        if (e['id'] == cat_id) {
+          e['image'] = path;
+          e['title'] = new_title;
+          e['tag'] = tag;
+          e['description'] = dec;
+        }
+      });
+      userDocument.update({'categories': categories});
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void changeProfileImage(String new_img) async {
     print("changing Profile Image");
     File imageFile = File(new_img);
