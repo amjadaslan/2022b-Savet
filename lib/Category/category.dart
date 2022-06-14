@@ -10,6 +10,7 @@ import '../Posts/Private_Post/private_post.dart';
 import '../Posts/add_post.dart';
 import '../Services/user_db.dart';
 import 'add_category.dart';
+import 'edit_category.dart';
 
 class category extends StatefulWidget {
   category({Key? key, required this.id, this.user}) : super(key: key);
@@ -46,6 +47,15 @@ class _categoryState extends State<category> {
           title: Text(t),
           actions: (widget.id != 0 && widget.user == null)
               ? [
+                  IconButton(
+                      onPressed: () async {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    edit_category(id: widget.id)));
+                      },
+                      icon: const Icon(Icons.edit)),
                   IconButton(
                       onPressed: () async {
                         await showDialog(
