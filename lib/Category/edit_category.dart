@@ -15,10 +15,10 @@ class edit_category extends StatefulWidget {
 }
 
 class edit_categoryState extends State<edit_category> {
-  TextEditingController _desc = new TextEditingController();
-  TextEditingController _name = new TextEditingController();
+  TextEditingController _desc = TextEditingController();
+  TextEditingController _name = TextEditingController();
 
-  var pWrap = new pathWrapper("");
+  var pWrap = pathWrapper("");
   List<String> tags = [
     "Private",
     "Home décor",
@@ -36,22 +36,23 @@ class edit_categoryState extends State<edit_category> {
     "Fitness",
     "Movies & TV Shows"
   ];
-  String temp = "Private";
+  String temp = "";
   @override
   Widget build(BuildContext context) {
-    // var pWrap = pathWrapper(cat['image']);
-    // var t = cat['title'];
     var cat = Provider.of<UserDB>(context).categories[widget.id];
-    var pWrap = pathWrapper(cat['image']);
-    //var t = cat['title'];
-    late String tag = cat['tag'].toString();
-    _name.text = cat['title'].toString();
-    _desc.text = cat['description'].toString();
-    //tag = cat['tag'].toString();
+    pWrap = pWrap.value == "" ? pathWrapper(cat['image']) : pWrap;
+    String tag = cat['tag'].toString();
+    String name = cat['title'].toString();
+    String desc = cat['description'].toString();
+    _desc.text = _desc.text == "" ? desc : _desc.text;
+    _name.text = _name.text == "" ? name : _name.text;
+    temp = temp == "" ? tag : temp;
+    //File imageFile = File(pWrap.value);
+    // bool temp1 = File(pWrap.value).absolute.existsSync();
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text("Edit category"),
+          title: const Text("Edit category"),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -59,27 +60,31 @@ class edit_categoryState extends State<edit_category> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 50),
-                  profileImage(
-                      pWrap: pWrap, shape: "square", network_flag: true),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                  pWrap.value == pathWrapper(cat['image']).value
+                      ? profileImage(
+                          pWrap: pWrap, shape: "square", network_flag: true)
+                      : profileImage(
+                          pWrap: pWrap, shape: "square", network_flag: false),
+                  const SizedBox(height: 20),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: TextField(
-                        controller: TextEditingController(text: _name.text),
+                        controller: _name,
                         decoration: InputDecoration(
                             labelText: 'Category Title',
+                            // hintText: name,
                             enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black38, width: 1.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.black38, width: 1.0),
                               borderRadius: BorderRadius.circular(25.0),
                             ),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
                                 borderRadius: BorderRadius.circular(25.0)))),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: TextField(
@@ -88,15 +93,15 @@ class edit_categoryState extends State<edit_category> {
                         decoration: InputDecoration(
                             labelText: 'Description',
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
                                 borderRadius: BorderRadius.circular(25.0)),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
                                 borderRadius: BorderRadius.circular(25.0)))),
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Container(
                       color: Colors.transparent,
                       width: MediaQuery.of(context).size.width * 0.7,
@@ -124,22 +129,22 @@ class edit_categoryState extends State<edit_category> {
                                   value: tags[index],
                                   child: Row(
                                     children: [
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       Text(tags[index])
                                     ],
                                   ))),
                           onChanged: (val) {
                             setState(() {
-                              temp = val ?? tag;
+                              temp = val ?? temp;
                               print(temp);
                             });
                           },
                           value: temp,
                         ),
                       )),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 30),
+                    padding: const EdgeInsets.only(bottom: 30),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -147,7 +152,7 @@ class edit_categoryState extends State<edit_category> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Cancel"),
+                            child: const Text("Cancel"),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,
                                 fixedSize: Size(
@@ -156,32 +161,22 @@ class edit_categoryState extends State<edit_category> {
                                 shape: const StadiumBorder(),
                                 backgroundColor: Colors.deepOrange),
                           ),
-                          SizedBox(width: 30),
+                          const SizedBox(width: 30),
                           TextButton(
                             onPressed: () async {
-                              if (_name.text.isEmpty || pWrap.value == "") {
-                                if (pWrap.value == "") {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              "Please pick a profile image")));
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              "Please write a title for the category")));
-                                }
-                              } else {
-                                print(pWrap.value);
-                                print(_name.text);
-                                print(_desc.text);
-                                print(temp);
-                                Provider.of<UserDB>(context, listen: false)
-                                    .editCategory(widget.id, pWrap.value,
-                                        _name.text, temp, _desc.text);
-                              }
+                              _name.text = _name.text == "" ? name : _name.text;
+                              _desc.text = _desc.text == "" ? desc : _desc.text;
+
+                              print(pWrap.value);
+                              print(_name.text);
+                              print(_desc.text);
+                              print(temp);
+                              Provider.of<UserDB>(context, listen: false)
+                                  .editCategory(widget.id, pWrap.value,
+                                      _name.text, temp, _desc.text);
+                              Navigator.pop(context);
                             },
-                            child: Text("Submit"),
+                            child: const Text("Submit"),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,
                                 fixedSize: Size(
