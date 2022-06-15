@@ -350,6 +350,65 @@ class UserDB extends ChangeNotifier {
     }
   }
 
+  void editPost(int cat_id, int post_id, String title, String discr,
+      String image_path, bool videoFlag, DateTime? date) async {
+    final file = File(image_path);
+    String path = "";
+    bool temp = file.absolute.existsSync();
+    if (temp) {
+      String c = image_path.hashCode.toString();
+      final ref = await FirebaseStorage.instance.ref('$c');
+      (videoFlag)
+          ? await ref.putFile(file, SettableMetadata(contentType: 'video/mp4'))
+          : await ref.putFile(file);
+
+      path = await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+    }
+    print(cat_id);
+    print(post_id);
+    categories.forEach((e) {
+      if (e['id'] == cat_id) {
+        if (temp) {
+          e['posts'][post_id]['image'] = path;
+        }
+        e['posts'][post_id]['title'] = title;
+        e['posts'][post_id]['description'] = discr;
+      }
+    });
+
+    categories[0]['posts'].forEach((e) {
+      if (e['cat_id'] == cat_id && e['id'] == post_id) {
+        if (temp) {
+          e['image'] = path;
+        }
+        e['title'] = title;
+        e['description'] = discr;
+      }
+    });
+    userDocument.update({'categories': categories});
+
+    notifyListeners();
+  }
+
+  /*
+   String? pathToDelete = "";
+    categories.forEach((e) {
+      if (e['id'] == c_id) {
+        categories[c_id]['posts'].forEach((p) {
+          if (p_id == p['id']) {
+            pathToDelete = p['image'];
+          }
+        });
+        categories[c_id]['posts'].removeWhere((p) => p_id == p['id']);
+      }
+    });
+    categories[0]['posts'].removeWhere((p) => p_id == p['id'], tot_posts--);
+    pathToDelete = RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+    await FirebaseStorage.instance.ref('$pathToDelete').delete();
+
+    userDocument.update({'categories': categories});
+    notifyListeners();
+   */
   void changeProfileImage(String new_img) async {
     print("changing Profile Image");
     File imageFile = File(new_img);
