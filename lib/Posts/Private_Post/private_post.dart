@@ -49,6 +49,7 @@ class _private_postState extends State<private_post> {
       'reminder': widget.date,
     };
     for (var e in posts) {
+      print(e['id']);
       if (e['id'] == widget.post_id) {
         post = e;
         break;
@@ -63,30 +64,32 @@ class _private_postState extends State<private_post> {
                       PopupMenuItem(
                         child: TextButton(
                           onPressed: () async {
+                            print(widget.post_id);
+                            print(widget.cat_id);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => edit_post(
-                                          cat_id: widget.post_id,
+                                          post_id: widget.post_id,
+                                          cat_id: widget.cat_id,
                                         )));
                           },
+                          child: Text("Edit"),
                           //prefixIcon: Icon(Icons.add_alert),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff2c2c2c),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Edit',
-                                style: TextStyle(
-                                  fontFamily: 'Arial',
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
+                          // child: Container(
+                          //   decoration: BoxDecoration(),
+                          //   child: Center(
+                          //     child: Text(
+                          //       'Edit',
+                          //       style: TextStyle(
+                          //         fontFamily: 'Arial',
+                          //         fontSize: 18,
+                          //         color: Colors.deepOrange,
+                          //       ),
+                          //       textAlign: TextAlign.center,
+                          //     ),
+                          //   ),
+                          // ),
                         ),
                       ),
                       PopupMenuItem(

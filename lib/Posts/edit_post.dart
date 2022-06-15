@@ -6,8 +6,10 @@ import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
 
 class edit_post extends StatefulWidget {
-  edit_post({Key? key, required this.cat_id}) : super(key: key);
+  edit_post({Key? key, required this.post_id, required this.cat_id})
+      : super(key: key);
   var cat_id;
+  var post_id;
   @override
   edit_postState createState() => edit_postState();
 }
@@ -20,10 +22,26 @@ class edit_postState extends State<edit_post> {
 
   @override
   Widget build(BuildContext context) {
+    print("Edit post");
+    print("from category");
+    print(widget.cat_id);
+    print(widget.post_id);
+    var cat = Provider.of<UserDB>(context).categories[widget.cat_id];
+    //  print(cat);
+    var posts = cat['posts'];
+    //print(posts);
+    var post = posts[0];
+    //print(post);
+    pWrap = pWrap.value == "" ? pathWrapper(post['image']) : pWrap;
+    String name = post['title'].toString();
+    String desc = post['description'].toString();
+    _desc.text = _desc.text == "" ? desc : _desc.text;
+    _name.text = _name.text == "" ? name : _name.text;
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text("Add Post"),
+          title: const Text("Edit Post"),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -32,11 +50,19 @@ class edit_postState extends State<edit_post> {
               child: Column(
                 children: [
                   const SizedBox(height: 50),
-                  profileImage(
-                      pWrap: pWrap,
-                      shape: "square",
-                      network_flag: false,
-                      vid: true),
+                  pWrap.value == pathWrapper(post['image']).value
+                      ? profileImage(
+                          pWrap: pWrap,
+                          shape: "square",
+                          network_flag: true,
+                          vid: true,
+                        )
+                      : profileImage(
+                          pWrap: pWrap,
+                          shape: "square",
+                          network_flag: false,
+                          vid: true,
+                        ),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
@@ -93,27 +119,24 @@ class edit_postState extends State<edit_post> {
                           const SizedBox(width: 30),
                           TextButton(
                             onPressed: () {
-                              if (_name.text.isEmpty || pWrap.value == "") {
-                                if (pWrap.value == "") {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              "Please pick a post image")));
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              "Please write a title for the Post")));
-                                }
+                              if (_name.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "Please write a title for the Post")));
                               } else {
+                                print(widget.cat_id);
+                                print(widget.post_id);
                                 Provider.of<UserDB>(context, listen: false)
-                                    .addPost(
+                                    .editPost(
+                                        widget.cat_id,
+                                        widget.post_id,
                                         _name.text,
                                         _desc.text,
                                         pWrap.value,
-                                        widget.cat_id,
                                         pWrap.videoFlag,
                                         null);
+                                Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                               }
                             },
