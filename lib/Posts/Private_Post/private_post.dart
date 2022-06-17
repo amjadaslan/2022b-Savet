@@ -38,7 +38,9 @@ class _private_postState extends State<private_post> {
   Widget build(BuildContext context) {
     List posts = (widget.user != null)
         ? widget.user!['categories'][widget.cat_id]['posts']
-        : Provider.of<UserDB>(context).categories[widget.cat_id]['posts'];
+        : Provider.of<UserDB>(context)
+            .categories
+            .singleWhere((element) => element['id'] == widget.cat_id)['posts'];
     Map post = {
       'title': "",
       'image':
