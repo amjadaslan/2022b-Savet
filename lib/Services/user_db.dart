@@ -5,81 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-//
-// class Chat {
-//   String avatar = '';
-//   String username = '';
-//   List<String> from_user = [];
-//   List<String> to_user = [];
-// }
-//
-// class userwithFollowers_Following {
-//   int followers = 0;
-//   int following = 0;
-//   String username = '';
-//   String avatar_path = '';
-//
-//   userwithFollowers_Following(int a, int b, String c, String d)
-//       : followers = a,
-//         following = b,
-//         username = c,
-//         avatar_path = d {}
-// }
-//
-// class Comment {
-//   String avatar_path = '';
-//   String username = '';
-//   String content = '';
-//
-//   Comment(String a_p, String u, String c)
-//       : avatar_path = a_p,
-//         username = u,
-//         content = c {}
-// }
-//
-// class Public_Part {
-//   int likes = 0;
-//   List<Comment> comments = [];
-//   List<String> tag = [];
-// }
-//
-// class Post {
-//   bool public = false;
-//   late Public_Part public_part;
-//   String content_path = '';
-//   String title = 'untitled';
-//   String description = '';
-//   int cat_id = 0;
-//   int post_id = 0;
-//
-//   Post(String t, String d, String c_p, bool p, int c_i)
-//       : title = t,
-//         description = d,
-//         content_path = c_p,
-//         public = p,
-//         cat_id = c_i {
-//     if (p) public_part = Public_Part();
-//     post_id = p_id;
-//     p_id++;
-//   }
-// }
-//
-// class Category {
-//   int cat_id = 1;
-//   String title = '';
-//   String description = '';
-//   String profile_image = '';
-//   List<Post> posts = [];
-//
-//   Category(String t, String d, String p_i)
-//       : title = t,
-//         description = d,
-//         profile_image = p_i {}
-// }
-
 class UserDB extends ChangeNotifier {
-  int category_id = 0;
-  int post_id = 0;
   int tot_posts = 0;
 
   String? username = "";
@@ -141,9 +67,6 @@ class UserDB extends ChangeNotifier {
           'log_from': log_from
         });
       } else {
-        //fetching username & avatarImage
-        // TODO: maxCatId = userData['maxCatId'];
-        // tot_posts = userData['totPosts'];
         username = userData['username'];
         log_from = userData['log_from'];
         avatar_path = userData['avatar_path'];
@@ -255,8 +178,6 @@ class UserDB extends ChangeNotifier {
   }
 
   resetFetchData() async {
-    category_id = 0;
-    post_id = 0;
     tot_posts = 0;
 
     username = "";
@@ -429,7 +350,7 @@ class UserDB extends ChangeNotifier {
     await FirebaseStorage.instance.ref('$c').putFile(imageFile);
     String path =
         await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
-    category_id++;
+    int category_id = DateTime.now().microsecondsSinceEpoch;
     categories.add({
       'title': title,
       'description': desc,
@@ -450,7 +371,7 @@ class UserDB extends ChangeNotifier {
     (videoFlag)
         ? await ref.putFile(file, SettableMetadata(contentType: 'video/mp4'))
         : await ref.putFile(file);
-
+    int post_id = DateTime.now().microsecondsSinceEpoch;
     String path =
         await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
     categories.forEach((e) {
@@ -480,7 +401,6 @@ class UserDB extends ChangeNotifier {
         }
       }
     });
-    post_id++;
     userDocument.update({'categories': categories});
 
     notifyListeners();
