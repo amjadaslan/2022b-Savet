@@ -10,16 +10,18 @@ import 'package:savet/Posts/similar_content_card.dart';
 import '../../Services/user_db.dart';
 
 class public_post extends StatefulWidget {
-  public_post({Key? key, required this.cat_id, required this.post_id})
+  public_post(
+      {Key? key, required this.cat_id, required this.post_id, this.user})
       : super(key: key);
   int cat_id;
   int post_id;
+  Map? user;
   @override
   _public_postState createState() => _public_postState();
 }
 
 class _public_postState extends State<public_post> {
-  List<String> arr = [
+  List arr = [
     'https://cdn.pixabay.com/photo/2019/03/15/09/49/girl-4056684_960_720.jpg',
     'https://cdn.pixabay.com/photo/2020/12/15/16/25/clock-5834193__340.jpg',
     'https://cdn.pixabay.com/photo/2020/09/18/19/31/laptop-5582775_960_720.jpg',
@@ -35,8 +37,17 @@ class _public_postState extends State<public_post> {
 
   @override
   Widget build(BuildContext context) {
-    Map post = Provider.of<UserDB>(context).categories[widget.cat_id]['posts']
-        [widget.post_id];
+    var post;
+    if (widget.user != null) {
+      post = widget.user!['categories']
+          .singleWhere((element) => element['id'] == widget.cat_id)['posts']
+          .singleWhere((element) => element['id'] == widget.post_id);
+    } else {
+      post = Provider.of<UserDB>(context)
+          .categories
+          .singleWhere((element) => element['id'] == widget.cat_id)['posts']
+          .singleWhere((element) => element['id'] == widget.post_id);
+    }
     bool isPressed = false;
     return Scaffold(
         appBar: AppBar(
@@ -94,51 +105,6 @@ class _public_postState extends State<public_post> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                  color: Colors.lightBlue,
-                  child: Row(
-                    children: [
-                      const SizedBox(height: 75),
-                      const SizedBox(width: 20),
-                      const CircleAvatar(
-                          radius: 30,
-                          backgroundImage:
-                              NetworkImage('https://i.ibb.co/CwTL6Br/1.jpg')),
-                      const SizedBox(width: 20),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text("Michael Hendley",
-                                style: TextStyle(
-                                    decoration: TextDecoration.none,
-                                    fontSize: 13,
-                                    fontFamily: 'arial',
-                                    color: Colors.white)),
-                            SizedBox(height: 5),
-                            Text("270 Followers",
-                                style: TextStyle(
-                                    decoration: TextDecoration.none,
-                                    fontSize: 10,
-                                    fontFamily: 'arial',
-                                    color: Colors.white))
-                          ]),
-                      const SizedBox(width: 50),
-                      TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Following a user has not been implemented yet!')));
-                          },
-                          child: const AutoSizeText("Follow",
-                              style: const TextStyle(fontSize: 10)),
-                          style: TextButton.styleFrom(
-                              primary: Colors.white,
-                              fixedSize: const Size(100, 20),
-                              //shape: const StadiumBorder(),
-                              backgroundColor: Colors.deepOrangeAccent))
-                    ],
-                  )),
               Container(
                   width: MediaQuery.of(context).size.width,
                   child: Image(
@@ -261,7 +227,8 @@ class _public_postState extends State<public_post> {
                       TextButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => similar_content()));
+                                builder: (context) =>
+                                    similar_content(arr: arr)));
                           },
                           child: const Text("VIEW ALL",
                               style: TextStyle(
@@ -270,14 +237,14 @@ class _public_postState extends State<public_post> {
                                   fontSize: 13)))
                     ],
                   ),
-                  Container(
-                      child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(10, (index) {
-                              return similar_content_card(url: arr[index]);
-                            }),
-                          )))
+                  // Container(
+                  //     child: SingleChildScrollView(
+                  //         scrollDirection: Axis.horizontal,
+                  //         child: Row(
+                  //           children: List.generate(arr.length, (index) {
+                  //             return similar_content_card(post: arr[index]);
+                  //           }),
+                  //         )))
                 ],
               ))
             ],
