@@ -7,6 +7,7 @@ import 'package:savet/Posts/videoPlayer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../Posts/Private_Post/private_post.dart';
+import '../Posts/Public_Post/public_post.dart';
 import '../Posts/add_post.dart';
 import '../Services/user_db.dart';
 import 'add_category.dart';
@@ -203,9 +204,11 @@ class _categoryState extends State<category> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => private_post(
-                                      cat_id: cat['id'],
-                                      post_id: cat['posts'][index]['id'],
-                                      user: widget.user)));
+                                        cat_id: cat['id'],
+                                        post_id: cat['posts'][index]['id'],
+                                        user: widget.user,
+                                        public_flag: (widget.user != null),
+                                      )));
                         }
                       },
                       child: Container(
