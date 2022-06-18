@@ -81,7 +81,7 @@ class _add_categoryState extends State<add_category> {
                         maxLines: 6,
                         controller: _desc,
                         decoration: InputDecoration(
-                            labelText: 'Description',
+                            labelText: 'Description (Optional)',
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Colors.black38, width: 1.0),

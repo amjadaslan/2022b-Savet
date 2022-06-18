@@ -66,7 +66,10 @@ class _homeState extends State<home> {
                             builder: (context) =>
                                 profile(LoginFrom: widget.LoginFrom)));
                       },
-                      icon: const Icon(Icons.account_circle)))
+                      icon: const Icon(
+                        Icons.account_circle,
+                        size: 30,
+                      )))
                   : (IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(

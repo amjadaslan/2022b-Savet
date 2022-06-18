@@ -61,7 +61,7 @@ class _add_postState extends State<add_post> {
                         maxLines: 10,
                         controller: _desc,
                         decoration: InputDecoration(
-                            labelText: 'Description',
+                            labelText: 'Description (Optional)',
                             enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
