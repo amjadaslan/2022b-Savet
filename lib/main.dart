@@ -52,7 +52,7 @@ class Splash2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.deepOrange,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.20),
       child: SplashScreen(
         seconds: 3,
         useLoader: true,

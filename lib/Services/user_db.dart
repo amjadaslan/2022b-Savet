@@ -383,7 +383,8 @@ class UserDB extends ChangeNotifier {
           'id': post_id,
           'cat_id': c_i,
           'videoFlag': videoFlag,
-          'reminder': date
+          'reminder': date,
+          'comments': {}
         });
         tot_posts++;
         categories[0]['posts'].insert(0, {
@@ -393,7 +394,8 @@ class UserDB extends ChangeNotifier {
           'id': post_id,
           'cat_id': c_i,
           'videoFlag': videoFlag,
-          'reminder': date
+          'reminder': date,
+          'comments': {}
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
@@ -534,6 +536,27 @@ class UserDB extends ChangeNotifier {
       'following_count': myFollowing_cnt - 1
     });
     fetchData();
+  }
+
+  Future<void> addCommentToPost(
+      String? email, int post_id, int cat_id, Map comment) async {
+    print("Adding a comment!");
+    if (email == null) {
+      categories
+          .singleWhere((element) => element['id'] == cat_id)['posts']
+          .singleWhere((element) => element['id'] == post_id)['comments']
+          .add(comment);
+      updateData();
+    } else {
+      var s = FirebaseFirestore.instance.collection('users').doc(email);
+      DocumentSnapshot userSnapshot = await s.get();
+      Map<String, dynamic> userData =
+          userSnapshot.data() as Map<String, dynamic>;
+      userData['categories']
+          .singleWhere((element) => element['id'] == cat_id)['posts']
+          .singleWhere((element) => element['id'] == post_id)['comments']
+          .add(comment);
+    }
   }
 
   Future<void> updateData() async {

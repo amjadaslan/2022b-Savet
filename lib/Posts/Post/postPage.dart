@@ -6,12 +6,12 @@ import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 
 import '../../Services/user_db.dart';
-import '../Public_Post/public_post_comments.dart';
+import 'post_comment_section.dart';
 import '../edit_post.dart';
 import '../similar_content.dart';
 
-class private_post extends StatefulWidget {
-  private_post(
+class postPage extends StatefulWidget {
+  postPage(
       {Key? key,
       required this.cat_id,
       required this.post_id,
@@ -24,10 +24,10 @@ class private_post extends StatefulWidget {
   var date;
   bool public_flag;
   @override
-  _private_postState createState() => _private_postState();
+  _postPageState createState() => _postPageState();
 }
 
-class _private_postState extends State<private_post> {
+class _postPageState extends State<postPage> {
   bool isPressed = false;
   List arr = [];
   @override
@@ -190,54 +190,67 @@ class _private_postState extends State<private_post> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    (widget.public_flag)
+                    (widget.user != null)
                         ? Container(
-                            color: Colors.lightBlue,
-                            child: Row(
-                              children: [
-                                const SizedBox(height: 75),
-                                const SizedBox(width: 20),
-                                const CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: NetworkImage(
-                                        'https://i.ibb.co/CwTL6Br/1.jpg')),
-                                const SizedBox(width: 20),
-                                Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: const [
-                                      Text("Michael Hendley",
-                                          style: TextStyle(
-                                              decoration: TextDecoration.none,
-                                              fontSize: 13,
-                                              fontFamily: 'arial',
-                                              color: Colors.white)),
-                                      SizedBox(height: 5),
-                                      Text("270 Followers",
-                                          style: TextStyle(
-                                              decoration: TextDecoration.none,
-                                              fontSize: 10,
-                                              fontFamily: 'arial',
-                                              color: Colors.white))
-                                    ]),
-                                const SizedBox(width: 50),
-                                TextButton(
-                                    onPressed: () {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  'Following a user has not been implemented yet!')));
-                                    },
-                                    child: const AutoSizeText("Follow",
-                                        style: const TextStyle(fontSize: 10)),
-                                    style: TextButton.styleFrom(
-                                        primary: Colors.white,
-                                        fixedSize: const Size(100, 20),
-                                        //shape: const StadiumBorder(),
-                                        backgroundColor:
-                                            Colors.deepOrangeAccent))
-                              ],
-                            ))
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        width: 5.0, color: Colors.grey[100]!))),
+                            child: Container(
+                                color: Colors.lightBlue,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.12,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage: NetworkImage(
+                                            widget.user!['avatar_path'])),
+                                    Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(widget.user!['username'],
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontSize: 13,
+                                                  fontFamily: 'arial',
+                                                  color: Colors.white)),
+                                          SizedBox(height: 5),
+                                          Text(
+                                              "${widget.user!['followers_count']} Followers",
+                                              style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontSize: 11,
+                                                  fontFamily: 'arial',
+                                                  color: Colors.white))
+                                        ]),
+                                    TextButton(
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      'Following a user has not been implemented yet!')));
+                                        },
+                                        child: const AutoSizeText("Follow",
+                                            style:
+                                                const TextStyle(fontSize: 10)),
+                                        style: TextButton.styleFrom(
+                                            primary: Colors.white,
+                                            fixedSize: const Size(100, 20),
+                                            //shape: const StadiumBorder(),
+                                            backgroundColor:
+                                                Colors.deepOrangeAccent))
+                                  ],
+                                )),
+                          )
                         : SizedBox(),
                     (post['videoFlag'])
                         ? VideoPlayerScreen(
@@ -248,12 +261,11 @@ class _private_postState extends State<private_post> {
                             image: NetworkImage(post['image'])),
                     (widget.public_flag)
                         ? Container(
-                            height: 80,
+                            height: MediaQuery.of(context).size.height * 0.12,
                             color: Colors.deepOrangeAccent,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                SizedBox(height: 100),
                                 Material(
                                     color: Colors.transparent,
                                     child: IconButton(
@@ -268,12 +280,12 @@ class _private_postState extends State<private_post> {
                                                 color: Colors.white)
                                             : Icon(Icons.favorite,
                                                 color: Colors.white))),
-                                // const VerticalDivider(
-                                //   color: Colors.white,
-                                //   thickness: 3,
-                                //   indent: 5,
-                                //   endIndent: 5,
-                                // ),
+                                const VerticalDivider(
+                                  color: Colors.white,
+                                  thickness: 3,
+                                  indent: 5,
+                                  endIndent: 5,
+                                ),
                                 Material(
                                     color: Colors.transparent,
                                     child: IconButton(
@@ -283,54 +295,51 @@ class _private_postState extends State<private_post> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      public_post_comments(
+                                                      post_comment_section(
                                                         post_id: post['id'],
                                                         cat_id: post['cat_id'],
                                                       )));
                                         },
                                         icon: Icon(Icons.mode_comment_outlined,
                                             color: Colors.white))),
-                                // const VerticalDivider(
-                                //   color: Colors.white,
-                                //   thickness: 3,
-                                //   indent: 5,
-                                //   endIndent: 5,
-                                // ),
-                                Material(
-                                    color: Colors.transparent,
-                                    child: IconButton(
-                                        iconSize: 40,
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      public_post_comments(
-                                                        post_id: post['id'],
-                                                        cat_id: post['cat_id'],
-                                                      )));
-                                        },
-                                        icon: Icon(Icons.send,
-                                            color: Colors.white))),
-                                SizedBox(height: 100)
                               ],
                             ),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                     const SizedBox(height: 20),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                      child: Text(
-                        post['description'],
-                        style: const TextStyle(
-                            fontFamily: 'arial',
-                            decoration: TextDecoration.none,
-                            color: Colors.black54,
-                            fontSize: 15),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
+                    (widget.public_flag)
+                        ? Row(
+                            children: [
+                              SizedBox(width: 10),
+                              Icon(Icons.favorite, color: Colors.red, size: 30),
+                              SizedBox(width: 5),
+                              Text(
+                                "1,828 Likes",
+                                style: TextStyle(
+                                    fontFamily: 'arial',
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none,
+                                    color: Colors.black54,
+                                    fontSize: 20),
+                              )
+                            ],
+                          )
+                        : const SizedBox(),
+                    (!post['description'].isEmpty)
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                            child: Text(
+                              post['description'],
+                              style: const TextStyle(
+                                  fontFamily: 'arial',
+                                  decoration: TextDecoration.none,
+                                  color: Colors.black54,
+                                  fontSize: 15),
+                            ),
+                          )
+                        : const SizedBox(),
+                    SizedBox(height: (widget.public_flag) ? 30 : 0),
                     (arr.length > 0)
                         ? Container(
                             child: Column(
@@ -342,7 +351,7 @@ class _private_postState extends State<private_post> {
                                 children: [
                                   const Text(
                                     "   Similar Content",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontFamily: 'arial',
                                         decoration: TextDecoration.none,
                                         color: Colors.black,

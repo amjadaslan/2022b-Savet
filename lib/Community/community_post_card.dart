@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:savet/Posts/Post/post_comment_section.dart';
 
-import '../Posts/Public_Post/public_post_comments.dart';
+import '../Posts/Post/post_comment_section.dart';
 
 class community_post extends StatefulWidget {
   const community_post({Key? key, required this.url}) : super(key: key);
@@ -99,7 +100,7 @@ class _community_postState extends State<community_post> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      public_post_comments(
+                                                      post_comment_section(
                                                           post_id: 0,
                                                           cat_id: 0)));
                                         },

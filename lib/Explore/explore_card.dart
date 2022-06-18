@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../Posts/Public_Post/public_post_comments.dart';
+import '../Posts/Post/post_comment_section.dart';
 import '../Posts/similar_content_card.dart';
 
 class explore_card extends StatefulWidget {

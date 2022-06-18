@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class comment extends StatefulWidget {
-  const comment({Key? key}) : super(key: key);
+  comment({Key? key, required this.content}) : super(key: key);
+  Map? content;
 
   @override
   _commentState createState() => _commentState();
@@ -23,17 +24,17 @@ class _commentState extends State<comment> {
                         child: Row(
                           children: [
                             const SizedBox(width: 20),
-                            const CircleAvatar(
+                            CircleAvatar(
                                 radius: 30,
                                 backgroundImage: NetworkImage(
-                                    'https://i.ibb.co/CwTL6Br/1.jpg')),
+                                    widget.content!['avatar_path'])),
                             const SizedBox(width: 20),
                             Container(
                               width: MediaQuery.of(context).size.width * 0.7,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("MichaelHendley",
+                                  Text(widget.content!['username'],
                                       maxLines: 1,
                                       style: TextStyle(
                                           decoration: TextDecoration.none,
@@ -42,8 +43,7 @@ class _commentState extends State<comment> {
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black)),
                                   SizedBox(height: 10),
-                                  Text(
-                                      "Hi, this message is too long, and thus it is going to  be cut",
+                                  Text(widget.content!['content'],
                                       style: TextStyle(
                                           decoration: TextDecoration.none,
                                           fontSize: 12,
