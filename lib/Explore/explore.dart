@@ -60,7 +60,7 @@ class _exploreState extends State<explore> {
                 appBar: AppBar(
                   title: const Text("Choose tags"),
                   leading: IconButton(
-                    icon: const Icon(Icons.filter_list),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
