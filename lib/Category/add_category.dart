@@ -154,17 +154,11 @@ class _add_categoryState extends State<add_category> {
                           SizedBox(width: 30),
                           TextButton(
                             onPressed: () async {
-                              if (_name.text.isEmpty || pWrap.value == "") {
-                                if (pWrap.value == "")
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              "Please pick a profile image")));
-                                else
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              "Please write a title for the category")));
+                              if (_name.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "Please write a title for the category")));
                               } else {
                                 await Provider.of<UserDB>(context,
                                         listen: false)

@@ -345,11 +345,18 @@ class UserDB extends ChangeNotifier {
 
   Future<void> addCategory(
       String title, String desc, String profile_img, String tag) async {
-    File imageFile = File(profile_img);
-    String c = profile_img.hashCode.toString();
-    await FirebaseStorage.instance.ref('$c').putFile(imageFile);
-    String path =
-        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+    String path;
+    if (profile_img.isEmpty) {
+      path = await FirebaseStorage.instance
+          .ref()
+          .child('default.jpg')
+          .getDownloadURL();
+    } else {
+      File imageFile = File(profile_img);
+      String c = profile_img.hashCode.toString();
+      await FirebaseStorage.instance.ref('$c').putFile(imageFile);
+      path = await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+    }
     int category_id = DateTime.now().microsecondsSinceEpoch;
     categories.add({
       'title': title,
