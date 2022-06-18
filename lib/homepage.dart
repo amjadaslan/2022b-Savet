@@ -55,7 +55,7 @@ class _homepageState extends State<homepage> {
             type: BottomNavigationBarType.fixed,
             onTap: (index) {
               setState(() {
-                _selectedIndex = index;
+                if (index != 2) _selectedIndex = index;
               });
             },
           ));
