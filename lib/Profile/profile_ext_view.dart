@@ -9,8 +9,10 @@ import '../Chat/chat.dart';
 import '../Services/user_db.dart';
 
 class profile_ext_view extends StatefulWidget {
-  profile_ext_view({Key? key, required this.user}) : super(key: key);
+  profile_ext_view({Key? key, required this.user, this.already_follow = false})
+      : super(key: key);
   Map user;
+  bool already_follow;
 
   @override
   _profile_ext_viewState createState() => _profile_ext_viewState();
@@ -18,29 +20,22 @@ class profile_ext_view extends StatefulWidget {
 
 class _profile_ext_viewState extends State<profile_ext_view> {
   int clicked = 0;
-  bool flag = false;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.already_follow) {
+      clicked = 1;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Provider.of<UserDB>(context).following.forEach((e) {
-      if (e['username'] == widget.user['username']) {
-        flag = true;
-      }
-    });
     List cats = widget.user['categories']
         .where((c) => (c['tag'] != "Private"))
         .toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.user['username']}', textAlign: TextAlign.center),
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const chat()));
-              }),
-          const SizedBox(width: 20)
-        ],
       ),
       body: Center(
         child: Column(children: <Widget>[
@@ -62,8 +57,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
           TextButton(
             onPressed: () async {
               clicked = 1 - clicked;
-              flag = !flag;
-              if (!flag) {
+              if (clicked == 0) {
                 //remove follow
                 await Provider.of<UserDB>(context, listen: false)
                     .removeFollower(widget.user['email'], widget.user);
@@ -78,6 +72,8 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                       Provider.of<UserDB>(context, listen: false).avatar_path,
                   'username':
                       Provider.of<UserDB>(context, listen: false).username,
+                  'email':
+                      Provider.of<UserDB>(context, listen: false).user_email,
                   'followers_count': Provider.of<UserDB>(context, listen: false)
                       .followers_count,
                   'following_count': Provider.of<UserDB>(context, listen: false)
@@ -86,9 +82,8 @@ class _profile_ext_viewState extends State<profile_ext_view> {
               }
               setState(() {});
             },
-            child: (!flag && clicked == 0)
-                ? const Text("Follow")
-                : const Text("Unfollow"),
+            child:
+                (clicked == 0) ? const Text("Follow") : const Text("Unfollow"),
             style: TextButton.styleFrom(
                 primary: Colors.white,
                 fixedSize: Size(
@@ -96,9 +91,8 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                   MediaQuery.of(context).size.width * 0.1,
                 ),
                 shape: const StadiumBorder(),
-                backgroundColor: (!flag && clicked == 0)
-                    ? Colors.deepOrange
-                    : Colors.lightBlue),
+                backgroundColor:
+                    (clicked == 0) ? Colors.deepOrange : Colors.lightBlue),
           ),
           const SizedBox(height: 10),
           Container(
@@ -118,7 +112,9 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                     child: Container(
                         width: 100,
                         child: Text(
-                          '${widget.user['followers_count'] + clicked}\nFollowers',
+                          (widget.already_follow)
+                              ? '${widget.user['followers_count'] - 1 + clicked}\nFollowers'
+                              : '${widget.user['followers_count'] + clicked}\nFollowers',
                           style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               color: Colors.deepOrange),

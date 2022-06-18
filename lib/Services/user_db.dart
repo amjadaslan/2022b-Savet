@@ -454,7 +454,7 @@ class UserDB extends ChangeNotifier {
   }
 
   Future<Map> getUserByEmail(String email) async {
-    var s = FirebaseFirestore.instance.collection('users').doc(user_email);
+    var s = FirebaseFirestore.instance.collection('users').doc(email);
     DocumentSnapshot userSnapshot = await s.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
 
@@ -485,7 +485,8 @@ class UserDB extends ChangeNotifier {
       'username': username,
       'followers_count': followers_count,
       'following_count': following_count + 1,
-      'avatar_path': avatar_path
+      'avatar_path': avatar_path,
+      'email': user_email
     });
 
     s.update(
