@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:savet/Posts/Post/Reactions.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 
@@ -261,50 +263,52 @@ class _postPageState extends State<postPage> {
                             image: NetworkImage(post['image'])),
                     (widget.public_flag)
                         ? Container(
-                            height: MediaQuery.of(context).size.height * 0.12,
-                            color: Colors.deepOrangeAccent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Material(
-                                    color: Colors.transparent,
-                                    child: IconButton(
-                                        iconSize: 50,
-                                        onPressed: () {
-                                          setState(() {
-                                            isPressed = !isPressed;
-                                          });
-                                        },
-                                        icon: (!isPressed)
-                                            ? Icon(Icons.favorite_border,
-                                                color: Colors.white)
-                                            : Icon(Icons.favorite,
-                                                color: Colors.white))),
-                                const VerticalDivider(
-                                  color: Colors.white,
-                                  thickness: 3,
-                                  indent: 5,
-                                  endIndent: 5,
-                                ),
-                                Material(
-                                    color: Colors.transparent,
-                                    child: IconButton(
-                                        iconSize: 40,
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      post_comment_section(
-                                                        post_id: post['id'],
-                                                        cat_id: post['cat_id'],
-                                                      )));
-                                        },
-                                        icon: Icon(Icons.mode_comment_outlined,
-                                            color: Colors.white))),
-                              ],
-                            ),
-                          )
+                           // height: MediaQuery.of(context).size.height * 0.12,
+                          //  color: Colors.deepOrangeAccent,
+                           // child: Row(
+                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                             //children: [
+                             //  Material(
+                                //   color: Colors.transparent,
+                                   child : Reaction(cat_id: widget.cat_id, post_id: widget.post_id,user: widget.user??FirebaseAuth.instance.currentUser,))
+                                  //   child: IconButton(
+                                  //       iconSize: 50,
+                                  //       onPressed: () {
+                                  //         setState(() {
+                                  //           isPressed = !isPressed;
+                                  //         });
+                                  //       },
+                                  //       icon: (!isPressed)
+                                  //           ? Icon(Icons.favorite_border,
+                                  //               color: Colors.white)
+                                  //           : Icon(Icons.favorite,
+                                  //               color: Colors.white))
+                             //  ),
+                             //    const VerticalDivider(
+                             //      color: Colors.white,
+                             //      thickness: 3,
+                             //      indent: 5,
+                             //      endIndent: 5,
+                             //    ),
+                                // Material(
+                                //     color: Colors.transparent,
+                                //     child: IconButton(
+                                //         iconSize: 40,
+                                //         onPressed: () {
+                                //           Navigator.push(
+                                //               context,
+                                //               MaterialPageRoute(
+                                //                   builder: (context) =>
+                                //                       post_comment_section(
+                                //                         post_id: post['id'],
+                                //                         cat_id: post['cat_id'],
+                                //                       )));
+                                //         },
+                                //         icon: Icon(Icons.mode_comment_outlined,
+                                //             color: Colors.white))),
+                          //   ],
+                          // ),
+                         // )
                         : const SizedBox(),
                     const SizedBox(height: 20),
                     (widget.public_flag)
@@ -313,9 +317,9 @@ class _postPageState extends State<postPage> {
                               SizedBox(width: 10),
                               Icon(Icons.favorite, color: Colors.red, size: 30),
                               SizedBox(width: 5),
-                              Text(
-                                "1,828 Likes",
-                                style: TextStyle(
+                              Text('0',
+                                  //'${Provider.of<UserDB>(context).categories[widget.cat_id]['posts'][widget.post_id]['likes']}',
+                                  style: TextStyle(
                                     fontFamily: 'arial',
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.none,

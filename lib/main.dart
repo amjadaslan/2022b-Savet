@@ -1,18 +1,34 @@
 // @dart=2.9
 
 import 'dart:async';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'Notifications/notificationsHelper.dart';
 import 'Services/user_db.dart';
 import 'auth/auth_repository.dart';
 import 'auth/login_page.dart';
 
+final FlutterLocalNotificationsPlugin notifsPlugin =
+FlutterLocalNotificationsPlugin();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationAppLaunchDetails notifLaunch =
+  await notifsPlugin.getNotificationAppLaunchDetails();
+  await initNotifications(notifsPlugin);
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications','', // title
+    importance: Importance.max,
+  );
+  await notifsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+
 
   runApp(MultiProvider(
     providers: [

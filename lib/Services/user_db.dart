@@ -391,7 +391,9 @@ class UserDB extends ChangeNotifier {
           'cat_id': c_i,
           'videoFlag': videoFlag,
           'reminder': date,
-          'comments': {}
+          'comments': {},
+          'likes': 0,
+          'likers': {}
         });
         tot_posts++;
         categories[0]['posts'].insert(0, {
@@ -402,7 +404,9 @@ class UserDB extends ChangeNotifier {
           'cat_id': c_i,
           'videoFlag': videoFlag,
           'reminder': date,
-          'comments': {}
+          'comments': {},
+          'likes': 0,
+          'likers': {}
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
@@ -600,4 +604,58 @@ class UserDB extends ChangeNotifier {
   //   assert(flag);
   // }
 
+  Future<void> addLike(String? email, Map like , int post_id, int cat_id,) async {
+    print("Adding like");
+
+    if (email == null) {
+      categories
+          .singleWhere((element) => element['id'] == cat_id)['posts']
+          .singleWhere((element) => element['id'] == post_id)['likers']
+          .add(like);
+      updateData();
+    } else {
+      var s = FirebaseFirestore.instance.collection('users').doc(email);
+      DocumentSnapshot userSnapshot = await s.get();
+      Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+
+      print(like);
+      print(cat_id);
+      print(post_id);
+      userData['categories']
+          .singleWhere((element) => element['id'] == cat_id)['posts']
+          .singleWhere((element) => element['id'] == post_id)['likers']
+          .add(like);
+
+     // s.update({'categories': categories});
+      updateData();
+    }
+//    updateData();
+    fetchData();
+  }
+
+  Future<void> removeLike(String? email, Map like , int post_id, int cat_id,) async {
+    print("Removing like");
+
+    if (email == null) {
+      categories
+          .singleWhere((element) => element['id'] == cat_id)['posts']
+          .singleWhere((element) => element['id'] == post_id)['likers']
+          .remove(like);
+      updateData();
+    } else {
+      var s = FirebaseFirestore.instance.collection('users').doc(email);
+      DocumentSnapshot userSnapshot = await s.get();
+      Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+
+      userData['categories']
+          .singleWhere((element) => element['id'] == cat_id)['posts']
+          .singleWhere((element) => element['id'] == post_id)['likers']
+          .remove(like);
+
+      //s.update({'categories': categories});
+
+    }
+//    updateData();
+   // fetchData();
+  }
 }
