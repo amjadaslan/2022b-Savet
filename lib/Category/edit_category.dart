@@ -8,7 +8,7 @@ import 'add_category.dart';
 
 class edit_category extends StatefulWidget {
   edit_category({Key? key, required this.id, tag}) : super(key: key);
-  int id;
+  var id;
   String? tag;
   @override
   edit_categoryState createState() => edit_categoryState();
@@ -39,7 +39,11 @@ class edit_categoryState extends State<edit_category> {
   String temp = "";
   @override
   Widget build(BuildContext context) {
-    var cat = Provider.of<UserDB>(context).categories[widget.id];
+    print(Provider.of<UserDB>(context).categories);
+    var cat = Provider.of<UserDB>(context)
+        .categories
+        .singleWhere((element) => element['id'] == widget.id);
+
     pWrap = pWrap.value == "" ? pathWrapper(cat['image']) : pWrap;
     String tag = cat['tag'].toString();
     String name = cat['title'].toString();
