@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/auth/Register.dart';
 import 'package:savet/auth/ResetPassword.dart';
@@ -60,8 +61,14 @@ class _LoginState extends State<Login> {
               return homepage(
                 LoginFrom: LogFrom,
               );
+            } else {
+              return Scaffold(
+                  body: Center(
+                      child: LoadingAnimationWidget.fourRotatingDots(
+                color: Colors.deepOrange,
+                size: 200,
+              )));
             }
-            return const Center(child: CircularProgressIndicator());
           });
     } else {
       return Scaffold(
