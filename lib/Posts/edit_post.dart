@@ -23,10 +23,11 @@ class edit_postState extends State<edit_post> {
   @override
   Widget build(BuildContext context) {
     print("Edit post");
-    print("from category");
     print(widget.cat_id);
     print(widget.post_id);
-    var cat = Provider.of<UserDB>(context).categories[widget.cat_id];
+    var cat = Provider.of<UserDB>(context)
+        .categories
+        .singleWhere((element) => element['id'] == widget.cat_id);
     //  print(cat);
     var posts = cat['posts'];
     //print(posts);
