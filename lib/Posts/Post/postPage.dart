@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Posts/Post/Reactions.dart';
 import 'package:savet/Posts/similar_content_card.dart';
@@ -31,6 +32,9 @@ class postPage extends StatefulWidget {
 class _postPageState extends State<postPage> {
   bool isPressed = false;
   List arr = [];
+
+  String _setTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
+
   @override
   Widget build(BuildContext context) {
     String tag;
@@ -54,14 +58,27 @@ class _postPageState extends State<postPage> {
       'cat_id': widget.cat_id,
       'id': widget.post_id,
       'description': "",
-      'reminder': widget.date,
+      'date': widget.date,
+      'time': _setTime,
     };
     for (var e in posts) {
       if (e['id'] == widget.post_id) {
         post = e;
-        break;
+        String te = e['date'];
+        print(te);
+        if (te != null && te != "") {
+          widget.date = DateFormat('MM/dd/yyyy').parse(te);
+          String t = e['time'];
+          if (t != null) _setTime = t;
+          // widget.date = DateFormat.yMd().format(e['reminder']);
+          //DateTime.tryParse(te);
+          print(widget.date);
+          print(widget.date);
+          break;
+        }
       }
     }
+
     return FutureBuilder(
         future: getTagPosts(tag),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -106,23 +123,45 @@ class _postPageState extends State<postPage> {
                             PopupMenuItem(
                               child: TextButton(
                                 onPressed: () async {
-                                  print(widget.date);
+                                  //print(widget.date);
                                   await showDatePicker(
                                           context: context,
                                           initialDate:
                                               widget.date ?? DateTime.now(),
                                           firstDate: DateTime.now(),
                                           lastDate: DateTime(2050))
-                                      .then((value) {
-                                    Provider.of<UserDB>(context, listen: false)
-                                        .changeDate(
-                                            Timestamp.fromDate(DateTime.now()),
-                                            widget.post_id);
+                                      .then((value) async {
+                                    if (value != null) {
+                                      var time = await showTimePicker(
+                                          initialEntryMode:
+                                              TimePickerEntryMode.input,
+                                          context: context,
+                                          initialTime: TimeOfDay(
+                                            hour: int.parse(
+                                                _setTime.split(":")[0]),
+                                            minute: int.parse(_setTime
+                                                .split(":")[1]
+                                                .split(" ")[0]),
+                                          ));
+                                      if (time != null) {
+                                        Provider.of<UserDB>(context,
+                                                listen: false)
+                                            .changeDate(
+                                                widget.cat_id,
+                                                widget.post_id,
+                                                DateFormat.yMd().format(value),
+                                                time.format(context));
 
-                                    print(value);
-
-                                    if (value != null) widget.date = value;
+                                        setState(() {
+                                          _setTime = time.format(context);
+                                          print(value);
+                                          widget.date = value;
+                                        });
+                                      }
+                                      print(value);
+                                    }
                                   });
+                                  Navigator.pop(context);
                                 },
                                 //prefixIcon: Icon(Icons.add_alert),
                                 child: Text(

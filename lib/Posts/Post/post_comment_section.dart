@@ -2,12 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
+
 import '../../Services/user_db.dart';
 import '../Comment_Section/comment_card.dart';
 import '../edit_post.dart';
-import '../similar_content.dart';
 
 class post_comment_section extends StatefulWidget {
   post_comment_section(
@@ -104,7 +103,7 @@ class _post_comment_sectionState extends State<post_comment_section> {
                                   lastDate: DateTime(2050))
                               .then((value) {
                             Provider.of<UserDB>(context, listen: false)
-                                .changeDate(Timestamp.fromDate(DateTime.now()),
+                                .changeDate2(Timestamp.fromDate(DateTime.now()),
                                     widget.post_id);
 
                             print(value);

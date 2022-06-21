@@ -389,7 +389,7 @@ class UserDB extends ChangeNotifier {
   }
 
   void addPost(String t, String d, String image_path, int c_i, bool videoFlag,
-      DateTime? date) async {
+      DateTime? date, String? time) async {
     final file = File(image_path);
     String c = image_path.hashCode.toString();
     final ref = await FirebaseStorage.instance.ref('$c');
@@ -408,7 +408,8 @@ class UserDB extends ChangeNotifier {
           'id': post_id,
           'cat_id': c_i,
           'videoFlag': videoFlag,
-          'reminder': date,
+          'date': date,
+          'time': time,
           'comments': {},
           'likes': 0,
           'likers': []
@@ -421,7 +422,8 @@ class UserDB extends ChangeNotifier {
           'id': post_id,
           'cat_id': c_i,
           'videoFlag': videoFlag,
-          'reminder': date,
+          'date': date,
+          'time': time,
           'comments': {},
           'likes': 0,
           'likers': []
@@ -459,7 +461,7 @@ class UserDB extends ChangeNotifier {
     categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id, tot_posts--);
 
     userDocument.update({'categories': categories});
-    notifyListeners(); //TODO: hi
+    notifyListeners();
   }
 
   Future<void> removePost(int p_id, int c_id) async {
@@ -490,8 +492,8 @@ class UserDB extends ChangeNotifier {
     return userData;
   }
 
-  //TODO: change date
-  void changeDate(Timestamp t, int id) async {
+  //TODO: I don't know why need this, but okay i want to continue working to fix the reminder Please check it
+  void changeDate2(Timestamp t, int id) async {
     print("changeDate");
     var s = FirebaseFirestore.instance.collection('users').doc(user_email);
     DocumentSnapshot userSnapshot = await s.get();
@@ -499,6 +501,24 @@ class UserDB extends ChangeNotifier {
     var posts = userData['categories'][2]['posts'][0];
     print(posts);
     posts.insert({'reminder': t});
+    notifyListeners();
+  }
+
+  void changeDate(int cat_id, int post_id, String date, String _time) async {
+    print("changeDate");
+    print(_time);
+
+    var e = categories.singleWhere((element) => element['id'] == cat_id);
+    var p = null;
+    if (e != null) {
+      p = e['posts'].singleWhere((element) => element['id'] == post_id);
+    }
+    if (p != null) {
+      p['date'] = date;
+      p['time'] = _time;
+    }
+
+    userDocument.update({'categories': categories});
     notifyListeners();
   }
 
