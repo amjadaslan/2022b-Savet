@@ -1,0 +1,4 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+com/technion/savet/BuildConfig.java
+ com.technion.savet.BuildConfig

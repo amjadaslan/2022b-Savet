@@ -37,13 +37,6 @@ class _notificationsState extends State<notifications> {
                           .notifications[index]['noti'])
           ),
         ),
-
-        // child: ListView(
-        //     children: List.generate(20, (index) {
-        //   return notification_card();
-        // }
-        //
-        // )),
       ),
     );
   }
