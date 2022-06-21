@@ -663,29 +663,31 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
                   child: Transform.rotate(
                     child: TextButton(  onPressed: () async {
 
-                      scheduleNotification(
-                          notifsPlugin,
-                          DateTime.now().toString(),
-                          'first notification from siwar',
-                          "you have event soon!",DateTime.now().subtract(Duration(minutes: 1)),
+                      Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'reacted to your post');
+
+                      scheduleNotification(notifsPlugin, DateTime.now().toString(),
+                          'Savet',
+                          "${widget.user?['username']} reacted to your post",DateTime.now().subtract(Duration(minutes: 1)),
                           1);
-                       Map like = {
-                       'username':
-                       Provider.of<UserDB>(context, listen: false).username,
-                      'avatar_path':
-                       Provider.of<UserDB>(context, listen: false).avatar_path,
-                         'reaction': getTextBtn()};
 
-                      if(getTextBtn()!=Colors.grey) {
-                         await Provider.of<UserDB>(context, listen: false)
-                        .addLike(widget.user?['email'], like, widget.post_id,
-                        widget.cat_id);
-                     }else{
-                        await Provider.of<UserDB>(context, listen: false)
-                        .removeLike(widget.user?['email'], like, widget.post_id,
-                        widget.cat_id);
 
-                     }
+                     //   Map like = {
+                     //   'username':
+                     //   Provider.of<UserDB>(context, listen: false).username,
+                     //  'avatar_path':
+                     //   Provider.of<UserDB>(context, listen: false).avatar_path,
+                     //     'reaction': getTextBtn()};
+                     //
+                     //  if(getTextBtn()!=Colors.grey) {
+                     //     await Provider.of<UserDB>(context, listen: false)
+                     //    .addLike(widget.user?['email'], like, widget.post_id,
+                     //    widget.cat_id);
+                     // }else{
+                     //    await Provider.of<UserDB>(context, listen: false)
+                     //    .removeLike(widget.user?['email'], like, widget.post_id,
+                     //    widget.cat_id);
+                     //
+                     // }
                       setState(() {});
 
                    }

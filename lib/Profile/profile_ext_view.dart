@@ -6,7 +6,9 @@ import 'package:savet/Profile/followers_following_list.dart';
 import '../Category/category.dart';
 import '../Category/category_card.dart';
 import '../Chat/chat.dart';
+import '../Notifications/notificationsHelper.dart';
 import '../Services/user_db.dart';
+import '../main.dart';
 
 class profile_ext_view extends StatefulWidget {
   profile_ext_view({Key? key, required this.user, this.already_follow = false})
@@ -79,6 +81,12 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                   'following_count': Provider.of<UserDB>(context, listen: false)
                       .following_count,
                 });
+                Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'started following you');
+
+                scheduleNotification(notifsPlugin, DateTime.now().toString(),
+                    'Savet',
+                    "${widget.user?['username']} started following you",DateTime.now().subtract(Duration(minutes: 1)),
+                    1);
               }
               setState(() {});
             },

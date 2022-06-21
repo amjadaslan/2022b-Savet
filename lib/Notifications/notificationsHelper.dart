@@ -1,9 +1,12 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'as notifs;
+import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart' as rxSub;
 import '../../main.dart';
-
+import '../../Services/user_db.dart';
 class NotificationClass{
   final int id;
   final String? title;
@@ -61,6 +64,7 @@ Future<void> scheduleNotification(
       android: androidSpecifics, iOS: iOSSpecifics);
   await notifsPlugin.schedule(not_id, title, body,
       scheduledTime, platformChannelSpecifics); // This literally schedules the notification
+
   ///the id is a global int from main check if there is other solution to identify the notification
 
 }

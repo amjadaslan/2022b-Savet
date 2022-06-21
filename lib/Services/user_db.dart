@@ -77,10 +77,10 @@ class UserDB extends ChangeNotifier {
         followers_count = userData['followers_count'];
 
         //fetching Notifications
-        // List<dynamic> notif = userData['notifications'];
-        // notifications = notif;
+        List<dynamic> notif = userData['notifications'];
+        notifications = notif;
 
-        //notif.forEach((e) => {notifications.add(e)});
+        notif.forEach((e) => {notifications.add(e)});
 
         //fetching list of followers
         // List<dynamic> flwrs = userData['followers'];
@@ -206,10 +206,23 @@ class UserDB extends ChangeNotifier {
     ];
   }
 
-  void addNotification(String s) {
-    notifications.add(s);
-    userDocument.update({'notifications': notifications});
-    notifyListeners();
+  Future<void> addNotification(String email, String noti) async {
+    print('adding noti');
+    var s = FirebaseFirestore.instance.collection('users').doc(email);
+    DocumentSnapshot userSnapshot = await s.get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    var notifications = userData['notifications'];
+
+    notifications.add({
+      'username': username,
+      'avatar_path': avatar_path,
+      'email': user_email,
+      'noti' : noti
+    });
+
+    s.update({'notifications': notifications});
+    fetchData();
+     notifyListeners();
   }
 
   void changeCategoryProfile(int cat_id, String new_img) async {
@@ -393,7 +406,7 @@ class UserDB extends ChangeNotifier {
           'reminder': date,
           'comments': {},
           'likes': 0,
-          'likers': {}
+          'likers': []
         });
         tot_posts++;
         categories[0]['posts'].insert(0, {
@@ -406,7 +419,7 @@ class UserDB extends ChangeNotifier {
           'reminder': date,
           'comments': {},
           'likes': 0,
-          'likers': {}
+          'likers': []
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
@@ -621,16 +634,16 @@ class UserDB extends ChangeNotifier {
       print(like);
       print(cat_id);
       print(post_id);
-      userData['categories']
+      var likers = userData['categories']
           .singleWhere((element) => element['id'] == cat_id)['posts']
-          .singleWhere((element) => element['id'] == post_id)['likers']
-          .add(like);
-
-     // s.update({'categories': categories});
-      updateData();
+          .singleWhere((element) => element['id'] == post_id)['likers'];
+          //.add(like);
+      likers.add(like);
+      s.update({'categories': categories});
+      //updateData();
     }
 //    updateData();
-    fetchData();
+   // fetchData();
   }
 
   Future<void> removeLike(String? email, Map like , int post_id, int cat_id,) async {
