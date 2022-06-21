@@ -192,68 +192,68 @@ class _postPageState extends State<postPage> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    // (widget.user != null)
-                    //     ? Container(
-                    //         decoration: BoxDecoration(
-                    //             border: Border(
-                    //                 bottom: BorderSide(
-                    //                     width: 5.0, color: Colors.grey[100]!))),
-                    //         child: Container(
-                    //             color: Colors.lightBlue,
-                    //             height:
-                    //                 MediaQuery.of(context).size.height * 0.12,
-                    //             child: Row(
-                    //               mainAxisAlignment:
-                    //                   MainAxisAlignment.spaceEvenly,
-                    //               children: [
-                    //                 CircleAvatar(
-                    //                     radius: 30,
-                    //                     backgroundImage: NetworkImage(
-                    //                         widget.user!['avatar_path'])),
-                    //                 Column(
-                    //                     mainAxisAlignment:
-                    //                         MainAxisAlignment.center,
-                    //                     crossAxisAlignment:
-                    //                         CrossAxisAlignment.start,
-                    //                     children: [
-                    //                       Text(widget.user!['username'],
-                    //                           style: const TextStyle(
-                    //                               fontWeight: FontWeight.bold,
-                    //                               decoration:
-                    //                                   TextDecoration.none,
-                    //                               fontSize: 13,
-                    //                               fontFamily: 'arial',
-                    //                               color: Colors.white)),
-                    //                       SizedBox(height: 5),
-                    //                       Text(
-                    //                           "${widget.user!['followers_count']} Followers",
-                    //                           style: TextStyle(
-                    //                               decoration:
-                    //                                   TextDecoration.none,
-                    //                               fontSize: 11,
-                    //                               fontFamily: 'arial',
-                    //                               color: Colors.white))
-                    //                     ]),
-                    //                 TextButton(
-                    //                     onPressed: () {
-                    //                       ScaffoldMessenger.of(context)
-                    //                           .showSnackBar(const SnackBar(
-                    //                               content: Text(
-                    //                                   'Following a user has not been implemented yet!')));
-                    //                     },
-                    //                     child: const AutoSizeText("Follow",
-                    //                         style:
-                    //                             const TextStyle(fontSize: 10)),
-                    //                     style: TextButton.styleFrom(
-                    //                         primary: Colors.white,
-                    //                         fixedSize: const Size(100, 20),
-                    //                         //shape: const StadiumBorder(),
-                    //                         backgroundColor:
-                    //                             Colors.deepOrangeAccent))
-                    //               ],
-                    //             )),
-                    //       )
-                    //     : SizedBox(),
+                    (widget.user != null)
+                        ? Container(
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        width: 5.0, color: Colors.grey[100]!))),
+                            child: Container(
+                                color: Colors.lightBlue,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.12,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage: NetworkImage(
+                                            widget.user!['avatar_path'])),
+                                    Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(widget.user!['username'],
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontSize: 13,
+                                                  fontFamily: 'arial',
+                                                  color: Colors.white)),
+                                          SizedBox(height: 5),
+                                          Text(
+                                              "${widget.user!['followers_count']} Followers",
+                                              style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontSize: 11,
+                                                  fontFamily: 'arial',
+                                                  color: Colors.white))
+                                        ]),
+                                    TextButton(
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      'Following a user has not been implemented yet!')));
+                                        },
+                                        child: const AutoSizeText("Follow",
+                                            style:
+                                                const TextStyle(fontSize: 10)),
+                                        style: TextButton.styleFrom(
+                                            primary: Colors.white,
+                                            fixedSize: const Size(100, 20),
+                                            //shape: const StadiumBorder(),
+                                            backgroundColor:
+                                                Colors.deepOrangeAccent))
+                                  ],
+                                )),
+                          )
+                        : SizedBox(),
                     (post['videoFlag'])
                         ? VideoPlayerScreen(
                             networkFlag: true, url: post['image'])

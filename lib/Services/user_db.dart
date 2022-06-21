@@ -499,7 +499,6 @@ class UserDB extends ChangeNotifier {
 
   Future<void> addFollower(String email, Map him) async {
     print("Adding a follow");
-
     var s = FirebaseFirestore.instance.collection('users').doc(email);
     DocumentSnapshot userSnapshot = await s.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
@@ -635,20 +634,16 @@ class UserDB extends ChangeNotifier {
       print(like);
       print(cat_id);
       print(post_id);
-
-
-
-      var likers =  userData['categories']
+      var likers = userData['categories']
           .singleWhere((element) => element['id'] == cat_id)['posts']
           .singleWhere((element) => element['id'] == post_id)['likers'];
-
+          //.add(like);
       likers.add(like);
-      print(likers);
-
-
-
+      s.update({'categories': categories});
+      //updateData();
     }
-
+//    updateData();
+   // fetchData();
   }
 
   Future<void> removeLike(String? email, Map like , int post_id, int cat_id,) async {

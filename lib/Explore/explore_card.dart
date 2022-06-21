@@ -7,8 +7,8 @@ import '../Posts/Post/post_comment_section.dart';
 import '../Posts/similar_content_card.dart';
 
 class explore_card extends StatefulWidget {
-   explore_card({Key? key, required this.url}) : super(key: key);
-   String url;
+  const explore_card({Key? key, required this.url}) : super(key: key);
+  final String url;
   @override
   _explore_cardState createState() => _explore_cardState();
 }
@@ -81,36 +81,28 @@ class _explore_cardState extends State<explore_card> {
                                   IconButton(
                                       iconSize: 15,
                                       onPressed: () {
-                                        this.widget.url='https://i.pinimg.com/736x/fe/d8/3f/fed83f3a6a2008bb667e15e972452dce.jpg';
-                                       setState(() {});
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             public_post_comments(
+                                        //                 post_id: 0,
+                                        //                 cat_id: 0)));
                                       },
-                                      icon: Icon(Icons.report,
+                                      icon: Icon(Icons.mode_comment_outlined,
                                           color: Colors.grey[400])),
-                                  // IconButton(
-                                  //     iconSize: 15,
-                                  //     onPressed: () {
-                                  //       // Navigator.push(
-                                  //       //     context,
-                                  //       //     MaterialPageRoute(
-                                  //       //         builder: (context) =>
-                                  //       //             public_post_comments(
-                                  //       //                 post_id: 0,
-                                  //       //                 cat_id: 0)));
-                                  //     },
-                                  //     icon: Icon(Icons.mode_comment_outlined,
-                                  //         color: Colors.grey[400])),
-                                  // IconButton(
-                                  //     iconSize: 18,
-                                  //     onPressed: () {
-                                  //       setState(() {
-                                  //         isPressed = !isPressed;
-                                  //       });
-                                  //     },
-                                  //     icon: (!isPressed)
-                                  //         ? Icon(Icons.favorite_border,
-                                  //             color: Colors.grey[400])
-                                  //         : Icon(Icons.favorite,
-                                  //             color: Colors.red))
+                                  IconButton(
+                                      iconSize: 18,
+                                      onPressed: () {
+                                        setState(() {
+                                          isPressed = !isPressed;
+                                        });
+                                      },
+                                      icon: (!isPressed)
+                                          ? Icon(Icons.favorite_border,
+                                              color: Colors.grey[400])
+                                          : Icon(Icons.favorite,
+                                              color: Colors.red))
                                 ])),
                           ],
                         ),
