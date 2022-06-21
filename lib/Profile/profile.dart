@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Profile/follower_card.dart';
-import 'package:savet/about.dart';
 import 'package:savet/auth/auth_repository.dart';
 import 'package:savet/auth/googleLogin.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
@@ -54,13 +55,57 @@ class _profileState extends State<profile> {
                 icon: const Icon(Icons.logout)),
             IconButton(
                 onPressed: () {
-                  print("info");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const about()),
-                  );
+                  showAboutDialog(
+                      context: context,
+                      applicationName: 'Savet',
+                      applicationVersion: '2.0.0',
+                      applicationLegalese: '©️ 2022 Savet all rights reserved',
+                      children: <Widget>[
+                        InkWell(
+                            child: const Text('Privacy Policy'),
+                            onTap: () async {
+                              var url =
+                                  'https://gist.github.com/SiwarK97/dc43067d24e89221da6e1f3f250fd703#file-savet-privacypolicy-md';
+                              await launch(url);
+                            }),
+                        InkWell(
+                            child: const Text('Terms & Conditions'),
+                            onTap: () async {
+                              var url =
+                                  'https://gist.github.com/SiwarK97/dc43067d24e89221da6e1f3f250fd703#file-savet-terms-conditions-md';
+                              await launch(url);
+                            }),
+                        // InkWell(
+                        // child: const Text('Credits'),
+                        // onTap: () async {
+                        // var url =
+                        // 'https://gist.github.com/mostafanaax69/118ab1cb1cbfa18dcd7ebe0df39b0db4';
+                        // await launch(url);
+                        // }),
+                      ]);
                 },
-                icon: const Icon(Icons.info)),
+
+                // showAboutDialog(
+                //   context: context,
+                //   applicationIcon: FlutterLogo(),
+                //   applicationName: 'Savet App',
+                //   applicationVersion: '2.0.0',
+                //   applicationLegalese: '©2022 Savet-Technion All Rights Reserved',
+                //   children: <Widget>[
+                //     Padding(
+                //         padding: EdgeInsets.only(top: 15),
+                //         child: Text('')
+                //     )
+                //   ],
+                // );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const about()),
+                // );
+                // },
+                icon: const Icon(Icons.info_outline)),
+
+
             const SizedBox(width: 20),
           ],
         ),
