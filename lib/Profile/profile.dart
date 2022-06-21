@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Profile/follower_card.dart';
+import 'package:savet/about.dart';
 import 'package:savet/auth/auth_repository.dart';
 import 'package:savet/auth/googleLogin.dart';
 
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
+import '../about.dart';
 import '../auth/login_page.dart';
 
 class profile extends StatefulWidget {
@@ -50,7 +52,16 @@ class _profileState extends State<profile> {
                       (Route<dynamic> route) => false);
                 },
                 icon: const Icon(Icons.logout)),
-            const SizedBox(width: 20)
+            IconButton(
+                onPressed: () {
+                  print("info");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const about()),
+                  );
+                },
+                icon: const Icon(Icons.info)),
+            const SizedBox(width: 20),
           ],
         ),
         body: Container(
