@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Profile/follower_card.dart';
@@ -6,9 +5,11 @@ import 'package:savet/auth/auth_repository.dart';
 import 'package:savet/auth/googleLogin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
+import '../about.dart';
 import '../auth/login_page.dart';
 
 class profile extends StatefulWidget {
@@ -103,6 +104,8 @@ class _profileState extends State<profile> {
                 // );
                 // },
                 icon: const Icon(Icons.info_outline)),
+
+
             const SizedBox(width: 20),
           ],
         ),
