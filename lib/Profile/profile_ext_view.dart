@@ -65,8 +65,15 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                     .removeFollower(widget.user['email'], widget.user);
                 widget.user['followers'].where((f) => (f['username'] ==
                     Provider.of<UserDB>(context, listen: false).username));
+
+                Provider.of<UserDB>(context, listen:false).addNotification(widget.user['email'],'unfollowed you');
+                // scheduleNotification(notifsPlugin, DateTime.now().toString(),
+                //     'Savet',
+                //     "${widget.user['username']} unfollowed you",DateTime.now().subtract(Duration(minutes: 1)),
+                //     1);
               } else {
                 //perform follow
+
                 await Provider.of<UserDB>(context, listen: false)
                     .addFollower(widget.user['email'], widget.user);
                 widget.user['followers'].add({
@@ -81,14 +88,14 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                   'following_count': Provider.of<UserDB>(context, listen: false)
                       .following_count,
                 });
-                Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'started following you');
 
-                scheduleNotification(notifsPlugin, DateTime.now().toString(),
-                    'Savet',
-                    "${widget.user?['username']} started following you",DateTime.now().subtract(Duration(minutes: 1)),
-                    1);
+                Provider.of<UserDB>(context, listen:false).addNotification(widget.user['email'],'started following you');
+                // scheduleNotification(notifsPlugin, DateTime.now().toString(),
+                //     'Savet', "${widget.user['username']} started following you",DateTime.now().subtract(Duration(minutes: 1)),
+                //     1);
               }
-              setState(() {});
+
+              setState(() {  });
             },
             child:
                 (clicked == 0) ? const Text("Follow") : const Text("Unfollow"),
