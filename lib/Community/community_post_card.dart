@@ -5,8 +5,8 @@ import 'package:savet/Posts/Post/post_comment_section.dart';
 import '../Posts/Post/post_comment_section.dart';
 
 class community_post extends StatefulWidget {
-   community_post({Key? key, required this.url}) : super(key: key);
-   String url;
+  const community_post({Key? key, required this.url}) : super(key: key);
+  final String url;
   @override
   _community_postState createState() => _community_postState();
 }
@@ -38,17 +38,15 @@ class _community_postState extends State<community_post> {
                             fit: BoxFit.fill,
                             width: MediaQuery.of(context).size.width,
                             image: NetworkImage(this.widget.url)),
-
                         Container(
                           color: Colors.white,
-
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
                                 padding:
                                     const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.55,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -92,15 +90,11 @@ class _community_postState extends State<community_post> {
                                   ],
                                 ),
                               ),
-                    Flexible(
-                      flex: 10,
-                              child:
                               Material(
                                   color: Colors.transparent,
-                                  child: Row(mainAxisSize: MainAxisSize.min,
-                                      children: [
+                                  child: Row(children: [
                                     IconButton(
-                                        iconSize: 20,
+                                        iconSize: 50,
                                         onPressed: () {
                                           Navigator.push(
                                               context,
@@ -113,7 +107,7 @@ class _community_postState extends State<community_post> {
                                         icon: Icon(Icons.mode_comment_outlined,
                                             color: Colors.grey[400])),
                                     IconButton(
-                                        iconSize: 20,
+                                        iconSize: 50,
                                         onPressed: () {
                                           setState(() {
                                             isPressed = !isPressed;
@@ -123,17 +117,8 @@ class _community_postState extends State<community_post> {
                                             ? Icon(Icons.favorite_border,
                                                 color: Colors.grey[400])
                                             : Icon(Icons.favorite,
-                                                color: Colors.grey[400])),
-
-                                        IconButton(
-                                            iconSize: 20,
-                                            onPressed: () {
-                                               this.widget.url='https://i.pinimg.com/736x/fe/d8/3f/fed83f3a6a2008bb667e15e972452dce.jpg';
-                                              setState(() {});
-                                            },
-                                            icon: Icon(Icons.report,
-                                                color: Colors.grey[400])),
-                                  ])),)
+                                                color: Colors.grey[400]))
+                                  ])),
                             ],
                           ),
                         ),
