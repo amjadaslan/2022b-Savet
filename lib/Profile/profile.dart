@@ -5,7 +5,6 @@ import 'package:savet/auth/auth_repository.dart';
 import 'package:savet/auth/googleLogin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
@@ -49,7 +48,7 @@ class _profileState extends State<profile> {
                     await Login().signOut();
                   }
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const Login()),
+                      MaterialPageRoute(builder: (context) => Login()),
                       (Route<dynamic> route) => false);
                 },
                 icon: const Icon(Icons.logout)),
@@ -104,8 +103,6 @@ class _profileState extends State<profile> {
                 // );
                 // },
                 icon: const Icon(Icons.info_outline)),
-
-
             const SizedBox(width: 20),
           ],
         ),

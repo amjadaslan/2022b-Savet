@@ -20,16 +20,14 @@ import 'auth_repository.dart';
 import 'googleLogin.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
-
+  Login({Key? key, this.sharedFiles}) : super(key: key);
+  List? sharedFiles;
   @override
   State<Login> createState() => _LoginState();
   Future signOut() => _LoginState().signOutFace();
 }
 
 class _LoginState extends State<Login> {
-  AccessToken? _accessToken;
-  UserModel? _currentUser;
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   TextEditingController _password = new TextEditingController();
   TextEditingController _email = new TextEditingController();
@@ -59,8 +57,7 @@ class _LoginState extends State<Login> {
               return Center(child: Text(snapshot.error.toString()));
             } else if (snapshot.connectionState == ConnectionState.done) {
               return homepage(
-                LoginFrom: LogFrom,
-              );
+                  LoginFrom: LogFrom, sharedFiles: widget.sharedFiles);
             } else {
               return Scaffold(
                   body: Center(
@@ -347,7 +344,6 @@ class _LoginState extends State<Login> {
     //final googleAuth = await login_res?.authentication;
     try {
       if (login_res.status == LoginStatus.success) {
-        _accessToken = login_res.accessToken;
         final data = await FacebookAuth.i.getUserData();
         UserModel model = UserModel.fromJson(data);
 
@@ -369,7 +365,6 @@ class _LoginState extends State<Login> {
             'log_from': "Facebook"
           });
         }
-        _currentUser = model;
         LogFrom = "Facebook";
       }
     } catch (e) {
@@ -380,8 +375,6 @@ class _LoginState extends State<Login> {
   Future signOutFace() async {
     var auth = FirebaseAuth.instance;
     await FacebookAuth.i.logOut();
-    _currentUser = null;
-    _accessToken = null;
     await auth.signOut();
   }
 }

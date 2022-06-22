@@ -48,6 +48,7 @@ dependencies:
   gestures: ^1.0.0
   flutter_facebook_auth: ^4.3.4
   firebase_storage: ^10.2.12
+  receive_sharing_intent: ^1.4.5
   image_picker: ^0.8.5
   flutter_image_add_drag_sort: ^0.0.3
   transparent_image: ^1.0.0
