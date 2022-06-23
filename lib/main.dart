@@ -24,7 +24,7 @@ Future<void> main() async {
   await initNotifications(notifsPlugin);
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
-    'High Importance Notifications', '', // title
+    'High Importance Notifications', // title
     importance: Importance.max,
   );
   await notifsPlugin

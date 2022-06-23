@@ -30,7 +30,7 @@ class _homeState extends State<home> {
   TextEditingController _editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    Provider.of<UserDB>(context).updateData();
+    //Provider.of<UserDB>(context).updateData();
     final auth = FirebaseAuth.instance.currentUser;
     List cats = Provider.of<UserDB>(context).categories.toList();
     cats.removeWhere((cat) =>

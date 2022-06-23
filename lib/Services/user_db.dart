@@ -581,7 +581,7 @@ class UserDB extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeDate(int cat_id, int post_id, String date, String _time) async {
+  void changeDate(int cat_id, int post_id, DateTime date, String _time) async {
     print("changeDate");
     print(_time);
 
