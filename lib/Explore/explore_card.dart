@@ -90,7 +90,7 @@ class _explore_cardState extends State<explore_card> {
                                               title: Text('Report post'),
                                               content: SingleChildScrollView(
                                                 child: Column(
-                                                  children: <Widget>[
+                                                  children: const <Widget>[
                                                     Text(
                                                         'Are you sure you want to report this post?')
                                                   ],
