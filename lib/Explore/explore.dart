@@ -162,8 +162,7 @@ class _exploreState extends State<explore> {
                                   crossAxisCount: 2,
                                   // Generate 100 widgets that display their index in the List.
                                   children: List.generate(arr.length, (index) {
-                                    return explore_card(
-                                        url: arr[index]['image']);
+                                    return explore_card(post: arr[index]);
                                   }),
                                 ),
                               )

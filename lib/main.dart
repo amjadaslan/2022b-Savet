@@ -90,10 +90,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print("\n\n\n\n\n\n\n\n\n");
-    print(_sharedFiles);
-
-    print("\n\n\n\n\n\n\n\n\n");
     return FutureBuilder(
         future: _initialization,
         builder: (context, snapshot) {
@@ -120,10 +116,6 @@ class Splash2 extends StatefulWidget {
 class _Splash2State extends State<Splash2> {
   @override
   Widget build(BuildContext context) {
-    print("\n\n\n\n\n\n\n\n\n");
-    print("main");
-    print(widget.sharedFiles);
-    print("\n\n\n\n\n\n\n\n\n");
     return Container(
       color: Colors.deepOrange,
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.20),

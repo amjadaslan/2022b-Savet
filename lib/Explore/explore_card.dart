@@ -7,8 +7,8 @@ import '../Posts/Post/post_comment_section.dart';
 import '../Posts/similar_content_card.dart';
 
 class explore_card extends StatefulWidget {
-  explore_card({Key? key, required this.url}) : super(key: key);
-  String url;
+  explore_card({Key? key, required this.post}) : super(key: key);
+  Map post;
   @override
   _explore_cardState createState() => _explore_cardState();
 }
@@ -38,7 +38,7 @@ class _explore_cardState extends State<explore_card> {
                         color: Colors.white,
                         child: FadeInImage.assetNetwork(
                             placeholder: 'assets/preloader.gif',
-                            image: (this.widget.url)),
+                            image: (this.widget.post['image'])),
                       ),
                       Container(
                         height: 40,
@@ -50,7 +50,7 @@ class _explore_cardState extends State<explore_card> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "  @username",
+                                  "  ${widget.post['username']}",
                                   style: TextStyle(
                                       fontFamily: 'arial',
                                       decoration: TextDecoration.none,
@@ -90,7 +90,7 @@ class _explore_cardState extends State<explore_card> {
                                               title: Text('Report post'),
                                               content: SingleChildScrollView(
                                                 child: Column(
-                                                  children: <Widget>[
+                                                  children: const <Widget>[
                                                     Text(
                                                         'Are you sure you want to report this post?')
                                                   ],
@@ -109,7 +109,7 @@ class _explore_cardState extends State<explore_card> {
                                                                 .all(Colors
                                                                     .deepOrange)),
                                                     onPressed: () {
-                                                      this.widget.url =
+                                                      widget.post['image'] =
                                                           'https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/report.png?alt=media&token=ab9ee150-0bd4-4697-aee9-96b10d7b4959';
                                                       setState(() {});
                                                       Navigator.of(context)
