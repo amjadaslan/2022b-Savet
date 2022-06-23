@@ -43,7 +43,7 @@ class _notification_cardState extends State<notification_card> {
                         Text("${widget.message}",
                             style: TextStyle(
                                 decoration: TextDecoration.none,
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontFamily: 'arial',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black45))

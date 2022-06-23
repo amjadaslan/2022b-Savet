@@ -81,8 +81,39 @@ class _explore_cardState extends State<explore_card> {
                                   IconButton(
                                       iconSize: 15,
                                       onPressed: () {
-                                        this.widget.url='https://i.pinimg.com/736x/fe/d8/3f/fed83f3a6a2008bb667e15e972452dce.jpg';
-                                       setState(() {});
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false, // user must tap button!
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Report post'),
+                                              content: SingleChildScrollView(
+                                                child: Column(
+                                                  children:  <Widget>[
+                                                    Text('Are you sure you want to report this post? If yes, we will review the post to determine wether it violates our Policies.')
+                                                  ],
+                                                ),
+                                              ),
+                                              actions:[
+                                                TextButton(
+                                                  child: Text('Yes, report it'),
+                                                  style: ButtonStyle(foregroundColor : MaterialStateProperty.all(Colors.white),
+                                                      backgroundColor: MaterialStateProperty.all(Colors.deepOrange)),
+                                                  onPressed: () {
+                                                    this.widget.url='https://i.pinimg.com/736x/fe/d8/3f/fed83f3a6a2008bb667e15e972452dce.jpg';
+                                                    setState(() {});Navigator.of(context).pop(true);}
+                                                ),
+                                                TextButton(
+                                                  child: Text('No'),
+                                                  style: ButtonStyle(foregroundColor : MaterialStateProperty.all(Colors.white),
+                                                      backgroundColor: MaterialStateProperty.all(Colors.deepOrange)),
+                                                  onPressed: () => Navigator.of(context).pop(false),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+
                                       },
                                       icon: Icon(Icons.report,
                                           color: Colors.grey[400])),

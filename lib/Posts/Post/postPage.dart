@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:savet/Posts/Post/Reactions.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
-
+import 'package:like_button/like_button.dart';
+import '../../Notifications/notificationsHelper.dart';
+import '../../Profile/followers_following_list.dart';
 import '../../Services/user_db.dart';
 import 'post_comment_section.dart';
 import '../edit_post.dart';
@@ -34,6 +36,60 @@ class _postPageState extends State<postPage> {
   List arr = [];
   @override
   Widget build(BuildContext context) {
+    bool isHappy = false, isLoved = false;
+    var postsIliked = Provider.of<UserDB>(context, listen: false).postsIliked;
+    var postsIloved = Provider.of<UserDB>(context, listen: false).postsIloved;
+
+    for (var e in postsIliked) {
+      if (e == widget.post_id) {
+        isHappy = true;
+        break;}
+    }
+
+    for (var e in postsIloved) {
+      if (e == widget.post_id) {
+        isLoved = true;
+        break;}
+    }
+
+
+
+
+    Future<bool> onLikeButtonTapped(bool  x)async{
+      /// send your request here
+       if(!isHappy){ await Provider.of<UserDB>(context, listen: false)
+          .addLike(Provider.of<UserDB>(context, listen: false).user_email,widget.user?['email'],  widget.post_id,
+          widget.cat_id);
+       Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'reacted to your post');
+       }
+       else{ await Provider.of<UserDB>(context, listen: false)
+           .removeLike(Provider.of<UserDB>(context, listen: false).user_email,widget.user?['email'],  widget.post_id,
+           widget.cat_id);
+       Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'deleted reaction on your post');
+       }
+       isHappy = !isHappy;
+      return isHappy;
+    }
+
+
+    Future<bool> onLoveButtonTapped(bool x) async{
+      /// send your request here
+      if(!isLoved){ await Provider.of<UserDB>(context, listen: false)
+          .addLove(Provider.of<UserDB>(context, listen: false).user_email,widget.user?['email'],  widget.post_id,
+          widget.cat_id);
+
+        Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'loved your post');
+      }
+      else{ await Provider.of<UserDB>(context, listen: false)
+          .removeLove(Provider.of<UserDB>(context, listen: false).user_email,widget.user?['email'],  widget.post_id,
+          widget.cat_id);
+      Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'unlove your post');
+      }
+
+       isLoved = !isLoved;
+
+      return isLoved;}
+
     String tag;
     List posts;
     if (widget.user != null) {
@@ -63,6 +119,10 @@ class _postPageState extends State<postPage> {
         break;
       }
     }
+
+  var l = post['likers'];
+    print(l);
+
     return FutureBuilder(
         future: getTagPosts(tag),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -261,88 +321,121 @@ class _postPageState extends State<postPage> {
                             fit: BoxFit.cover,
                             width: double.infinity,
                             image: NetworkImage(post['image'])),
-                    (widget.public_flag)
-                        ? Container(
-                           // height: MediaQuery.of(context).size.height * 0.12,
-                          //  color: Colors.deepOrangeAccent,
-                           // child: Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                             //children: [
-                             //  Material(
-                                //   color: Colors.transparent,
-                                   child : Reaction(cat_id: widget.cat_id, post_id: widget.post_id,user: widget.user??FirebaseAuth.instance.currentUser,))
-                                  //   child: IconButton(
-                                  //       iconSize: 50,
-                                  //       onPressed: () {
-                                  //         setState(() {
-                                  //           isPressed = !isPressed;
-                                  //         });
-                                  //       },
-                                  //       icon: (!isPressed)
-                                  //           ? Icon(Icons.favorite_border,
-                                  //               color: Colors.white)
-                                  //           : Icon(Icons.favorite,
-                                  //               color: Colors.white))
-                             //  ),
-                             //    const VerticalDivider(
-                             //      color: Colors.white,
-                             //      thickness: 3,
-                             //      indent: 5,
-                             //      endIndent: 5,
-                             //    ),
-                                // Material(
-                                //     color: Colors.transparent,
-                                //     child: IconButton(
-                                //         iconSize: 40,
-                                //         onPressed: () {
-                                //           Navigator.push(
-                                //               context,
-                                //               MaterialPageRoute(
-                                //                   builder: (context) =>
-                                //                       post_comment_section(
-                                //                         post_id: post['id'],
-                                //                         cat_id: post['cat_id'],
-                                //                       )));
-                                //         },
-                                //         icon: Icon(Icons.mode_comment_outlined,
-                                //             color: Colors.white))),
-                          //   ],
-                          // ),
-                         // )
-                        : const SizedBox(),
-                    const SizedBox(height: 20),
-                    (widget.public_flag)
-                        ? Row(
-                            children: [
-                              SizedBox(width: 10),
-                              Icon(Icons.favorite, color: Colors.red, size: 30),
-                              SizedBox(width: 5),
-                              Text('0',
-                                  //'${Provider.of<UserDB>(context).categories[widget.cat_id]['posts'][widget.post_id]['likes']}',
-                                  style: TextStyle(
-                                    fontFamily: 'arial',
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.none,
-                                    color: Colors.black54,
-                                    fontSize: 20),
-                              )
-                            ],
-                          )
-                        : const SizedBox(),
                     (!post['description'].isEmpty)
                         ? Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                            child: Text(
-                              post['description'],
-                              style: const TextStyle(
-                                  fontFamily: 'arial',
-                                  decoration: TextDecoration.none,
-                                  color: Colors.black54,
-                                  fontSize: 15),
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                      child: Text(
+                        post['description'],
+                        style: const TextStyle(
+                            fontFamily: 'arial',
+                            decoration: TextDecoration.none,
+                            color: Colors.black54,
+                            fontSize: 15),
+                      ),
+                    )
+                        : const SizedBox(height: 30),(widget.public_flag)
+                        ? Container(
+                       child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4.0),
+                                color: Colors.white,
+                                border: Border.all(color: Colors.deepOrange)),
+                           // width: 120,
+                      child : (widget.user?['email'] !=null) ?
+
+                      Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          LikeButton(
+                                size: 50,
+                                circleColor:
+                                CircleColor(start:Colors.deepOrange, end: Colors.deepOrange),
+                                bubblesColor: BubblesColor(
+                                  dotPrimaryColor: Colors.deepOrange,
+                                  dotSecondaryColor: Colors.deepOrange,
+                                ),
+                                likeBuilder: (isLiked) {
+                                  return Icon(
+                                    Icons.favorite,
+                                    color: (isLoved)
+                                        ? Colors.deepOrange : Colors.grey,
+                                    size:40,
+                                  );
+                                },
+                                likeCount: post['loves'],
+                                onTap: onLoveButtonTapped,
+
+                              ),
+                          LikeButton(
+                              size: 50,
+                              circleColor:
+                              CircleColor(start:Colors.deepOrange, end: Colors.deepOrange),
+                              bubblesColor: BubblesColor(
+                                dotPrimaryColor: Colors.deepOrange,
+                                dotSecondaryColor: Colors.deepOrange,
+                              ),
+                              likeBuilder: (isLiked) {
+                                return Icon(
+                                  Icons.insert_emoticon_sharp ,
+                                  color: (isHappy)
+                                      ? Colors.deepOrange : Colors.grey,
+                                  size:40,
+                                );
+                              },
+                              likeCount: post['likes'],
+                              onTap: onLikeButtonTapped,
+                            // countBuilder: () {}
+                          ),
+                          Container(
+                            width: 120,
+                            child: FlatButton(
+                              onPressed: ()  {
+
+                                Navigator.push(context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            post_comment_section(
+                                              post_id: widget.post_id,
+                                              cat_id: widget.cat_id,
+                                            )));
+
+                                Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'commented on your post');
+                              },
+                              color: Colors.white,
+                              textColor: Colors.deepOrange,
+                              padding: EdgeInsets.all(13.0),
+                              child: Row(
+                                children: <Widget>[Icon(Icons.comment), Text(" Comment")],
+                              ),
                             ),
-                          )
+                          ),
+                        ],
+                      ):Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(children: <Widget>[Icon(Icons.favorite,color: Colors.deepOrange), Text(' ${post['loves']}')],),
+                          FlatButton( onPressed: () {}, child: Row(children: <Widget>[Icon(Icons.insert_emoticon_sharp,color: Colors.deepOrange),  Text(' ${post['likes']}')],),),
+                          Container(
+                            width: 65,
+                            child: FlatButton(
+                              onPressed: ()  {},
+                              color: Colors.white,
+                              textColor: Colors.deepOrange,
+                              padding: EdgeInsets.all(13.0),
+                              child: Row(
+                                // Replace with a Row for horizontal icon + text
+                                children: <Widget>[Icon(Icons.comment), Text(' ${post['comments'].length}')],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                       ))
                         : const SizedBox(),
+                  //  const SizedBox(height: 20),
+
+
                     SizedBox(height: (widget.public_flag) ? 30 : 0),
                     (arr.length > 0)
                         ? Container(

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Profile/follower_card.dart';
-import 'package:savet/about.dart';
 import 'package:savet/auth/auth_repository.dart';
 import 'package:savet/auth/googleLogin.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Notifications/notificationsHelper.dart';
 import 'package:savet/Posts/Post/post_comment_section.dart';
-import '../../Notifications/notificationService.dart';
 import '../../Services/user_db.dart';
 import '../../main.dart';
 
@@ -670,23 +669,23 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
                   width: 30,
                   child: TextButton(  onPressed: () async {
 
-                      Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'reacted to your post');
+                     // Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'reacted to your post');
 
                       // scheduleNotification(notifsPlugin, DateTime.now().toString(),
                       //     'Savet',
                       //     "${widget.user?['username']} reacted to your post",DateTime.now().subtract(Duration(minutes: 1)),
                       //     widget.post_id);
 
-                       Map like = {
-                       'username':
-                       Provider.of<UserDB>(context, listen: false).username,
-                      'avatar_path':
-                       Provider.of<UserDB>(context, listen: false).avatar_path,
-                         'reaction': getTextBtn()};
-
-                         await Provider.of<UserDB>(context, listen: false)
-                        .addLike(widget.user?['email'], like, widget.post_id,
-                        widget.cat_id);
+                      //  Map like = {
+                      //  'username':
+                      //  Provider.of<UserDB>(context, listen: false).username,
+                      // 'avatar_path':
+                      //  Provider.of<UserDB>(context, listen: false).avatar_path,
+                      //    'reaction': getTextBtn()};
+                      //
+                      //    await Provider.of<UserDB>(context, listen: false)
+                      //   .addLike(widget.user?['email'], like, widget.post_id,
+                      //   widget.cat_id);
 
                       setState(() {});
                    }

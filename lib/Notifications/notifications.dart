@@ -15,6 +15,7 @@ class _notificationsState extends State<notifications> {
   @override
 
   Widget build(BuildContext context) {
+    int len =Provider.of<UserDB>(context, listen: false).notifications.length;
     print('hi soo');
     print(Provider.of<UserDB>(context, listen: false).notifications.length);
     return Scaffold(
@@ -26,17 +27,17 @@ class _notificationsState extends State<notifications> {
       body: Container(
         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
 
-        child : ListView(
+        child : (len > 0) ?ListView(
           shrinkWrap: true,
-          children: List.generate(
+          children:  List.generate(
               Provider.of<UserDB>(context, listen: false)
-                  .notifications.length,
+                  .notifications.length-1,
                   (index) => notification_card(image: Provider.of<UserDB>(context, listen: false).notifications[index]['avatar_path'],
                       username:Provider.of<UserDB>(context, listen: false).notifications[index]['username'],
                       message:Provider.of<UserDB>(context, listen: false)
                           .notifications[index]['noti'])
-          ),
-        ),
+          )
+        ):  const SizedBox(width: 10),
       ),
     );
   }
