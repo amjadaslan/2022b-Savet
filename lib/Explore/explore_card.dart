@@ -7,8 +7,8 @@ import '../Posts/Post/post_comment_section.dart';
 import '../Posts/similar_content_card.dart';
 
 class explore_card extends StatefulWidget {
-   explore_card({Key? key, required this.url}) : super(key: key);
-   String url;
+  explore_card({Key? key, required this.url}) : super(key: key);
+  String url;
   @override
   _explore_cardState createState() => _explore_cardState();
 }
@@ -83,37 +83,57 @@ class _explore_cardState extends State<explore_card> {
                                       onPressed: () {
                                         showDialog(
                                           context: context,
-                                          barrierDismissible: false, // user must tap button!
+                                          barrierDismissible:
+                                              false, // user must tap button!
                                           builder: (BuildContext context) {
                                             return AlertDialog(
                                               title: Text('Report post'),
                                               content: SingleChildScrollView(
                                                 child: Column(
-                                                  children:  <Widget>[
-                                                    Text('Are you sure you want to report this post? If yes, we will review the post to determine wether it violates our Policies.')
+                                                  children: <Widget>[
+                                                    Text(
+                                                        'Are you sure you want to report this post?')
                                                   ],
                                                 ),
                                               ),
-                                              actions:[
+                                              actions: [
                                                 TextButton(
-                                                  child: Text('Yes, report it'),
-                                                  style: ButtonStyle(foregroundColor : MaterialStateProperty.all(Colors.white),
-                                                      backgroundColor: MaterialStateProperty.all(Colors.deepOrange)),
-                                                  onPressed: () {
-                                                    this.widget.url='https://i.pinimg.com/736x/fe/d8/3f/fed83f3a6a2008bb667e15e972452dce.jpg';
-                                                    setState(() {});Navigator.of(context).pop(true);}
-                                                ),
+                                                    child: Text('Report'),
+                                                    style: ButtonStyle(
+                                                        foregroundColor:
+                                                            MaterialStateProperty
+                                                                .all(Colors
+                                                                    .white),
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all(Colors
+                                                                    .deepOrange)),
+                                                    onPressed: () {
+                                                      this.widget.url =
+                                                          'https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/report.png?alt=media&token=ab9ee150-0bd4-4697-aee9-96b10d7b4959';
+                                                      setState(() {});
+                                                      Navigator.of(context)
+                                                          .pop(true);
+                                                    }),
                                                 TextButton(
-                                                  child: Text('No'),
-                                                  style: ButtonStyle(foregroundColor : MaterialStateProperty.all(Colors.white),
-                                                      backgroundColor: MaterialStateProperty.all(Colors.deepOrange)),
-                                                  onPressed: () => Navigator.of(context).pop(false),
+                                                  child: Text('Cancel'),
+                                                  style: ButtonStyle(
+                                                      foregroundColor:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  Colors.white),
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(Colors
+                                                                  .deepOrange)),
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(false),
                                                 ),
                                               ],
                                             );
                                           },
                                         );
-
                                       },
                                       icon: Icon(Icons.report,
                                           color: Colors.grey[400])),
