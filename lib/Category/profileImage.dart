@@ -5,8 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/add_category.dart';
 import 'package:savet/Posts/videoPlayer.dart';
-import 'package:savet/auth/auth_repository.dart';
-import 'package:video_player/video_player.dart';
 
 import '../Services/user_db.dart';
 import 'add_category.dart';
@@ -40,6 +38,7 @@ class _profileImageState extends State<profileImage> {
   Widget build(BuildContext context) {
     path = widget.pWrap.value;
     final _picker = ImagePicker();
+
     var bottomSheet = Container(
       height: 100.0,
       width: MediaQuery.of(context).size.width,
@@ -180,6 +179,7 @@ class _profileImageState extends State<profileImage> {
     final pickedFile = (val == 'Image')
         ? await picker.pickImage(
             source: source,
+            imageQuality: 80,
           )
         : await picker.pickVideo(source: source);
     type = val;

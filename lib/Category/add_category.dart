@@ -2,7 +2,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
-import 'package:savet/Services/user_db.dart';
+
+import '../Services/user_db.dart';
 
 class add_category extends StatefulWidget {
   const add_category({Key? key}) : super(key: key);
