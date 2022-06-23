@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 import 'package:transparent_image/transparent_image.dart';
-
 import '../Posts/Post/postPage.dart';
 import '../Posts/add_post.dart';
 import '../Services/user_db.dart';
