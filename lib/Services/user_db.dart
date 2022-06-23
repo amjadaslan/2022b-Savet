@@ -13,15 +13,14 @@ class UserDB extends ChangeNotifier {
   String? user_email = "";
   String? log_from = "";
   List notifications = [];
-
   List recently_added = [];
-
   List followers = [];
   int followers_count = 0;
   List following = [];
   int following_count = 0;
   List postsIliked = [];
   List postsIloved = [];
+  List reminders = [[]];
   List categories = [
     {
       'title': "Recently Added",
@@ -64,7 +63,8 @@ class UserDB extends ChangeNotifier {
           'email': user_email,
           'log_from': log_from,
           'postsIliked': postsIliked,
-          'postsIloved': postsIloved
+          'postsIloved': postsIloved,
+          'reminders': reminders
         });
       } else {
         username = userData['username'];
@@ -77,6 +77,7 @@ class UserDB extends ChangeNotifier {
         followers_count = userData['followers_count'];
         postsIliked = userData['postsIliked'];
         postsIloved = userData['postsIloved'];
+        reminders = userData['reminders'];
 
         //fetching Notifications
         List<dynamic> notif = userData['notifications'];
@@ -254,19 +255,17 @@ class UserDB extends ChangeNotifier {
     tot_posts = 0;
     postsIliked = [];
     postsIloved = [];
+    reminders = [];
     username = "";
     avatar_path = "";
     user_email = "";
     log_from = "";
     notifications = [];
-
     recently_added = [];
-
     followers = [];
     followers_count = 0;
     following = [];
     following_count = 0;
-
     categories = [
       {
         'title': "Recently Added",
@@ -595,7 +594,44 @@ class UserDB extends ChangeNotifier {
       p['date'] = date;
       p['time'] = _time;
     }
+    userDocument.update({'categories': categories});
+    notifyListeners();
+  }
 
+  Future<void> addReminder(String id, String title, String body,
+      DateTime scheduledTime, int not_id, int cat_id, int post_id) async {
+    print("Adding a Reminder");
+
+    var e = reminders == null
+        ? null
+        : reminders.where((element) =>
+            (element['cat_id'] == cat_id && element['post_id'] == post_id));
+    if (e == null) {
+      reminders.add({
+        'date': scheduledTime,
+        'cat_id': cat_id,
+        'post_is': post_id,
+        'not_id': not_id,
+        'body': body,
+        'title': title,
+        'id': id,
+        'ref': null
+      });
+    } else {
+      // if (reminders == null) {
+      //   reminders.set({
+      //     'date': scheduledTime,
+      //     'cat_id': cat_id,
+      //     'post_is': post_id,
+      //     'not_id': not_id,
+      //     'body': body,
+      //     'title': title,
+      //     'id': id,
+      //     'ref': null
+      //   });
+      // }
+      //e['date'] = scheduledTime;
+    }
     userDocument.update({'categories': categories});
     notifyListeners();
   }
@@ -700,7 +736,8 @@ class UserDB extends ChangeNotifier {
       'categories': categories,
       'username': username,
       'postsIliked': postsIliked,
-      'postsIloved': postsIloved
+      'postsIloved': postsIloved,
+      'reminders': reminders
       //'log_from': log_from
     });
   }

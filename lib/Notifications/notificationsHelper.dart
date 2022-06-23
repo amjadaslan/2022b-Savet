@@ -64,28 +64,6 @@ Future<void> scheduleNotification(
   ///the id is a global int from main check if there is other solution to identify the notification
 }
 
-Future<void> scheduleNotificationWithTime(
-    notifs.FlutterLocalNotificationsPlugin notifsPlugin,
-    String id,
-    String title,
-    String body,
-    DateTime scheduledTime,
-    int not_id) async {
-  var androidSpecifics = notifs.AndroidNotificationDetails(
-      id, // This specifies the ID of the Notification
-      'Scheduled notification', // This specifies the name of the notification channel//This specifies the description of the channel
-      icon: '@mipmap/ic_launcher',
-      priority: Priority.high,
-      importance: Importance.max);
-  var iOSSpecifics = notifs.IOSNotificationDetails();
-  var platformChannelSpecifics =
-      notifs.NotificationDetails(android: androidSpecifics, iOS: iOSSpecifics);
-  await notifsPlugin.schedule(not_id, title, body, scheduledTime,
-      platformChannelSpecifics); // This literally schedules the notification
-
-  ///the id is a global int from main check if there is other solution to identify the notification
-}
-
 Future<void> turnOffNotification(
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
   await flutterLocalNotificationsPlugin.cancelAll();
