@@ -40,15 +40,12 @@ class UserDB extends ChangeNotifier {
     try {
       print("Fetching Data...");
       final auth = FirebaseAuth.instance.currentUser;
-
       user_email = !(auth!.isAnonymous) ? auth.email : auth.uid;
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
-
       DocumentSnapshot userSnapshot = await userDocument.get();
       Map<String, dynamic> userData =
           userSnapshot.data() as Map<String, dynamic>;
-
       if (userData.length <= 3) {
         if (userData.length == 3) {
           avatar_path = userData['avatar_path'];
@@ -103,12 +100,83 @@ class UserDB extends ChangeNotifier {
         //             e['following'], e['username'], e['avatar_path']))
         //       });
         // }
+
       }
     } catch (e) {
       print("ERROR Facebook login $e");
     }
   }
 
+  List gitCate() {
+    return categories;
+  }
+
+  //
+  // fetchDataPosts() async {
+  //   try {
+  //     print("Fetching Data Posts...");
+  //     final auth = FirebaseAuth.instance.currentUser;
+  //     user_email = !(auth!.isAnonymous) ? auth.email : auth.uid;
+  //     userDocument =
+  //         FirebaseFirestore.instance.collection('users').doc(user_email);
+  //     DocumentSnapshot userSnapshot = await userDocument.get();
+  //     Map<String, dynamic> userData =
+  //     userSnapshot.data() as Map<String, dynamic>;
+  //     if (userData.length <= 3) {
+  //       if (userData.length == 3) {
+  //         avatar_path = userData['avatar_path'];
+  //       }
+  //       log_from = userData['log_from'];
+  //       username = userData['username'];
+  //       await userDocument.set({
+  //         'avatar_path': avatar_path,
+  //         'notifications': notifications,
+  //         'followers': followers,
+  //         'followers_count': followers_count,
+  //         'following': following,
+  //         'following_count': followers_count,
+  //         'categories': categories,
+  //         'username': username,
+  //         'email': user_email,
+  //         'log_from': log_from
+  //       });
+  //     } else {
+  //       username = userData['username'];
+  //       log_from = userData['log_from'];
+  //       avatar_path = userData['avatar_path'];
+  //       categories = userData['categories'];
+  //       following_count = userData['following_count'];
+  //       following = userData['following'];
+  //       followers = userData['followers'];
+  //       followers_count = userData['followers_count'];
+  //
+  //       //fetching Notifications
+  //       List<dynamic> notif = userData['notifications'];
+  //       notifications = notif;
+  //
+  //       notif.forEach((e) => {notifications.add(e)});
+  //
+  //       //fetching list of followers
+  //       // List<dynamic> flwrs = userData['followers'];
+  //
+  //       //   flwrs.forEach((e) => {
+  //       //         followers.add(userwithFollowers_Following(e['followers'],
+  //       //             e['following'], e['username'], e['avatar_path']))
+  //       //       });
+  //       //
+  //       //   //fetching list of followers
+  //       //   List<dynamic> flwng = userData['following'];
+  //       //
+  //       //   flwng.forEach((e) => {
+  //       //         following.add(userwithFollowers_Following(e['followers'],
+  //       //             e['following'], e['username'], e['avatar_path']))
+  //       //       });
+  //       // }
+  //     }
+  //   } catch (e) {
+  //     print("ERROR Facebook login $e");
+  //   }
+  // }
   fetchDataAfterAnonymous(var x) async {
     try {
       final auth = FirebaseAuth.instance.currentUser;
@@ -222,12 +290,12 @@ class UserDB extends ChangeNotifier {
       'username': username,
       'avatar_path': avatar_path,
       'email': user_email,
-      'noti' : noti
+      'noti': noti
     });
 
     s.update({'notifications': notifications});
     fetchData();
-     notifyListeners();
+    notifyListeners();
   }
 
   void changeCategoryProfile(int cat_id, String new_img) async {
@@ -291,42 +359,47 @@ class UserDB extends ChangeNotifier {
 
   void editPost(int cat_id, int post_id, String title, String discr,
       String image_path, bool videoFlag, DateTime? date) async {
-    final file = File(image_path);
-    String path = "";
-    bool temp = file.absolute.existsSync();
-    if (temp) {
-      String c = image_path.hashCode.toString();
-      final ref = await FirebaseStorage.instance.ref('$c');
-      (videoFlag)
-          ? await ref.putFile(file, SettableMetadata(contentType: 'video/mp4'))
-          : await ref.putFile(file);
+    try {
+      final file = File(image_path);
+      String path = "";
+      bool temp = file.absolute.existsSync();
+      if (temp) {
+        String c = image_path.hashCode.toString();
+        final ref = await FirebaseStorage.instance.ref('$c');
+        (videoFlag)
+            ? await ref.putFile(
+                file, SettableMetadata(contentType: 'video/mp4'))
+            : await ref.putFile(file);
 
-      path = await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+        path =
+            await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+      }
+      print(cat_id);
+      print(post_id);
+      var e = categories.singleWhere((element) => element['id'] == cat_id);
+      var p = e?['posts'].singleWhere((element) => element['id'] == post_id);
+      if (p != null) if (temp) {
+        p['image'] = path;
+      }
+      p['title'] = title;
+      p['description'] = discr;
+
+      var t = categories[0]['posts'].singleWhere(
+          (element) => element['cat_id'] == cat_id && element['id'] == post_id);
+      if (t['cat_id'] == cat_id && t['id'] == post_id) {
+        if (temp) {
+          t['image'] = path;
+        }
+        t['title'] = title;
+        t['description'] = discr;
+      }
+      userDocument.update({'categories': categories});
+
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      print("cat id does not exist");
     }
-    print(cat_id);
-    print(post_id);
-    categories.forEach((e) {
-      if (e['id'] == cat_id) {
-        if (temp) {
-          e['posts'][post_id]['image'] = path;
-        }
-        e['posts'][post_id]['title'] = title;
-        e['posts'][post_id]['description'] = discr;
-      }
-    });
-
-    categories[0]['posts'].forEach((e) {
-      if (e['cat_id'] == cat_id && e['id'] == post_id) {
-        if (temp) {
-          e['image'] = path;
-        }
-        e['title'] = title;
-        e['description'] = discr;
-      }
-    });
-    userDocument.update({'categories': categories});
-
-    notifyListeners();
   }
 
   /*
@@ -364,6 +437,7 @@ class UserDB extends ChangeNotifier {
   Future<void> addCategory(
       String title, String desc, String profile_img, String tag) async {
     String path;
+
     if (profile_img.isEmpty) {
       path = await FirebaseStorage.instance
           .ref()
@@ -389,7 +463,7 @@ class UserDB extends ChangeNotifier {
   }
 
   void addPost(String t, String d, String image_path, int c_i, bool videoFlag,
-      DateTime? date) async {
+      DateTime? date, String? time) async {
     final file = File(image_path);
     String c = image_path.hashCode.toString();
     final ref = await FirebaseStorage.instance.ref('$c');
@@ -408,7 +482,8 @@ class UserDB extends ChangeNotifier {
           'id': post_id,
           'cat_id': c_i,
           'videoFlag': videoFlag,
-          'reminder': date,
+          'date': date,
+          'time': time,
           'comments': {},
           'likes': 0,
           'likers': [],
@@ -423,7 +498,8 @@ class UserDB extends ChangeNotifier {
           'id': post_id,
           'cat_id': c_i,
           'videoFlag': videoFlag,
-          'reminder': date,
+          'date': date,
+          'time': time,
           'comments': {},
           'likes': 0,
           'likers': [],
@@ -437,7 +513,6 @@ class UserDB extends ChangeNotifier {
       }
     });
     userDocument.update({'categories': categories});
-
     notifyListeners();
   }
 
@@ -463,7 +538,7 @@ class UserDB extends ChangeNotifier {
     categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id, tot_posts--);
 
     userDocument.update({'categories': categories});
-    notifyListeners(); //TODO: hi
+    notifyListeners();
   }
 
   Future<void> removePost(int p_id, int c_id) async {
@@ -494,8 +569,8 @@ class UserDB extends ChangeNotifier {
     return userData;
   }
 
-  //TODO: change date
-  void changeDate(Timestamp t, int id) async {
+  //TODO: I don't know why need this, but okay i want to continue working to fix the reminder Please check it
+  void changeDate2(Timestamp t, int id) async {
     print("changeDate");
     var s = FirebaseFirestore.instance.collection('users').doc(user_email);
     DocumentSnapshot userSnapshot = await s.get();
@@ -503,6 +578,24 @@ class UserDB extends ChangeNotifier {
     var posts = userData['categories'][2]['posts'][0];
     print(posts);
     posts.insert({'reminder': t});
+    notifyListeners();
+  }
+
+  void changeDate(int cat_id, int post_id, String date, String _time) async {
+    print("changeDate");
+    print(_time);
+
+    var e = categories.singleWhere((element) => element['id'] == cat_id);
+    var p = null;
+    if (e != null) {
+      p = e['posts'].singleWhere((element) => element['id'] == post_id);
+    }
+    if (p != null) {
+      p['date'] = date;
+      p['time'] = _time;
+    }
+
+    userDocument.update({'categories': categories});
     notifyListeners();
   }
 
@@ -608,6 +701,7 @@ class UserDB extends ChangeNotifier {
       'postsIliked': postsIliked,
       'postsIloved': postsIloved
       //'log_from': log_from
+
     });
   }
 
@@ -628,6 +722,7 @@ class UserDB extends ChangeNotifier {
   //   notifyListeners();
   //   assert(flag);
   // }
+
 
   Future<bool?> addLike(String? myEmail,String? email , int post_id, int cat_id,) async {
     print("Adding like");
@@ -670,7 +765,8 @@ class UserDB extends ChangeNotifier {
     } else {
       var s = FirebaseFirestore.instance.collection('users').doc(email);
       DocumentSnapshot userSnapshot = await s.get();
-      Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> userData =
+          userSnapshot.data() as Map<String, dynamic>;
 
       var me = FirebaseFirestore.instance.collection('users').doc(myEmail);
       DocumentSnapshot userSnapshot2 = await me.get();
@@ -679,6 +775,7 @@ class UserDB extends ChangeNotifier {
       var likers =  userData['categories']
           .singleWhere((element) => element['id'] == cat_id)['posts']
           .singleWhere((element) => element['id'] == post_id)['likers'];
+
 
       userData['categories']
           .singleWhere((element) => element['id'] == cat_id)['posts']
@@ -734,7 +831,8 @@ class UserDB extends ChangeNotifier {
     } else {
       var s = FirebaseFirestore.instance.collection('users').doc(email);
       DocumentSnapshot userSnapshot = await s.get();
-      Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> userData =
+          userSnapshot.data() as Map<String, dynamic>;
 
       var me = FirebaseFirestore.instance.collection('users').doc(myEmail);
       DocumentSnapshot userSnapshot2 = await me.get();
@@ -755,6 +853,5 @@ class UserDB extends ChangeNotifier {
       me.update({'postsIloved': myData['postsIloved']});
 
     }
-
   }
 }

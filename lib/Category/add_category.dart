@@ -1,8 +1,9 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
-import 'package:savet/Services/user_db.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+
+import '../Services/user_db.dart';
 
 class add_category extends StatefulWidget {
   const add_category({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class _add_categoryState extends State<add_category> {
     "Movies & TV Shows"
   ];
   String tag = "Private";
-
+  int selected = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,51 +134,59 @@ class _add_categoryState extends State<add_category> {
                         ),
                       )),
                   SizedBox(height: 40),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 30),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Cancel"),
-                            style: TextButton.styleFrom(
-                                primary: Colors.white,
-                                fixedSize: Size(
-                                    MediaQuery.of(context).size.width * 0.4,
-                                    50),
-                                shape: const StadiumBorder(),
-                                backgroundColor: Colors.deepOrange),
-                          ),
-                          SizedBox(width: 30),
-                          TextButton(
-                            onPressed: () async {
-                              if (_name.text.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            "Please write a title for the category")));
-                              } else {
-                                await Provider.of<UserDB>(context,
-                                        listen: false)
-                                    .addCategory(_name.text, _desc.text,
-                                        pWrap.value, tag);
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: Text("Submit"),
-                            style: TextButton.styleFrom(
-                                primary: Colors.white,
-                                fixedSize: Size(
-                                    MediaQuery.of(context).size.width * 0.4,
-                                    50),
-                                shape: const StadiumBorder(),
-                                backgroundColor: Colors.deepOrange),
-                          )
-                        ]),
-                  )
+                  selected == 0
+                      ? Padding(
+                          padding: EdgeInsets.only(bottom: 30),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text("Cancel"),
+                                  style: TextButton.styleFrom(
+                                      primary: Colors.white,
+                                      fixedSize: Size(
+                                          MediaQuery.of(context).size.width *
+                                              0.4,
+                                          50),
+                                      shape: const StadiumBorder(),
+                                      backgroundColor: Colors.deepOrange),
+                                ),
+                                SizedBox(width: 30),
+                                TextButton(
+                                  onPressed: () async {
+                                    if (_name.text.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "Please write a title for the category")));
+                                    } else {
+                                      setState(() {
+                                        selected = 1;
+                                      });
+                                      await Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .addCategory(_name.text, _desc.text,
+                                              pWrap.value, tag);
+                                      selected = 0;
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                  child: Text("Submit"),
+                                  style: TextButton.styleFrom(
+                                      primary: Colors.white,
+                                      fixedSize: Size(
+                                          MediaQuery.of(context).size.width *
+                                              0.4,
+                                          50),
+                                      shape: const StadiumBorder(),
+                                      backgroundColor: Colors.deepOrange),
+                                )
+                              ]),
+                        )
+                      : CircularProgressIndicator()
                 ],
               ),
             ),

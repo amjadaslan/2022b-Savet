@@ -113,6 +113,7 @@ class _add_postState extends State<add_post> {
                                         pWrap.value,
                                         widget.cat_id,
                                         pWrap.videoFlag,
+                                        null,
                                         null);
                                 Navigator.of(context).pop();
                               }
