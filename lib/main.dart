@@ -1,12 +1,15 @@
 // @dart=2.9
 
 import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:savet/Services/CategoryDB.dart';
 import 'package:splashscreen/splashscreen.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'Notifications/notificationsHelper.dart';
 import 'Services/user_db.dart';
 import 'auth/auth_repository.dart';
@@ -22,7 +25,7 @@ Future<void> main() async {
   await initNotifications(notifsPlugin);
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
-    'High Importance Notifications', '', // title
+    'High Importance Notifications', // title
     importance: Importance.max,
   );
   await notifsPlugin
@@ -39,6 +42,7 @@ Future<void> main() async {
         create: (context) => context.read<AuthRepository>().onAuthStateChanged,
       ),
       ChangeNotifierProvider(create: (context) => UserDB()),
+      ChangeNotifierProvider(create: (context) => CategoryDB()),
     ],
     child: MyApp(),
   ));

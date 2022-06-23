@@ -7,8 +7,8 @@ import '../Posts/Post/post_comment_section.dart';
 import '../Posts/similar_content_card.dart';
 
 class explore_card extends StatefulWidget {
-  const explore_card({Key? key, required this.url}) : super(key: key);
-  final String url;
+  explore_card({Key? key, required this.url}) : super(key: key);
+  String url;
   @override
   _explore_cardState createState() => _explore_cardState();
 }
@@ -81,28 +81,87 @@ class _explore_cardState extends State<explore_card> {
                                   IconButton(
                                       iconSize: 15,
                                       onPressed: () {
-                                        // Navigator.push(
-                                        //     context,
-                                        //     MaterialPageRoute(
-                                        //         builder: (context) =>
-                                        //             public_post_comments(
-                                        //                 post_id: 0,
-                                        //                 cat_id: 0)));
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible:
+                                              false, // user must tap button!
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Report post'),
+                                              content: SingleChildScrollView(
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Text(
+                                                        'Are you sure you want to report this post?')
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                    child: Text('Report'),
+                                                    style: ButtonStyle(
+                                                        foregroundColor:
+                                                            MaterialStateProperty
+                                                                .all(Colors
+                                                                    .white),
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all(Colors
+                                                                    .deepOrange)),
+                                                    onPressed: () {
+                                                      this.widget.url =
+                                                          'https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/report.png?alt=media&token=ab9ee150-0bd4-4697-aee9-96b10d7b4959';
+                                                      setState(() {});
+                                                      Navigator.of(context)
+                                                          .pop(true);
+                                                    }),
+                                                TextButton(
+                                                  child: Text('Cancel'),
+                                                  style: ButtonStyle(
+                                                      foregroundColor:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  Colors.white),
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(Colors
+                                                                  .deepOrange)),
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(false),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       },
-                                      icon: Icon(Icons.mode_comment_outlined,
+                                      icon: Icon(Icons.report,
                                           color: Colors.grey[400])),
-                                  IconButton(
-                                      iconSize: 18,
-                                      onPressed: () {
-                                        setState(() {
-                                          isPressed = !isPressed;
-                                        });
-                                      },
-                                      icon: (!isPressed)
-                                          ? Icon(Icons.favorite_border,
-                                              color: Colors.grey[400])
-                                          : Icon(Icons.favorite,
-                                              color: Colors.red))
+                                  // IconButton(
+                                  //     iconSize: 15,
+                                  //     onPressed: () {
+                                  //       // Navigator.push(
+                                  //       //     context,
+                                  //       //     MaterialPageRoute(
+                                  //       //         builder: (context) =>
+                                  //       //             public_post_comments(
+                                  //       //                 post_id: 0,
+                                  //       //                 cat_id: 0)));
+                                  //     },
+                                  //     icon: Icon(Icons.mode_comment_outlined,
+                                  //         color: Colors.grey[400])),
+                                  // IconButton(
+                                  //     iconSize: 18,
+                                  //     onPressed: () {
+                                  //       setState(() {
+                                  //         isPressed = !isPressed;
+                                  //       });
+                                  //     },
+                                  //     icon: (!isPressed)
+                                  //         ? Icon(Icons.favorite_border,
+                                  //             color: Colors.grey[400])
+                                  //         : Icon(Icons.favorite,
+                                  //             color: Colors.red))
                                 ])),
                           ],
                         ),

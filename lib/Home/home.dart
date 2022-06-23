@@ -30,6 +30,7 @@ class _homeState extends State<home> {
   TextEditingController _editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    //Provider.of<UserDB>(context).updateData();
     final auth = FirebaseAuth.instance.currentUser;
     List cats = Provider.of<UserDB>(context).categories.toList();
     cats.removeWhere((cat) =>
@@ -84,8 +85,10 @@ class _homeState extends State<home> {
             ]),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const add_category())),
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const add_category()));
+          },
           backgroundColor: Colors.deepOrange,
         ),
         body: ListView(children: <Widget>[
@@ -113,7 +116,8 @@ class _homeState extends State<home> {
           const SizedBox(height: 10),
           Center(
               child: Container(
-                  child: ReorderableGridView.count(
+                  child: SingleChildScrollView(
+                      child: ReorderableGridView.count(
             shrinkWrap: true,
             crossAxisCount: 3,
             onReorder: (int oldIndex, int newIndex) async {
@@ -131,6 +135,7 @@ class _homeState extends State<home> {
               var t = Provider.of<UserDB>(context, listen: false)
                   .categories[oldIndex];
               print(t);
+
               Provider.of<UserDB>(context, listen: false).categories[oldIndex] =
                   Provider.of<UserDB>(context, listen: false)
                       .categories[newIndex];
@@ -142,7 +147,7 @@ class _homeState extends State<home> {
             },
             children: categories,
             childAspectRatio: 0.8,
-          )))
+          ))))
         ]));
   }
 }

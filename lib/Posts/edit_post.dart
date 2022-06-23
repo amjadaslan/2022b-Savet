@@ -25,13 +25,16 @@ class edit_postState extends State<edit_post> {
     print("Edit post");
     print(widget.cat_id);
     print(widget.post_id);
-    var cat = Provider.of<UserDB>(context)
+    // var cat = Provider.of<UserDB>(context)
+    //     .categories
+    //     .singleWhere((element) => element['id'] == widget.cat_id);
+    // //  print(cat);
+    var e = Provider.of<UserDB>(context)
         .categories
         .singleWhere((element) => element['id'] == widget.cat_id);
-    //  print(cat);
-    var posts = cat['posts'];
-    //print(posts);
-    var post = posts[0];
+    var post = e?['posts'].singleWhere(
+        (element) => element['id'] == widget.post_id); //print(posts);
+    //var post = posts[0];
     //print(post);
     pWrap = pWrap.value == "" ? pathWrapper(post['image']) : pWrap;
     String name = post['title'].toString();
@@ -106,6 +109,7 @@ class edit_postState extends State<edit_post> {
                         children: [
                           TextButton(
                             onPressed: () {
+                              Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             },
                             child: const Text("Cancel"),

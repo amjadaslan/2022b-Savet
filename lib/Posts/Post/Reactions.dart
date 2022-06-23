@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Notifications/notificationsHelper.dart';
 import 'package:savet/Posts/Post/post_comment_section.dart';
-import '../../Notifications/notificationService.dart';
 import '../../Services/user_db.dart';
 import '../../main.dart';
 
@@ -15,7 +14,7 @@ class Reaction extends StatefulWidget {
 
   @override
 
-  Reaction({Key? key, required this.cat_id, required this.post_id,this.user}) : super(key: key);
+  Reaction({Key? key, required this.cat_id, required this.post_id,this.user,}) : super(key: key);
   int cat_id;
   int post_id;
   var user;
@@ -295,7 +294,7 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
         child: Stack(
 
           children: <Widget>[
-            //renderBox(),
+            renderBox(),
             renderIcons(),
             Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children : [renderBtnLike(),
@@ -319,63 +318,72 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
   Widget renderComment(){
 
     return Container(
-      child :TextButton(
-        // Within the `FirstRoute` widget
-        onPressed: () {
-          Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    post_comment_section(
-                                      post_id: widget.post_id,
-                                      cat_id: widget.cat_id,
-                                    )));
-        },
-        child: Container(
-          padding: EdgeInsets.all(13.0),
-          width: 100,
-          child: const Text('Comment',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.deepOrange),
-            textAlign: TextAlign.center,
-          ), decoration: BoxDecoration(
+            child: Container(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4.0),
           color: Colors.white,
-          border: Border.all(color: Colors.deepOrange),
+          border: Border.all(color: Colors.deepOrange)),
+          width: 120,
+          child: FlatButton(
+            onPressed: ()  {
+
+            Navigator.push(context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          post_comment_section(
+                                            post_id: widget.post_id,
+                                            cat_id: widget.cat_id,
+                                          )));
+
+                Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'commented on your post');
+                // scheduleNotification(notifsPlugin, DateTime.now().toString(),
+                //     'Savet', "${widget.user['username']} commented on your post",DateTime.now().subtract(Duration(minutes: 1)),
+                //     widget.post_id);
+            },
+
+            color: Colors.white,
+            textColor: Colors.deepOrange,
+            padding: EdgeInsets.all(13.0),
+            child: Row(
+              // Replace with a Row for horizontal icon + text
+              children: <Widget>[Icon(Icons.comment), Text(" Comment")],
+            ),
+          ),
         ),
-        ),
-      ),
+
+
+      //),
       margin: EdgeInsets.only(top: 50.0),
     );
   }
 
-  // Widget renderBox() {
-  //   return Opacity(
-  //     child: Container(
-  //       decoration: BoxDecoration(
-  //
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(30.0),
-  //         border: Border.all(color: Colors.grey.shade300, width: 0.3),
-  //         boxShadow: [
-  //           BoxShadow(
-  //               color: Colors.grey,
-  //               blurRadius: 5.0,
-  //               // LTRB
-  //               offset: Offset.lerp(Offset(0.0, 0.0), Offset(0.0, 0.5), 10.0)!),
-  //         ],
-  //       ),
-  //       width: 300.0,
-  //       height: isDragging
-  //           ? (previousIconFocus == 0 ? this.zoomBoxIcon.value : 40.0)
-  //           : isDraggingOutside
-  //           ? this.zoomBoxWhenDragOutside.value
-  //           : 50.0,
-  //       // margin: EdgeInsets.only(bottom: 130.0, left: 10.0),
-  //     ),
-  //     opacity: this.fadeInBox.value,
-  //   );
-  // }
+  Widget renderBox() {
+    return Opacity(
+      child: Container(
+        decoration: BoxDecoration(
+
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30.0),
+          border: Border.all(color: Colors.grey.shade300, width: 0.3),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey,
+                blurRadius: 5.0,
+                // LTRB
+                offset: Offset.lerp(Offset(0.0, 0.0), Offset(0.0, 0.5), 10.0)!),
+          ],
+        ),
+        width: 300.0,
+        height: isDragging
+            ? (previousIconFocus == 0 ? this.zoomBoxIcon.value : 40.0)
+            : isDraggingOutside
+            ? this.zoomBoxWhenDragOutside.value
+            : 50.0,
+        // margin: EdgeInsets.only(bottom: 130.0, left: 10.0),
+      ),
+      opacity: this.fadeInBox.value,
+    );
+  }
 
   Widget renderIcons() {
     return Container(
@@ -657,55 +665,38 @@ class ReactionState extends State<Reaction> with TickerProviderStateMixin {
         child: Container(
           child: Row(
               children: <Widget>[
+                Container(// number of likes
+                  width: 30,
+                  child: TextButton(  onPressed: () async {
 
-                // number of likes
-                Transform.scale(
-                  child: Transform.rotate(
-                    child: TextButton(  onPressed: () async {
+                     // Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'reacted to your post');
 
-                      Provider.of<UserDB>(context, listen:false).addNotification(widget.user?['email'],'reacted to your post');
+                      // scheduleNotification(notifsPlugin, DateTime.now().toString(),
+                      //     'Savet',
+                      //     "${widget.user?['username']} reacted to your post",DateTime.now().subtract(Duration(minutes: 1)),
+                      //     widget.post_id);
 
-                      scheduleNotification(notifsPlugin, DateTime.now().toString(),
-                          'Savet',
-                          "${widget.user?['username']} reacted to your post",DateTime.now().subtract(Duration(minutes: 1)),
-                          1);
+                      //  Map like = {
+                      //  'username':
+                      //  Provider.of<UserDB>(context, listen: false).username,
+                      // 'avatar_path':
+                      //  Provider.of<UserDB>(context, listen: false).avatar_path,
+                      //    'reaction': getTextBtn()};
+                      //
+                      //    await Provider.of<UserDB>(context, listen: false)
+                      //   .addLike(widget.user?['email'], like, widget.post_id,
+                      //   widget.cat_id);
 
-
-                     //   Map like = {
-                     //   'username':
-                     //   Provider.of<UserDB>(context, listen: false).username,
-                     //  'avatar_path':
-                     //   Provider.of<UserDB>(context, listen: false).avatar_path,
-                     //     'reaction': getTextBtn()};
-                     //
-                     //  if(getTextBtn()!=Colors.grey) {
-                     //     await Provider.of<UserDB>(context, listen: false)
-                     //    .addLike(widget.user?['email'], like, widget.post_id,
-                     //    widget.cat_id);
-                     // }else{
-                     //    await Provider.of<UserDB>(context, listen: false)
-                     //    .removeLike(widget.user?['email'], like, widget.post_id,
-                     //    widget.cat_id);
-                     //
-                     // }
                       setState(() {});
-
                    }
 
           //, child: Text('${widget.user?['categories'][widget.cat_id].posts[widget.post_id]['likers']}',
-                    , child: Text('0',
-
-                      style: TextStyle(color: getColorTextBtn(), fontSize: 16.0, fontWeight: FontWeight.bold,
-
+             , child: Text('0', style: TextStyle(color: getColorTextBtn(),
+                          fontSize: 16.0, fontWeight: FontWeight.bold,
               ),
             )),
-                    angle:
-                    !isLongPress ? handleOutputRangeTiltIconLike(tiltIconLikeInBtn2.value) : tiltIconLikeInBtn.value,
-                  ),
-                  scale:
-                  !isLongPress ? handleOutputRangeZoomInIconLike(zoomIconLikeInBtn2.value) : zoomIconLikeInBtn.value,
-                ),
 
+          ),
 
 
                // Icon like

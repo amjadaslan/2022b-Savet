@@ -8,7 +8,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
-import '../about.dart';
 import '../auth/login_page.dart';
 
 class profile extends StatefulWidget {
