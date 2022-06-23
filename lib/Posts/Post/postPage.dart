@@ -1,19 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
-import 'package:savet/Posts/Post/Reactions.dart';
+import 'package:savet/Posts/Post/post_comment_section.dart';
 import 'package:savet/Posts/similar_content_card.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 //import 'package:schedule_local_notification/notificationservice.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../../Notifications/notificationsHelper.dart';
-import '../../Notifications/notificationsHelper.dart';
-import '../../Profile/followers_following_list.dart';
 import '../../Services/user_db.dart';
 import '../../main.dart';
 import '../edit_post.dart';
