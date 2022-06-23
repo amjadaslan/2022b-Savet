@@ -22,6 +22,7 @@ class UserDB extends ChangeNotifier {
   int following_count = 0;
   List postsIliked = [];
   List postsIloved = [];
+  List reported = [];
   List categories = [
     {
       'title': "Recently Added",
@@ -64,7 +65,8 @@ class UserDB extends ChangeNotifier {
           'email': user_email,
           'log_from': log_from,
           'postsIliked': postsIliked,
-          'postsIloved': postsIloved
+          'postsIloved': postsIloved,
+          'reported': reported
         });
       } else {
         username = userData['username'];
@@ -77,30 +79,7 @@ class UserDB extends ChangeNotifier {
         followers_count = userData['followers_count'];
         postsIliked = userData['postsIliked'];
         postsIloved = userData['postsIloved'];
-
-        //fetching Notifications
-        List<dynamic> notif = userData['notifications'];
-        notifications = notif;
-
-        notif.forEach((e) => {notifications.add(e)});
-
-        //fetching list of followers
-        // List<dynamic> flwrs = userData['followers'];
-
-        //   flwrs.forEach((e) => {
-        //         followers.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        //
-        //   //fetching list of followers
-        //   List<dynamic> flwng = userData['following'];
-        //
-        //   flwng.forEach((e) => {
-        //         following.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        // }
-
+        reported = userData['reported'];
       }
     } catch (e) {
       print("ERROR Facebook login $e");
@@ -838,6 +817,12 @@ class UserDB extends ChangeNotifier {
     me.update({'postsIloved': myData['postsIloved']});
 
     //fetchData();updateData(); notifyListeners();
+  }
+
+  void addToReported(int post_id) async {
+    print("adding to Reported");
+    reported.add(post_id);
+    await userDocument.update({'reported': reported});
   }
 
 //

@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../Posts/Post/post_comment_section.dart';
 import '../Posts/similar_content_card.dart';
+import '../Services/user_db.dart';
 
 class explore_card extends StatefulWidget {
   explore_card({Key? key, required this.post}) : super(key: key);
@@ -111,6 +113,11 @@ class _explore_cardState extends State<explore_card> {
                                                     onPressed: () {
                                                       widget.post['image'] =
                                                           'https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/report.png?alt=media&token=ab9ee150-0bd4-4697-aee9-96b10d7b4959';
+                                                      Provider.of<UserDB>(
+                                                              context,
+                                                              listen: false)
+                                                          .addToReported(widget
+                                                              .post['id']);
                                                       setState(() {});
                                                       Navigator.of(context)
                                                           .pop(true);

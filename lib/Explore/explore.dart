@@ -199,8 +199,14 @@ class _exploreState extends State<explore> {
     for (var user in users) {
       user['categories'].forEach((c) {
         if (c['id'] != 0 && curr_tags.contains(c['tag'])) {
-          c['posts'].forEach((p) {
+          c['posts'].forEach((p) async {
             arr.add(p);
+
+            if ((await Provider.of<UserDB>(context, listen: false))
+                .reported
+                .contains(p['id'])) {
+              arr.remove(p);
+            }
           });
         }
       });
