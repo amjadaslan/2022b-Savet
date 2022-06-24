@@ -504,10 +504,13 @@ class UserDB extends ChangeNotifier {
     String? pathToDelete = "";
     for (var e in categories) {
       if (e['id'] == c_id) {
-        pathToDelete = e['image'];
-        pathToDelete =
-            RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
-        await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        if (e['image'] !=
+            "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/default.jpg?alt=media&token=4afdedfe-bd76-46fd-b878-8bed3f269d7c") {
+          pathToDelete = e['image'];
+          pathToDelete =
+              RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+          await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        }
         for (var p in e['posts']) {
           pathToDelete = p['image'];
           pathToDelete =
@@ -519,9 +522,12 @@ class UserDB extends ChangeNotifier {
     categories.removeWhere((c) => c_id == c['id']);
 
     //removes all deleted posts from recently added category
-    categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id, tot_posts--);
-
-    userDocument.update({'categories': categories});
+    List s = categories[0]['posts'].where((p) => p['cat_id'] == c_id).toList();
+    tot_posts -= s.length;
+    var set1 = Set.from(s);
+    var set2 = Set.from(categories[0]['posts']);
+    categories[0]['posts'] = List.from(set1.difference(set2));
+    categories[0]['posts'] = userDocument.update({'categories': categories});
     notifyListeners();
   }
 
@@ -542,7 +548,6 @@ class UserDB extends ChangeNotifier {
     await FirebaseStorage.instance.ref('$pathToDelete').delete();
 
     userDocument.update({'categories': categories});
-    notifyListeners();
   }
 
   Future<Map> getUserByEmail(String _email) async {
