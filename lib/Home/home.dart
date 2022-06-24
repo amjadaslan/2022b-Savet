@@ -9,11 +9,9 @@ import 'package:savet/Profile/profile.dart';
 import '/Category/category.dart';
 import '../Category/add_category.dart';
 import '../Category/category_card.dart';
-import '../Notifications/notificationsHelper.dart';
 import '../Profile/profile.dart';
 import '../Services/user_db.dart';
 import '../auth/AnonymousLogin.dart';
-import '../main.dart';
 
 class home extends StatefulWidget {
   home({Key? key, required this.LoginFrom}) : super(key: key);
@@ -37,15 +35,6 @@ class _homeState extends State<home> {
 
     final auth = FirebaseAuth.instance.currentUser;
 
-    print(UserDB.reminders);
-    print(home.first_time);
-    if (home.first_time) {
-      UserDB.reminders.toList().forEach((e) {
-        scheduleNotification(notifsPlugin, e['id'], e['title'], e['body'],
-            e['date'].toDate(), e['not_id']);
-      });
-      home.first_time = false;
-    }
     // List rem = Provider.of<UserDB>(context, listen: false).reminders.toList();
     // rem.forEach((e) => {
     //       // if (e['date'].toDate().isAfter(DateTime.now))

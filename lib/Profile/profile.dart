@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
-import '../Home/home.dart';
 import '../Services/user_db.dart';
 import '../auth/login_page.dart';
 import '../main.dart';
@@ -32,6 +31,7 @@ class _profileState extends State<profile> {
           actions: [
             IconButton(
                 onPressed: () async {
+                  initializeNotifications(out: true);
                   if (widget.LoginFrom == "Email" || logfrom == "Email") {
                     Provider.of<UserDB>(context, listen: false)
                         .resetFetchData();
@@ -49,8 +49,6 @@ class _profileState extends State<profile> {
                     await Login().signOut();
                   }
                   await notifsPlugin.cancelAll();
-                  home.first_time = true;
-                  print(home.first_time);
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const Login()),
                       (Route<dynamic> route) => false);

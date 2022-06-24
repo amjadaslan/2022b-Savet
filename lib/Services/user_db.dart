@@ -25,7 +25,7 @@ class UserDB extends ChangeNotifier {
       'date': DateTime.now(),
       'cat_id': 2,
       'post_id': 2,
-      'not_id': 2,
+      'not_id': 0,
       'body': "Nothing, just want to say Hi",
       'title': "Hi ^___^",
       'id': "id",
@@ -271,9 +271,9 @@ class UserDB extends ChangeNotifier {
         'date': DateTime.now(),
         'cat_id': 2,
         'post_id': 2,
-        'not_id': 2,
-        'body': "body",
-        'title': "title",
+        'not_id': 0,
+        'body': "Nothing, just want to say Hi",
+        'title': "Hi ^___^",
         'id': "id",
         'ref': null
       }
@@ -630,13 +630,14 @@ class UserDB extends ChangeNotifier {
         e = false;
       }
     });
+
     print(reminders);
     if (e) {
       reminders.add({
         'date': scheduledTime,
         'cat_id': cat_id,
         'post_id': post_id,
-        'not_id': not_id,
+        'not_id': not_id + 1,
         'body': body,
         'title': title,
         'id': id,
@@ -645,6 +646,18 @@ class UserDB extends ChangeNotifier {
     }
     userDocument.update({'categories': categories, 'reminders': reminders});
     notifyListeners();
+  }
+
+  Future<void> removeReminder() async {
+    if (reminders != null && reminders.length > 1) {
+      reminders.toList().forEach((e) {
+        if (DateTime.now().isAfter(e['date'].toDate()) && e['not_id'] != 0) {
+          UserDB.reminders.remove(e);
+        }
+      });
+      userDocument.update({'reminders': reminders});
+      notifyListeners();
+    }
   }
 
   Future<void> addFollower(String email, Map him) async {
