@@ -162,7 +162,9 @@ class _exploreState extends State<explore> {
                                   crossAxisCount: 2,
                                   // Generate 100 widgets that display their index in the List.
                                   children: List.generate(arr.length, (index) {
-                                    return explore_card(post: arr[index]);
+                                    return explore_card(
+                                        post: arr[index]['post'],
+                                        user: arr[index]['user']);
                                   }),
                                 ),
                               )
@@ -200,12 +202,13 @@ class _exploreState extends State<explore> {
       user['categories'].forEach((c) {
         if (c['id'] != 0 && curr_tags.contains(c['tag'])) {
           c['posts'].forEach((p) async {
-            arr.add(p);
+            var post = {'post': p, 'user': user};
+            arr.add(post);
 
             if ((await Provider.of<UserDB>(context, listen: false))
                 .reported
                 .contains(p['id'])) {
-              arr.remove(p);
+              arr.remove(post);
             }
           });
         }
@@ -268,10 +271,8 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> getUserList(String? username) async {
     var snapshot = (await FirebaseFirestore.instance.collection('users').get());
     userList = snapshot.docs.map((doc) => doc.data()).toList();
+
     userList.removeWhere((user) =>
-        (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
-            .hasMatch(user['username'])) ||
-        (user['username'] == username) ||
-        (!user['email'].contains('@')));
+        (user['username'] == username) || !user['email'].contains('@'));
   }
 }

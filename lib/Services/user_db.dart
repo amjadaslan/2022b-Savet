@@ -76,7 +76,7 @@ class UserDB extends ChangeNotifier {
           'log_from': log_from,
           'postsIliked': postsIliked,
           'postsIloved': postsIloved,
-          'reminders': reminders
+          'reminders': reminders,
           'reported': reported
         });
       } else {

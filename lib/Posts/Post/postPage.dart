@@ -346,68 +346,6 @@ class _postPageState extends State<postPage> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    (widget.user != null)
-                        ? Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 5.0, color: Colors.grey[100]!))),
-                            child: Container(
-                                color: Colors.lightBlue,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.12,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: NetworkImage(
-                                            widget.user!['avatar_path'])),
-                                    Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(widget.user!['username'],
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  fontSize: 13,
-                                                  fontFamily: 'arial',
-                                                  color: Colors.white)),
-                                          SizedBox(height: 5),
-                                          Text(
-                                              "${widget.user!['followers_count']} Followers",
-                                              style: TextStyle(
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  fontSize: 11,
-                                                  fontFamily: 'arial',
-                                                  color: Colors.white))
-                                        ]),
-                                    TextButton(
-                                        onPressed: () {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  content: Text(
-                                                      'Following a user has not been implemented yet!')));
-                                        },
-                                        child: const AutoSizeText("Follow",
-                                            style:
-                                                const TextStyle(fontSize: 10)),
-                                        style: TextButton.styleFrom(
-                                            primary: Colors.white,
-                                            fixedSize: const Size(100, 20),
-                                            //shape: const StadiumBorder(),
-                                            backgroundColor:
-                                                Colors.deepOrangeAccent))
-                                  ],
-                                )),
-                          )
-                        : SizedBox(),
                     (post['videoFlag'])
                         ? VideoPlayerScreen(
                             networkFlag: true, url: post['image'])
@@ -490,21 +428,6 @@ class _postPageState extends State<postPage> {
                     //      ],
                     //    )
                     //        : const SizedBox(),
-
-                    (!post['description'].isEmpty)
-                        ? Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                            child: Text(
-                              post['description'],
-                              style: const TextStyle(
-                                  fontFamily: 'arial',
-                                  decoration: TextDecoration.none,
-                                  color: Colors.black54,
-                                  fontSize: 15),
-                            ),
-                          )
-                        : const SizedBox(height: 30),
                     (widget.public_flag)
                         ? Container(
                             child: Container(
@@ -642,6 +565,23 @@ class _postPageState extends State<postPage> {
                                         ],
                                       )))
                         : const SizedBox(),
+                    const SizedBox(height: 10),
+                    (!post['description'].isEmpty)
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                            child: Text(
+                              post['description'],
+                              style: const TextStyle(
+                                  fontFamily: 'arial',
+                                  decoration: TextDecoration.none,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                  fontSize: 15),
+                            ),
+                          )
+                        : const SizedBox(height: 30),
+
                     //  const SizedBox(height: 20),
 
                     SizedBox(height: (widget.public_flag) ? 30 : 0),

@@ -70,7 +70,7 @@ class _similar_content_cardState extends State<similar_content_card> {
                               Icon(Icons.favorite, color: Colors.red, size: 20),
                               SizedBox(width: 5),
                               Text(
-                                "1,828 Likes",
+                                "${widget.post['likes'] + widget.post['loves']} Likes",
                                 style: TextStyle(
                                     fontFamily: 'arial',
                                     decoration: TextDecoration.none,
