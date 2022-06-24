@@ -96,6 +96,7 @@ class _add_sharedState extends State<add_shared> {
           Center(
               child: Container(
                   child: GridView.count(
+            physics: ScrollPhysics(),
             shrinkWrap: true,
             crossAxisCount: 3,
             children: categories,
