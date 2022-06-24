@@ -38,7 +38,8 @@ class _categoryState extends State<category> {
       if (e['id'] == widget.id) cat = e;
     });
 
-    var pWrap = pathWrapper(cat['image']);
+    var pWrap =
+        (cat['image'] != null) ? pathWrapper(cat['image']) : pathWrapper("");
     var t = cat['title'];
     TextEditingController _cont = TextEditingController();
 
@@ -76,13 +77,12 @@ class _categoryState extends State<category> {
                                             MaterialStateProperty.all(
                                                 Colors.deepOrange)),
                                     onPressed: () {
-                                      setState(() {
-                                        Provider.of<UserDB>(context,
-                                                listen: false)
-                                            .removeCategory(widget.id);
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      });
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .removeCategory(widget.id);
+                                      setState(() {});
                                     },
                                   ),
                                   TextButton(
