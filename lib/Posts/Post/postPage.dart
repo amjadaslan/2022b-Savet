@@ -115,17 +115,21 @@ class _postPageState extends State<postPage> {
 
     String tag;
     List posts;
+    String _cat = " ";
+
     if (widget.user != null) {
       var cat = widget.user!['categories']
           .singleWhere((element) => element['id'] == widget.cat_id);
       posts = cat['posts'];
       tag = cat['tag'];
+      _cat = cat['title'];
     } else {
       var cat = Provider.of<UserDB>(context)
           .categories
           .singleWhere((element) => element['id'] == widget.cat_id);
       posts = cat['posts'];
       tag = cat['tag'];
+      _cat = cat['title'];
     }
     Map post = {
       'title': "",
@@ -232,11 +236,28 @@ class _postPageState extends State<postPage> {
                                                     time.hour,
                                                     time.minute),
                                                 time.format(context));
+                                        //String id, String title, String body,
+                                        //       DateTime scheduledTime, int not_id, int cat_id, int post_id
+                                        Provider.of<UserDB>(context,
+                                                listen: false)
+                                            .addReminder(
+                                                "1",
+                                                "Reminder from Savet",
+                                                "category: $_cat ,post: ${post['title']}",
+                                                DateTime(
+                                                    value.year,
+                                                    value.month,
+                                                    value.day,
+                                                    time.hour,
+                                                    time.minute),
+                                                0,
+                                                widget.cat_id,
+                                                widget.post_id);
                                         scheduleNotification(
                                             notifsPlugin,
                                             " ",
                                             "Reminder from Savet",
-                                            "category: ${widget.cat_id} ,post: ${widget.post_id}",
+                                            "category: $_cat ,post: ${post['title']}",
                                             DateTime(
                                                 value.year,
                                                 value.month,

@@ -9,6 +9,7 @@ import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
 import '../auth/login_page.dart';
+import '../main.dart';
 
 class profile extends StatefulWidget {
   profile({Key? key, required this.LoginFrom}) : super(key: key);
@@ -30,6 +31,7 @@ class _profileState extends State<profile> {
           actions: [
             IconButton(
                 onPressed: () async {
+                  initializeNotifications(out: true);
                   if (widget.LoginFrom == "Email" || logfrom == "Email") {
                     Provider.of<UserDB>(context, listen: false)
                         .resetFetchData();
@@ -46,6 +48,7 @@ class _profileState extends State<profile> {
                         .resetFetchData();
                     await Login().signOut();
                   }
+                  await notifsPlugin.cancelAll();
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => Login()),
                       (Route<dynamic> route) => false);

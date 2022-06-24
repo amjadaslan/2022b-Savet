@@ -13,8 +13,10 @@ import 'package:savet/auth/ResetPassword.dart';
 import 'package:savet/auth/anonymous.dart';
 import 'package:savet/homepage.dart';
 
+import '../Notifications/notificationsHelper.dart';
 import '../Services/user_db.dart';
 import '../homepage.dart';
+import '../main.dart';
 import 'Register.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
@@ -51,7 +53,7 @@ class _LoginState extends State<Login> {
     print(auth.currentUser);
     if (auth.currentUser != null) {
       return FutureBuilder(
-          future: Provider.of<UserDB>(context).fetchData(),
+          future: Provider.of<UserDB>(context, listen: false).fetchData(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
@@ -164,8 +166,9 @@ class _LoginState extends State<Login> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => FutureBuilder(
-                                  future:
-                                      Provider.of<UserDB>(context).fetchData(),
+                                  future: Provider.of<UserDB>(context,
+                                          listen: false)
+                                      .fetchData(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasError) {
                                       return Center(
@@ -173,6 +176,7 @@ class _LoginState extends State<Login> {
                                               Text(snapshot.error.toString()));
                                     } else if (snapshot.connectionState ==
                                         ConnectionState.done) {
+                                      initializeNotifications();
                                       return homepage(LoginFrom: LogFrom);
                                     }
                                     return const Center(
@@ -203,9 +207,11 @@ class _LoginState extends State<Login> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => FutureBuilder(
-                                  future:
-                                      Provider.of<UserDB>(context).fetchData(),
+                                  future: Provider.of<UserDB>(context,
+                                          listen: false)
+                                      .fetchData(),
                                   builder: (context, snapshot) {
+                                    initializeNotifications();
                                     return homepage(
                                       LoginFrom: LogFrom,
                                     );
@@ -228,7 +234,8 @@ class _LoginState extends State<Login> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FutureBuilder(
-                                      future: Provider.of<UserDB>(context)
+                                      future: Provider.of<UserDB>(context,
+                                              listen: false)
                                           .fetchData(),
                                       builder: (context, snapshot) {
                                         if (snapshot.hasError) {
@@ -237,6 +244,7 @@ class _LoginState extends State<Login> {
                                                   snapshot.error.toString()));
                                         } else if (snapshot.connectionState ==
                                             ConnectionState.done) {
+                                          initializeNotifications();
                                           return homepage(LoginFrom: LogFrom);
                                         }
                                         return const Center(
@@ -258,8 +266,6 @@ class _LoginState extends State<Login> {
                         LogFrom = "Google";
                         var x = Google.instance();
                         await x.signIn();
-
-                        // Provider.of<UserDB>(context,listen:false).userDocument
                         var boo = await FirebaseFirestore.instance
                             .collection('users')
                             .doc(auth.currentUser?.email)
@@ -269,11 +275,13 @@ class _LoginState extends State<Login> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FutureBuilder(
-                                      future: Provider.of<UserDB>(context)
+                                      future: Provider.of<UserDB>(context,
+                                              listen: false)
                                           .fetchData(),
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState ==
                                             ConnectionState.done) {
+                                          initializeNotifications();
                                           return homepage(LoginFrom: LogFrom);
                                         } else if (snapshot.hasError) {
                                           return Center(
@@ -417,4 +425,27 @@ class UserModel {
 }
    */
 
+}
+
+void initializeNotifications({bool out = false}) {
+  if (UserDB.reminders.length > 1) {
+    if (!out) {
+      print(UserDB.reminders);
+      UserDB.reminders.toList().forEach((e) {
+        scheduleNotification(notifsPlugin, e['id'], e['title'], e['body'],
+            e['date'].toDate(), e['not_id']);
+      });
+    }
+    UserDB.reminders.toList().forEach((e) {
+      if (DateTime.now().isAfter(e['date'].toDate()) && e['not_id'] != 0) {
+        UserDB.reminders.remove(e);
+      }
+    });
+
+    final auth = FirebaseAuth.instance.currentUser;
+    var user_email = !(auth!.isAnonymous) ? auth.email : auth.uid;
+    var userDocument =
+        FirebaseFirestore.instance.collection('users').doc(user_email);
+    userDocument.update({'reminders': UserDB.reminders});
+  }
 }
