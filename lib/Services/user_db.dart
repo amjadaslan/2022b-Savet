@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class UserDB extends ChangeNotifier {
   int tot_posts = 0;
 
-  String? username = "";
+  String? username = " ";
   String avatar_path = "";
   String? user_email = "";
   String? log_from = "";
@@ -20,7 +20,18 @@ class UserDB extends ChangeNotifier {
   int following_count = 0;
   List postsIliked = [];
   List postsIloved = [];
-  List reminders = [[]];
+  static List reminders = [
+    {
+      'date': DateTime.now(),
+      'cat_id': 2,
+      'post_id': 2,
+      'not_id': 2,
+      'body': "Nothing, just want to say Hi",
+      'title': "Hi ^___^",
+      'id': "id",
+      'ref': null
+    }
+  ];
   List categories = [
     {
       'title': "Recently Added",
@@ -255,7 +266,18 @@ class UserDB extends ChangeNotifier {
     tot_posts = 0;
     postsIliked = [];
     postsIloved = [];
-    reminders = [];
+    reminders = [
+      {
+        'date': DateTime.now(),
+        'cat_id': 2,
+        'post_id': 2,
+        'not_id': 2,
+        'body': "body",
+        'title': "title",
+        'id': "id",
+        'ref': null
+      }
+    ];
     username = "";
     avatar_path = "";
     user_email = "";
@@ -601,38 +623,27 @@ class UserDB extends ChangeNotifier {
   Future<void> addReminder(String id, String title, String body,
       DateTime scheduledTime, int not_id, int cat_id, int post_id) async {
     print("Adding a Reminder");
-
-    var e = reminders == null
-        ? null
-        : reminders.where((element) =>
-            (element['cat_id'] == cat_id && element['post_id'] == post_id));
-    if (e == null) {
+    bool e = true;
+    reminders.forEach((element) {
+      if (element['cat_id'] == cat_id && element['post_id'] == post_id) {
+        element['date'] = scheduledTime;
+        e = false;
+      }
+    });
+    print(reminders);
+    if (e) {
       reminders.add({
         'date': scheduledTime,
         'cat_id': cat_id,
-        'post_is': post_id,
+        'post_id': post_id,
         'not_id': not_id,
         'body': body,
         'title': title,
         'id': id,
         'ref': null
       });
-    } else {
-      // if (reminders == null) {
-      //   reminders.set({
-      //     'date': scheduledTime,
-      //     'cat_id': cat_id,
-      //     'post_is': post_id,
-      //     'not_id': not_id,
-      //     'body': body,
-      //     'title': title,
-      //     'id': id,
-      //     'ref': null
-      //   });
-      // }
-      //e['date'] = scheduledTime;
     }
-    userDocument.update({'categories': categories});
+    userDocument.update({'categories': categories, 'reminders': reminders});
     notifyListeners();
   }
 
