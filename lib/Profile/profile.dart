@@ -50,7 +50,7 @@ class _profileState extends State<profile> {
                   }
                   await notifsPlugin.cancelAll();
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const Login()),
+                      MaterialPageRoute(builder: (context) => Login()),
                       (Route<dynamic> route) => false);
                 },
                 icon: const Icon(Icons.logout)),

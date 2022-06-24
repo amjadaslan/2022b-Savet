@@ -32,6 +32,7 @@ class UserDB extends ChangeNotifier {
       'ref': null
     }
   ];
+  List reported = [];
   List categories = [
     {
       'title': "Recently Added",
@@ -76,6 +77,7 @@ class UserDB extends ChangeNotifier {
           'postsIliked': postsIliked,
           'postsIloved': postsIloved,
           'reminders': reminders
+          'reported': reported
         });
       } else {
         username = userData['username'];
@@ -113,6 +115,7 @@ class UserDB extends ChangeNotifier {
         //       });
         // }
 
+        reported = userData['reported'];
       }
     } catch (e) {
       print("ERROR Facebook login $e");
@@ -510,7 +513,9 @@ class UserDB extends ChangeNotifier {
           'likes': 0,
           'likers': [],
           'loves': 0,
-          'lovers': []
+          'lovers': [],
+          'username': username,
+          'email': user_email
         });
         tot_posts++;
         categories[0]['posts'].insert(0, {
@@ -526,7 +531,9 @@ class UserDB extends ChangeNotifier {
           'likes': 0,
           'likers': [],
           'loves': 0,
-          'lovers': []
+          'lovers': [],
+          'username': username,
+          'email': user_email
         });
         if (tot_posts > 20) {
           categories[0]['posts'].removeLast();
@@ -542,10 +549,13 @@ class UserDB extends ChangeNotifier {
     String? pathToDelete = "";
     for (var e in categories) {
       if (e['id'] == c_id) {
-        pathToDelete = e['image'];
-        pathToDelete =
-            RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
-        await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        if (e['image'] !=
+            "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/default.jpg?alt=media&token=4afdedfe-bd76-46fd-b878-8bed3f269d7c") {
+          pathToDelete = e['image'];
+          pathToDelete =
+              RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+          await FirebaseStorage.instance.ref('$pathToDelete').delete();
+        }
         for (var p in e['posts']) {
           pathToDelete = p['image'];
           pathToDelete =
@@ -557,9 +567,12 @@ class UserDB extends ChangeNotifier {
     categories.removeWhere((c) => c_id == c['id']);
 
     //removes all deleted posts from recently added category
-    categories[0]['posts'].removeWhere((p) => p['cat_id'] == c_id, tot_posts--);
-
-    userDocument.update({'categories': categories});
+    List s = categories[0]['posts'].where((p) => p['cat_id'] == c_id).toList();
+    tot_posts -= s.length;
+    var set1 = Set.from(s);
+    var set2 = Set.from(categories[0]['posts']);
+    categories[0]['posts'] = List.from(set1.difference(set2));
+    categories[0]['posts'] = userDocument.update({'categories': categories});
     notifyListeners();
   }
 
@@ -580,15 +593,15 @@ class UserDB extends ChangeNotifier {
     await FirebaseStorage.instance.ref('$pathToDelete').delete();
 
     userDocument.update({'categories': categories});
-    notifyListeners();
   }
 
-  Future<Map> getUserByEmail(String email) async {
-    var s = FirebaseFirestore.instance.collection('users').doc(email);
+  Future<Map> getUserByEmail(String _email) async {
+    var s = FirebaseFirestore.instance.collection('users').doc(_email);
     DocumentSnapshot userSnapshot = await s.get();
-    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    Map<String, dynamic> _userData =
+        userSnapshot.data() as Map<String, dynamic>;
 
-    return userData;
+    return _userData;
   }
 
   //TODO: I don't know why need this, but okay i want to continue working to fix the reminder Please check it
@@ -674,7 +687,7 @@ class UserDB extends ChangeNotifier {
       'followers_count': followers_count,
       'following_count': following_count + 1,
       'avatar_path': avatar_path,
-      'email': user_email
+      'email': user_email,
     });
 
     s.update(
@@ -688,7 +701,8 @@ class UserDB extends ChangeNotifier {
       'username': him['username'],
       'followers_count': him['followers_count'] + 1,
       'following_count': him['following_count'],
-      'avatar_path': him['avatar_path']
+      'avatar_path': him['avatar_path'],
+      'email': him['email']
     };
     myFollowing_list.add(to_add);
     following.add(to_add);
@@ -741,10 +755,12 @@ class UserDB extends ChangeNotifier {
       DocumentSnapshot userSnapshot = await s.get();
       Map<String, dynamic> userData =
           userSnapshot.data() as Map<String, dynamic>;
-      userData['categories']
+      var cats = userData['categories'];
+      cats
           .singleWhere((element) => element['id'] == cat_id)['posts']
           .singleWhere((element) => element['id'] == post_id)['comments']
           .add(comment);
+      s.update({'categories': cats});
     }
   }
 
@@ -891,6 +907,12 @@ class UserDB extends ChangeNotifier {
     me.update({'postsIloved': myData['postsIloved']});
 
     //fetchData();updateData(); notifyListeners();
+  }
+
+  void addToReported(int post_id) async {
+    print("adding to Reported");
+    reported.add(post_id);
+    await userDocument.update({'reported': reported});
   }
 
 //

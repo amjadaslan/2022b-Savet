@@ -162,8 +162,7 @@ class _exploreState extends State<explore> {
                                   crossAxisCount: 2,
                                   // Generate 100 widgets that display their index in the List.
                                   children: List.generate(arr.length, (index) {
-                                    return explore_card(
-                                        url: arr[index]['image']);
+                                    return explore_card(post: arr[index]);
                                   }),
                                 ),
                               )
@@ -200,8 +199,14 @@ class _exploreState extends State<explore> {
     for (var user in users) {
       user['categories'].forEach((c) {
         if (c['id'] != 0 && curr_tags.contains(c['tag'])) {
-          c['posts'].forEach((p) {
+          c['posts'].forEach((p) async {
             arr.add(p);
+
+            if ((await Provider.of<UserDB>(context, listen: false))
+                .reported
+                .contains(p['id'])) {
+              arr.remove(p);
+            }
           });
         }
       });

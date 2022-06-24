@@ -130,9 +130,8 @@ class _homeState extends State<home> {
           // FloatingSearchAppBarExample(),
           const SizedBox(height: 10),
           Center(
-              child: Container(
-                  child: SingleChildScrollView(
-                      child: ReorderableGridView.count(
+              child: ReorderableGridView.count(
+            physics: ScrollPhysics(),
             shrinkWrap: true,
             crossAxisCount: 3,
             onReorder: (int oldIndex, int newIndex) async {
@@ -162,7 +161,7 @@ class _homeState extends State<home> {
             },
             children: categories,
             childAspectRatio: 0.8,
-          ))))
+          ))
         ]));
   }
 }
