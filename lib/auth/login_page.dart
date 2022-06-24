@@ -1,23 +1,28 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/auth/Register.dart';
 import 'package:savet/auth/ResetPassword.dart';
 import 'package:savet/auth/anonymous.dart';
 import 'package:savet/homepage.dart';
-
+import 'package:http/http.dart' as http;
 import '../Services/user_db.dart';
 import '../homepage.dart';
+import '../main.dart';
 import 'Register.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
+
 
 class Login extends StatefulWidget {
   Login({Key? key, this.sharedFiles}) : super(key: key);
@@ -32,12 +37,93 @@ class _LoginState extends State<Login> {
   TextEditingController _password = new TextEditingController();
   TextEditingController _email = new TextEditingController();
   String LogFrom = "";
+  late AndroidNotificationChannel channel;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  @override
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+  void listenFCM() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              icon: 'launch_background',
+            ),
+          ),
+        );
+      }
+    });
+  }
+  void loadFCM() async {
+    if (!kIsWeb) {
+      channel = const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        importance: Importance.high,
+        enableVibration: true,
+      );
+
+      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      /// Create an Android Notification Channel.
+      ///
+      /// We use this channel in the `AndroidManifest.xml` file to override the
+      /// default FCM channel to enable heads up notifications.
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+
+      /// Update the iOS foreground notification presentation options to allow
+      /// heads up notifications.
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+  }
+
+
+    @override
   void initState() {
     super.initState();
     _email = TextEditingController(text: "");
     _password = TextEditingController(text: "");
+    requestPermission();
+
+    loadFCM();
+
+    listenFCM();
   }
 
   Future<FirebaseApp> _initializeFirebase() async {
@@ -47,6 +133,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+
     var auth = FirebaseAuth.instance;
     print(auth.currentUser);
     if (auth.currentUser != null) {
@@ -80,6 +167,26 @@ class _LoginState extends State<Login> {
                 return LoginScreen();
               }));
     }
+  }
+  void addToken() {
+    var auth = FirebaseAuth.instance;
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((token) {
+      final FirebaseFirestore db = FirebaseFirestore.instance;
+      return db.collection('tokens').where('token', isEqualTo: token)
+          .get().then((snapshot) async {
+        if (snapshot.docs.isEmpty) {
+          return db
+              .collection('tokens').doc(auth.currentUser?.email)
+              .set({
+            'token': token,
+            'registered_at': Timestamp.now(),
+            'email': auth.currentUser?.email
+          })
+              .then((value) => null);
+        }
+      });
+    });
   }
 
   Widget LoginScreen() {
@@ -157,6 +264,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   onPressed: () async {
+
                     //await user.signIn(_email.text, _password.text);
                     if ((await user.signIn(_email.text, _password.text))) {
                       LogFrom = "Email";
@@ -224,6 +332,7 @@ class _LoginState extends State<Login> {
                         LogFrom = "Facebook";
                         await loginFace();
                         if (auth.currentUser != null) {
+                          addToken();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -265,6 +374,7 @@ class _LoginState extends State<Login> {
                             .doc(auth.currentUser?.email)
                             .get();
                         if (x.currentUser() != null && boo.exists) {
+                          addToken();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -366,6 +476,7 @@ class _LoginState extends State<Login> {
           });
         }
         LogFrom = "Facebook";
+
       }
     } catch (e) {
       print("ERROR Facebook login $e");

@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:savet/auth/anonymous.dart';
@@ -48,6 +50,8 @@ class AuthRepository with ChangeNotifier {
       _status = Status.Authenticated;
       print("Debug2");
       print(_auth.currentUser);
+
+
       return temp;
     } catch (e) {
       print(e);
