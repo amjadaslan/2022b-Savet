@@ -78,7 +78,7 @@ class UserDB extends ChangeNotifier {
           'postsIliked': postsIliked,
           'postsIloved': postsIloved,
           'reported': reported,
-          'token': token
+          'token': token,
           'reminders': reminders,
         });
       } else {
@@ -228,7 +228,7 @@ class UserDB extends ChangeNotifier {
           'categories': categories,
           'username': username,
           'email': user_email,
-          'token':token
+          'token': token
           //'log_from': log_from
         });
       } else {
