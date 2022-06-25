@@ -28,6 +28,7 @@ class post_comment_section extends StatefulWidget {
 }
 
 class _post_comment_sectionState extends State<post_comment_section> {
+  bool typing = false;
   bool isPressed = false;
   TextEditingController commentController = TextEditingController();
   List arr = [];
@@ -310,44 +311,49 @@ class _post_comment_sectionState extends State<post_comment_section> {
                     width: MediaQuery.of(context).size.width * 0.6,
                     child: TextField(
                         controller: commentController,
+                        onChanged: (val) {
+                          setState(() {
+                            typing = val.isNotEmpty;
+                          });
+                        },
                         decoration:
                             InputDecoration(hintText: "Add a comment..."),
                         style: TextStyle(fontSize: 13))),
                 TextButton(
-                    onPressed: () async {
-                      if (commentController.text.isNotEmpty) {
-                        Map comment = {
-                          'username':
-                              Provider.of<UserDB>(context, listen: false)
-                                  .username,
-                          'avatar_path':
-                              Provider.of<UserDB>(context, listen: false)
-                                  .avatar_path,
-                          'content': commentController.text
-                        };
-                        await Provider.of<UserDB>(context, listen: false)
-                            .addCommentToPost(widget.user?['email'],
-                                widget.post_id, widget.cat_id, comment);
-                        Provider.of<UserDB>(context, listen: false)
-                            .addNotification(widget.user?['email'],
-                                ' commented on your post.');
-                        sendPushMessage(
-                            widget.token,
-                            '',
-                            '${Provider.of<UserDB>(context, listen: false).username}'
-                                " commented on your post.");
-                        post['comments'].add(comment);
-                        commentController.clear();
-                        setState(() {});
-                      }
-                    },
-                    child: Text("Post",
-                        style: TextStyle(
-                            fontFamily: 'arial',
-                            color: (commentController.text.isNotEmpty)
-                                ? Colors.deepOrangeAccent
-                                : Colors.deepOrange[100],
-                            fontSize: 13)))
+                  child: Text("Post",
+                      style: TextStyle(
+                          fontFamily: 'arial',
+                          color: (commentController.text.isNotEmpty || typing)
+                              ? Colors.deepOrangeAccent
+                              : Colors.deepOrange[100],
+                          fontSize: 13)),
+                  onPressed: () async {
+                    if (commentController.text.isNotEmpty) {
+                      Map comment = {
+                        'username': Provider.of<UserDB>(context, listen: false)
+                            .username,
+                        'avatar_path':
+                            Provider.of<UserDB>(context, listen: false)
+                                .avatar_path,
+                        'content': commentController.text
+                      };
+                      await Provider.of<UserDB>(context, listen: false)
+                          .addCommentToPost(widget.user?['email'],
+                              widget.post_id, widget.cat_id, comment);
+                      Provider.of<UserDB>(context, listen: false)
+                          .addNotification(widget.user?['email'],
+                              ' commented on your post.');
+                      sendPushMessage(
+                          widget.token,
+                          '',
+                          '${Provider.of<UserDB>(context, listen: false).username}'
+                              " commented on your post.");
+                      post['comments'].add(comment);
+                      commentController.clear();
+                      setState(() {});
+                    }
+                  },
+                )
               ]),
             ),
           );
