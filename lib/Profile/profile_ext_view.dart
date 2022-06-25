@@ -89,7 +89,8 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                     'Savet',
                     "${widget.user['username']} started following you",
                     DateTime.now().subtract(Duration(minutes: 1)),
-                    1);
+                    1,
+                    "");
               }
               setState(() {});
             },

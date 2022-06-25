@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -273,6 +272,9 @@ class _SearchPageState extends State<SearchPage> {
     userList = snapshot.docs.map((doc) => doc.data()).toList();
 
     userList.removeWhere((user) =>
-        (user['username'] == username) || !user['email'].contains('@'));
+        (user['username'] == username) ||
+        !user['email'].contains('@') ||
+        (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
+            .hasMatch(user['username'])));
   }
 }

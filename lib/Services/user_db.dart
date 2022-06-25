@@ -619,18 +619,21 @@ class UserDB extends ChangeNotifier {
   void changeDate(int cat_id, int post_id, DateTime date, String _time) async {
     print("changeDate");
     print(_time);
-
-    var e = categories.singleWhere((element) => element['id'] == cat_id);
-    var p = null;
-    if (e != null) {
-      p = e['posts'].singleWhere((element) => element['id'] == post_id);
+    try {
+      var e = categories.singleWhere((element) => element['id'] == cat_id);
+      var p = null;
+      if (e != null) {
+        p = e['posts'].singleWhere((element) => element['id'] == post_id);
+      }
+      if (p != null) {
+        p['date'] = date;
+        p['time'] = _time;
+      }
+      userDocument.update({'categories': categories});
+      notifyListeners();
+    } catch (e) {
+      print(e);
     }
-    if (p != null) {
-      p['date'] = date;
-      p['time'] = _time;
-    }
-    userDocument.update({'categories': categories});
-    notifyListeners();
   }
 
   Future<void> addReminder(String id, String title, String body,

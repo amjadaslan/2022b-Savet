@@ -48,13 +48,15 @@ Future<void> scheduleNotification(
     String title,
     String body,
     DateTime scheduledTime,
-    int not_id) async {
+    int not_id,
+    String? ref) async {
   var androidSpecifics = notifs.AndroidNotificationDetails(
       id, // This specifies the ID of the Notification
       'Scheduled notification', // This specifies the name of the notification channel//This specifies the description of the channel
-      icon: '@mipmap/ic_launcher',
+      icon: ref ?? '@mipmap/ic_launcher',
       priority: Priority.high,
       importance: Importance.max);
+
   var iOSSpecifics = notifs.IOSNotificationDetails();
   var platformChannelSpecifics =
       notifs.NotificationDetails(android: androidSpecifics, iOS: iOSSpecifics);
