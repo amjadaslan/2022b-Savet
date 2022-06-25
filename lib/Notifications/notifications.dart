@@ -16,7 +16,7 @@ class _notificationsState extends State<notifications> {
   Widget build(BuildContext context) {
     int len = Provider.of<UserDB>(context, listen: false).notifications.length;
     print('hi soo');
-    print(Provider.of<UserDB>(context, listen: false).notifications.length);
+    print(Provider.of<UserDB>(context, listen: false).notifications);print('hi soo');
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
