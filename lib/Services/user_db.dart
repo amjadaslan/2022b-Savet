@@ -488,22 +488,31 @@ class UserDB extends ChangeNotifier {
   }
 
   Future<void> removePost(int p_id, int c_id) async {
-    String? pathToDelete = "";
-    categories.forEach((e) {
-      if (e['id'] == c_id) {
-        categories[c_id]['posts'].forEach((p) {
-          if (p_id == p['id']) {
-            pathToDelete = p['image'];
-          }
-        });
-        categories[c_id]['posts'].removeWhere((p) => p_id == p['id']);
-      }
-    });
-    categories[0]['posts'].removeWhere((p) => p_id == p['id'], tot_posts--);
-    pathToDelete = RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
-    await FirebaseStorage.instance.ref('$pathToDelete').delete();
-
-    userDocument.update({'categories': categories});
+    try {
+      String? pathToDelete = "";
+      //print(categories);
+      categories.forEach((e) {
+        if (e['id'] == c_id) {
+          e['posts'].forEach((p) {
+            if (p?['id'] == p_id) {
+              pathToDelete = p['image'];
+            }
+          });
+        }
+        e['posts'].removeWhere((p) => p_id == p['id']);
+        print(e);
+      });
+      categories[0]['posts'].removeWhere((p) {
+        if (p_id == p['id'] && c_id == p['cat_id']) tot_posts--;
+      });
+      pathToDelete =
+          RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
+      await FirebaseStorage.instance.ref('$pathToDelete').delete();
+      userDocument.update({'categories': categories});
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<Map> getUserByEmail(String _email) async {

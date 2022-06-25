@@ -49,19 +49,35 @@ Future<void> scheduleNotification(
     String body,
     DateTime scheduledTime,
     int not_id,
-    String? ref) async {
+    String? image) async {
+  // var styleInfo;
+  // if (image != " ") {
+  //   var largeIcon = await await Image(
+  //       fit: BoxFit.cover, width: double.infinity, image: NetworkImage(image!));
+  //   var bigPicturePath = await Image(
+  //       fit: BoxFit.cover, width: double.infinity, image: NetworkImage(image));
+  //   styleInfo = BigPictureStyleInformation(
+  //     FilePathAndroidBitmap(bigPicturePath.toString()),
+  //     largeIcon: FilePathAndroidBitmap(largeIcon.toString()),
+  //   );
+  // }
   var androidSpecifics = notifs.AndroidNotificationDetails(
       id, // This specifies the ID of the Notification
       'Scheduled notification', // This specifies the name of the notification channel//This specifies the description of the channel
-      icon: ref ?? '@mipmap/ic_launcher',
+      icon: '@mipmap/ic_launcher',
       priority: Priority.high,
+      //styleInformation: styleInfo,
       importance: Importance.max);
-
   var iOSSpecifics = notifs.IOSNotificationDetails();
   var platformChannelSpecifics =
       notifs.NotificationDetails(android: androidSpecifics, iOS: iOSSpecifics);
-  await notifsPlugin.schedule(not_id, title, body, scheduledTime,
-      platformChannelSpecifics); // This literally schedules the notification
+  await notifsPlugin.schedule(
+    not_id,
+    title,
+    body,
+    scheduledTime,
+    platformChannelSpecifics,
+  ); // This literally schedules the notification
 
   ///the id is a global int from main check if there is other solution to identify the notification
 }

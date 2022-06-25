@@ -122,7 +122,6 @@ class _postPageState extends State<postPage> {
     String tag;
     List posts;
     String _cat = " ";
-    String username = " ";
     if (widget.user != null) {
       var cat = widget.user!['categories']
           .singleWhere((element) => element['id'] == widget.cat_id);
@@ -150,7 +149,7 @@ class _postPageState extends State<postPage> {
     for (var e in posts) {
       if (e['id'] == widget.post_id) {
         post = e;
-        var te = e['date']; //.toDate();
+        var te = e['date'];
         print(e);
         print(te);
         if (te != null && te != "" && widget.date == null) {
@@ -164,7 +163,6 @@ class _postPageState extends State<postPage> {
           // widget.date = DateFormat.yMd().format(e['reminder']);
           //DateTime.tryParse(te);
           print(widget.date);
-          username = e['username'];
           break;
         }
       }
@@ -172,7 +170,7 @@ class _postPageState extends State<postPage> {
 
     return FutureBuilder(
         future: Future.wait(
-            [getTagPosts(tag), findTokenByEmail(widget.user!['email'])]),
+            [getTagPosts(tag), findTokenByEmail(widget.user?['email'])]),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return Scaffold(
               appBar: AppBar(
@@ -249,8 +247,13 @@ class _postPageState extends State<postPage> {
                                                       time.hour,
                                                       time.minute),
                                                   time.format(context));
-                                          //String id, String title, String body,
-                                          //       DateTime scheduledTime, int not_id, int cat_id, int post_id
+
+                                          var image = Image(
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              image:
+                                                  NetworkImage(post['image']));
+
                                           Provider.of<UserDB>(context,
                                                   listen: false)
                                               .addReminder(
@@ -319,14 +322,19 @@ class _postPageState extends State<postPage> {
                                                             .all(Colors
                                                                 .deepOrange)),
                                                 onPressed: () {
-                                                  setState(() {
+                                                  // setState(() async {
+                                                  try {
                                                     Provider.of<UserDB>(context,
                                                             listen: false)
                                                         .removePost(post['id'],
                                                             post['cat_id']);
                                                     Navigator.pop(context);
                                                     Navigator.pop(context);
-                                                  });
+                                                    Navigator.pop(context);
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                  // });
                                                 },
                                               ),
                                               TextButton(
