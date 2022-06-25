@@ -92,31 +92,8 @@ class UserDB extends ChangeNotifier {
         followers_count = userData['followers_count'];
         postsIliked = userData['postsIliked'];
         postsIloved = userData['postsIloved'];
+        notifications = userData['notifications'];
         reminders = userData['reminders'];
-
-        //fetching Notifications
-        List<dynamic> notif = userData['notifications'];
-        notifications = notif;
-
-        notif.forEach((e) => {notifications.add(e)});
-
-        //fetching list of followers
-        // List<dynamic> flwrs = userData['followers'];
-
-        //   flwrs.forEach((e) => {
-        //         followers.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        //
-        //   //fetching list of followers
-        //   List<dynamic> flwng = userData['following'];
-        //
-        //   flwng.forEach((e) => {
-        //         following.add(userwithFollowers_Following(e['followers'],
-        //             e['following'], e['username'], e['avatar_path']))
-        //       });
-        // }
-
         reported = userData['reported'];
         token = userData['token'];
       }
@@ -125,76 +102,6 @@ class UserDB extends ChangeNotifier {
     }
   }
 
-  List gitCate() {
-    return categories;
-  }
-
-  //
-  // fetchDataPosts() async {
-  //   try {
-  //     print("Fetching Data Posts...");
-  //     final auth = FirebaseAuth.instance.currentUser;
-  //     user_email = !(auth!.isAnonymous) ? auth.email : auth.uid;
-  //     userDocument =
-  //         FirebaseFirestore.instance.collection('users').doc(user_email);
-  //     DocumentSnapshot userSnapshot = await userDocument.get();
-  //     Map<String, dynamic> userData =
-  //     userSnapshot.data() as Map<String, dynamic>;
-  //     if (userData.length <= 3) {
-  //       if (userData.length == 3) {
-  //         avatar_path = userData['avatar_path'];
-  //       }
-  //       log_from = userData['log_from'];
-  //       username = userData['username'];
-  //       await userDocument.set({
-  //         'avatar_path': avatar_path,
-  //         'notifications': notifications,
-  //         'followers': followers,
-  //         'followers_count': followers_count,
-  //         'following': following,
-  //         'following_count': followers_count,
-  //         'categories': categories,
-  //         'username': username,
-  //         'email': user_email,
-  //         'log_from': log_from
-  //       });
-  //     } else {
-  //       username = userData['username'];
-  //       log_from = userData['log_from'];
-  //       avatar_path = userData['avatar_path'];
-  //       categories = userData['categories'];
-  //       following_count = userData['following_count'];
-  //       following = userData['following'];
-  //       followers = userData['followers'];
-  //       followers_count = userData['followers_count'];
-  //
-  //       //fetching Notifications
-  //       List<dynamic> notif = userData['notifications'];
-  //       notifications = notif;
-  //
-  //       notif.forEach((e) => {notifications.add(e)});
-  //
-  //       //fetching list of followers
-  //       // List<dynamic> flwrs = userData['followers'];
-  //
-  //       //   flwrs.forEach((e) => {
-  //       //         followers.add(userwithFollowers_Following(e['followers'],
-  //       //             e['following'], e['username'], e['avatar_path']))
-  //       //       });
-  //       //
-  //       //   //fetching list of followers
-  //       //   List<dynamic> flwng = userData['following'];
-  //       //
-  //       //   flwng.forEach((e) => {
-  //       //         following.add(userwithFollowers_Following(e['followers'],
-  //       //             e['following'], e['username'], e['avatar_path']))
-  //       //       });
-  //       // }
-  //     }
-  //   } catch (e) {
-  //     print("ERROR Facebook login $e");
-  //   }
-  // }
   fetchDataAfterAnonymous(var x) async {
     try {
       final auth = FirebaseAuth.instance.currentUser;
@@ -513,7 +420,7 @@ class UserDB extends ChangeNotifier {
           'videoFlag': videoFlag,
           'date': date,
           'time': time,
-          'comments': {},
+          'comments': [],
           'likes': 0,
           'likers': [],
           'loves': 0,
@@ -531,7 +438,7 @@ class UserDB extends ChangeNotifier {
           'videoFlag': videoFlag,
           'date': date,
           'time': time,
-          'comments': {},
+          'comments': [],
           'likes': 0,
           'likers': [],
           'loves': 0,

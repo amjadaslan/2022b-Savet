@@ -15,13 +15,6 @@ class explore extends StatefulWidget {
 }
 
 class _exploreState extends State<explore> {
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   List<String> tags = [
     "Home décor",
     "DIY & crafts",

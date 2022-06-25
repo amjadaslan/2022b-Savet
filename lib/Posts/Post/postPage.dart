@@ -74,25 +74,18 @@ class _postPageState extends State<postPage> {
             widget.post_id,
             widget.cat_id);
         Provider.of<UserDB>(context, listen: false)
-            .addNotification(widget.user?['email'], 'reacted to your post');
+            .addNotification(widget.user?['email'], ' reacted to your post.');
         sendPushMessage(
             token,
             '',
             '${Provider.of<UserDB>(context, listen: false).username}'
-                ' reacted to your post');
+                ' reacted to your post.');
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLike(
             Provider.of<UserDB>(context, listen: false).user_email,
             widget.user?['email'],
             widget.post_id,
             widget.cat_id);
-        Provider.of<UserDB>(context, listen: false).addNotification(
-            widget.user?['email'], 'deleted reaction on your post');
-        sendPushMessage(
-            token,
-            '',
-            '${Provider.of<UserDB>(context, listen: false).username}'
-                ' deleted reaction on your post');
       }
       isHappy = !isHappy;
       return isHappy;
@@ -110,22 +103,15 @@ class _postPageState extends State<postPage> {
             token,
             '',
             '${Provider.of<UserDB>(context, listen: false).username}'
-                ' loved your post');
+                ' reacted to your post.');
         Provider.of<UserDB>(context, listen: false)
-            .addNotification(widget.user?['email'], 'loved your post');
+            .addNotification(widget.user?['email'], ' reacted to your post.');
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLove(
             Provider.of<UserDB>(context, listen: false).user_email,
             widget.user?['email'],
             widget.post_id,
             widget.cat_id);
-        Provider.of<UserDB>(context, listen: false)
-            .addNotification(widget.user?['email'], 'unlove your post');
-        sendPushMessage(
-            token,
-            '',
-            '${Provider.of<UserDB>(context, listen: false).username}'
-                ' unlove your post');
       }
 
       isLoved = !isLoved;
@@ -599,13 +585,9 @@ class _postPageState extends State<postPage> {
                                                                   .post_id,
                                                               cat_id:
                                                                   widget.cat_id,
+                                                              user: widget.user,
+                                                              token: token,
                                                             )));
-
-                                                Provider.of<UserDB>(context,
-                                                        listen: false)
-                                                    .addNotification(
-                                                        widget.user?['email'],
-                                                        'commented on your post');
                                               },
                                               color: Colors.white,
                                               textColor: Colors.deepOrange,

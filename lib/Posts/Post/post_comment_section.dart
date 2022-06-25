@@ -13,12 +13,14 @@ class post_comment_section extends StatefulWidget {
       {Key? key,
       required this.cat_id,
       required this.post_id,
+      this.token,
       this.user,
       this.public_flag = false})
       : super(key: key);
   Map? user;
   int cat_id;
   int post_id;
+  String? token;
   var date;
   bool public_flag;
   @override
@@ -326,6 +328,14 @@ class _post_comment_sectionState extends State<post_comment_section> {
                         await Provider.of<UserDB>(context, listen: false)
                             .addCommentToPost(widget.user?['email'],
                                 widget.post_id, widget.cat_id, comment);
+                        Provider.of<UserDB>(context, listen: false)
+                            .addNotification(widget.user?['email'],
+                                ' commented on your post.');
+                        sendPushMessage(
+                            widget.token,
+                            '',
+                            '${Provider.of<UserDB>(context, listen: false).username}'
+                                " commented on your post.");
                         post['comments'].add(comment);
                         commentController.clear();
                         setState(() {});
