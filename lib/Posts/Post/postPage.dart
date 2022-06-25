@@ -126,7 +126,7 @@ class _postPageState extends State<postPage> {
     String tag;
     List posts;
     String _cat = " ";
-
+    String username = " ";
     if (widget.user != null) {
       var cat = widget.user!['categories']
           .singleWhere((element) => element['id'] == widget.cat_id);
@@ -158,12 +158,17 @@ class _postPageState extends State<postPage> {
         print(e);
         print(te);
         if (te != null && te != "" && widget.date == null) {
-          widget.date = te.toDate(); //DateFormat('MM/dd/yyyy').parse(te);
+          try {
+            widget.date = te.toDate();
+          } catch (e) {
+            widget.date = DateTime.now();
+          }
           String t = e['time'];
           if (t != null) _setTime = t;
           // widget.date = DateFormat.yMd().format(e['reminder']);
           //DateTime.tryParse(te);
           print(widget.date);
+          username = e['username'];
           break;
         }
       }
@@ -268,7 +273,7 @@ class _postPageState extends State<postPage> {
                                               notifsPlugin,
                                               " ",
                                               "Reminder from Savet",
-                                              "category: $_cat ,post: ${post['title']}",
+                                              "Category: $_cat ,Post: ${post['title']}",
                                               DateTime(
                                                   value.year,
                                                   value.month,
@@ -386,7 +391,7 @@ class _postPageState extends State<postPage> {
                                     .addReminder(
                                         "1",
                                         "Reminder from Savet",
-                                        "Category: ${widget.cat_id} ,Post: ${post['title']}",
+                                        "Category: ${_cat} ,Post: ${post['title']},User: ${post['username']}",
                                         DateTime(value.year, value.month,
                                             value.day, time.hour, time.minute),
                                         0,
@@ -396,7 +401,7 @@ class _postPageState extends State<postPage> {
                                     notifsPlugin,
                                     " ",
                                     "Reminder from Savet",
-                                    "category: ${widget.cat_id} ,post: ${post['title']}",
+                                    "category: ${_cat} ,post: ${post['title']},User: ${post['username']}",
                                     DateTime(value.year, value.month, value.day,
                                         time.hour, time.minute),
                                     0,
