@@ -31,22 +31,7 @@ class _homeState extends State<home> {
   TextEditingController _editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    //Provider.of<UserDB>(context).updateData();
-
     final auth = FirebaseAuth.instance.currentUser;
-
-    // List rem = Provider.of<UserDB>(context, listen: false).reminders.toList();
-    // rem.forEach((e) => {
-    //       // if (e['date'].toDate().isAfter(DateTime.now))
-    //       //   {
-    //       //if(e[])
-    //       scheduleNotification(notifsPlugin, e['id'], e['title'], e['body'],
-    //           e['date'].toDate(), e['not_id'])
-    //       //     }
-    //       // else
-    //       //   {rem.remove(e)}
-    //     });
-
     List cats = Provider.of<UserDB>(context, listen: true).categories.toList();
     cats.removeWhere((cat) =>
         (!RegExp('.*${_editingController.text}.*', caseSensitive: false)
@@ -137,9 +122,9 @@ class _homeState extends State<home> {
             onReorder: (int oldIndex, int newIndex) async {
               if (newIndex == 0 || oldIndex == 0) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.grey[300],
-                    content: const Text("Cannot Move Recently Added Category!",
-                        style: TextStyle(color: Colors.black54))));
+                    content: const Text(
+                  "Cannot Move Recently Added Category!",
+                )));
                 return;
               }
               var oldp = categories[oldIndex];

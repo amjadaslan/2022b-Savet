@@ -176,7 +176,7 @@ class _postPageState extends State<postPage> {
               appBar: AppBar(
                 title: Text(post['title']),
                 actions: [
-                  if (widget.user == null)
+                  if (widget.user == null && widget.cat_id != 0)
                     PopupMenuButton(
                         itemBuilder: (context) => [
                               PopupMenuItem(
