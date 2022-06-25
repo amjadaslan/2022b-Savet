@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 class UserDB extends ChangeNotifier {
   int tot_posts = 0;
 
-  String? username = " ";
+  String? token = "";
+  String? username = "";
   String avatar_path = "";
   String? user_email = "";
   String? log_from = "";
@@ -76,8 +77,9 @@ class UserDB extends ChangeNotifier {
           'log_from': log_from,
           'postsIliked': postsIliked,
           'postsIloved': postsIloved,
+          'reported': reported,
+          'token': token
           'reminders': reminders,
-          'reported': reported
         });
       } else {
         username = userData['username'];
@@ -116,6 +118,7 @@ class UserDB extends ChangeNotifier {
         // }
 
         reported = userData['reported'];
+        token = userData['token'];
       }
     } catch (e) {
       print("ERROR Facebook login $e");
@@ -225,6 +228,7 @@ class UserDB extends ChangeNotifier {
           'categories': categories,
           'username': username,
           'email': user_email,
+          'token':token
           //'log_from': log_from
         });
       } else {
@@ -236,7 +240,7 @@ class UserDB extends ChangeNotifier {
         followers = userData['followers'];
         followers_count = userData['followers_count'];
         //log_from = userData['log_from'];
-
+        token = userData['token'];
         //fetching Notifications
         // List<dynamic> notif = userData['notifications'];
         // notifications = notif;
