@@ -114,7 +114,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                       sendPushMessage(
                           token,
                           '',
-                          '${widget.user['username']}.username}'
+                          '${Provider.of<UserDB>(context, listen: false).username}'
                               ' followed you');
                     }
                     setState(() {});

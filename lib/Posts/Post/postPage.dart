@@ -31,7 +31,7 @@ class postPage extends StatefulWidget {
   @override
   _postPageState createState() => _postPageState();
 }
-
+String token ="";
 class _postPageState extends State<postPage> {
   bool isPressed = false;
   List arr = [];
@@ -73,6 +73,9 @@ class _postPageState extends State<postPage> {
             widget.cat_id);
         Provider.of<UserDB>(context, listen: false)
             .addNotification(widget.user?['email'], 'reacted to your post');
+        sendPushMessage(
+            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
+                ' reacted to your post');
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLike(
             Provider.of<UserDB>(context, listen: false).user_email,
@@ -81,6 +84,9 @@ class _postPageState extends State<postPage> {
             widget.cat_id);
         Provider.of<UserDB>(context, listen: false).addNotification(
             widget.user?['email'], 'deleted reaction on your post');
+        sendPushMessage(
+            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
+            ' deleted reaction on your post');
       }
       isHappy = !isHappy;
       return isHappy;
@@ -94,7 +100,9 @@ class _postPageState extends State<postPage> {
             widget.user?['email'],
             widget.post_id,
             widget.cat_id);
-
+        sendPushMessage(
+            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
+            ' loved your post');
         Provider.of<UserDB>(context, listen: false)
             .addNotification(widget.user?['email'], 'loved your post');
       } else {
@@ -105,6 +113,9 @@ class _postPageState extends State<postPage> {
             widget.cat_id);
         Provider.of<UserDB>(context, listen: false)
             .addNotification(widget.user?['email'], 'unlove your post');
+        sendPushMessage(
+            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
+            ' unlove your post');
       }
 
       isLoved = !isLoved;
@@ -159,7 +170,7 @@ class _postPageState extends State<postPage> {
     }
 
     return FutureBuilder(
-        future: getTagPosts(tag),
+        future: Future.wait([getTagPosts(tag),findTokenByEmail(widget.user!['email'])]),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return Scaffold(
               appBar: AppBar(
@@ -736,4 +747,11 @@ class _postPageState extends State<postPage> {
 
     return time;
   }
+}
+
+Future<void> findTokenByEmail(String email) async {
+  var s = FirebaseFirestore.instance.collection('tokens').doc(email);
+  DocumentSnapshot userSnapshot = await s.get();
+  Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+  token = userData['token'];
 }
