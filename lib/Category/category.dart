@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:savet/Category/profileImage.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 import 'package:transparent_image/transparent_image.dart';
+
 import '../Posts/Post/postPage.dart';
 import '../Posts/add_post.dart';
 import '../Services/user_db.dart';
@@ -194,7 +195,7 @@ class _categoryState extends State<category> {
             child: SingleChildScrollView(
               child: StaggeredGrid.count(
                 crossAxisCount: 3,
-                children: List.generate(cat['posts'].length, (index) {
+                children: List.generate((cat['posts']).length, (index) {
                   return InkWell(
                       onTap: () {
                         if (index < cat['posts'].length) {

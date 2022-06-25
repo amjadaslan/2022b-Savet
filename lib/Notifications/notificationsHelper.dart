@@ -67,6 +67,7 @@ Future<void> scheduleNotification(
       icon: '@mipmap/ic_launcher',
       priority: Priority.high,
       //styleInformation: styleInfo,
+
       importance: Importance.max);
   var iOSSpecifics = notifs.IOSNotificationDetails();
   var platformChannelSpecifics =
