@@ -539,7 +539,20 @@ class _postPageState extends State<postPage> {
                                             ],
                                           ),
                                           FlatButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            post_comment_section(
+                                                              post_id: widget
+                                                                  .post_id,
+                                                              cat_id:
+                                                                  widget.cat_id,
+                                                              user: widget.user,
+                                                              token: token,
+                                                            )));
+                                              },
                                             child: Row(
                                               children: <Widget>[
                                                 Icon(
