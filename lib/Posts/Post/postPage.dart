@@ -70,11 +70,16 @@ class _postPageState extends State<postPage> {
       if (!isHappy) {
         await Provider.of<UserDB>(context, listen: false).addLike(
             Provider.of<UserDB>(context, listen: false).user_email,
-            widget.user?['email'],
+            (widget.user != null)
+                ? (widget.user?['email'])
+                : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
-        Provider.of<UserDB>(context, listen: false)
-            .addNotification(widget.user?['email'], ' reacted to your post.');
+        Provider.of<UserDB>(context, listen: false).addNotification(
+            (widget.user != null)
+                ? (widget.user?['email'])
+                : Provider.of<UserDB>(context, listen: false).user_email,
+            ' reacted to your post.');
         sendPushMessage(
             token,
             '',
@@ -83,11 +88,14 @@ class _postPageState extends State<postPage> {
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLike(
             Provider.of<UserDB>(context, listen: false).user_email,
-            widget.user?['email'],
+            (widget.user != null)
+                ? (widget.user?['email'])
+                : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
       }
       isHappy = !isHappy;
+      setState(() {});
       return isHappy;
     }
 
@@ -96,7 +104,9 @@ class _postPageState extends State<postPage> {
       if (!isLoved) {
         await Provider.of<UserDB>(context, listen: false).addLove(
             Provider.of<UserDB>(context, listen: false).user_email,
-            widget.user?['email'],
+            (widget.user != null)
+                ? (widget.user?['email'])
+                : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
         sendPushMessage(
@@ -104,18 +114,23 @@ class _postPageState extends State<postPage> {
             '',
             '${Provider.of<UserDB>(context, listen: false).username}'
                 ' reacted to your post.');
-        Provider.of<UserDB>(context, listen: false)
-            .addNotification(widget.user?['email'], ' reacted to your post.');
+        Provider.of<UserDB>(context, listen: false).addNotification(
+            (widget.user != null)
+                ? (widget.user?['email'])
+                : Provider.of<UserDB>(context, listen: false).user_email,
+            ' reacted to your post.');
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLove(
             Provider.of<UserDB>(context, listen: false).user_email,
-            widget.user?['email'],
+            (widget.user != null)
+                ? (widget.user?['email'])
+                : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
       }
 
       isLoved = !isLoved;
-
+      setState(() {});
       return isLoved;
     }
 
@@ -169,14 +184,18 @@ class _postPageState extends State<postPage> {
     }
 
     return FutureBuilder(
-        future: Future.wait(
-            [getTagPosts(tag), findTokenByEmail(widget.user?['email'])]),
+        future: Future.wait([
+          getTagPosts(tag),
+          findTokenByEmail((widget.user != null)
+              ? (widget.user?['email'])
+              : Provider.of<UserDB>(context, listen: false).user_email)
+        ]),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return Scaffold(
               appBar: AppBar(
                 title: Text(post['title']),
                 actions: [
-                  if (widget.user == null && widget.cat_id != 0)
+                  if (widget.user == null)
                     PopupMenuButton(
                         itemBuilder: (context) => [
                               PopupMenuItem(
@@ -445,142 +464,81 @@ class _postPageState extends State<postPage> {
                                     border:
                                         Border.all(color: Colors.deepOrange)),
                                 // width: 120,
-                                child: (widget.user?['email'] != null)
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          LikeButton(
-                                            size: 50,
-                                            circleColor: CircleColor(
-                                                start: Colors.deepOrange,
-                                                end: Colors.deepOrange),
-                                            bubblesColor: BubblesColor(
-                                              dotPrimaryColor:
-                                                  Colors.deepOrange,
-                                              dotSecondaryColor:
-                                                  Colors.deepOrange,
-                                            ),
-                                            likeBuilder: (isLiked) {
-                                              return Icon(
-                                                Icons.favorite,
-                                                color: (isLoved)
-                                                    ? Colors.deepOrange
-                                                    : Colors.grey,
-                                                size: 40,
-                                              );
-                                            },
-                                            likeCount: post['loves'],
-                                            onTap: onLoveButtonTapped,
-                                          ),
-                                          LikeButton(
-                                            size: 50,
-                                            circleColor: CircleColor(
-                                                start: Colors.deepOrange,
-                                                end: Colors.deepOrange),
-                                            bubblesColor: BubblesColor(
-                                              dotPrimaryColor:
-                                                  Colors.deepOrange,
-                                              dotSecondaryColor:
-                                                  Colors.deepOrange,
-                                            ),
-                                            likeBuilder: (isLiked) {
-                                              return Icon(
-                                                Icons.insert_emoticon_sharp,
-                                                color: (isHappy)
-                                                    ? Colors.deepOrange
-                                                    : Colors.grey,
-                                                size: 40,
-                                              );
-                                            },
-                                            likeCount: post['likes'],
-                                            onTap: onLikeButtonTapped,
-                                            // countBuilder: () {}
-                                          ),
-                                          Container(
-                                            width: 120,
-                                            child: FlatButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            post_comment_section(
-                                                              post_id: widget
-                                                                  .post_id,
-                                                              cat_id:
-                                                                  widget.cat_id,
-                                                              user: widget.user,
-                                                              token: token,
-                                                            )));
-                                              },
-                                              color: Colors.white,
-                                              textColor: Colors.deepOrange,
-                                              padding: EdgeInsets.all(13.0),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Icon(Icons.comment),
-                                                  Text(" Comment")
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Row(
-                                            children: <Widget>[
-                                              Icon(Icons.favorite,
-                                                  color: Colors.deepOrange),
-                                              Text(' ${post['loves']}')
-                                            ],
-                                          ),
-                                          FlatButton(
-                                            onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            post_comment_section(
-                                                              post_id: widget
-                                                                  .post_id,
-                                                              cat_id:
-                                                                  widget.cat_id,
-                                                              user: widget.user,
-                                                              token: token,
-                                                            )));
-                                              },
-                                            child: Row(
-                                              children: <Widget>[
-                                                Icon(
-                                                    Icons.insert_emoticon_sharp,
-                                                    color: Colors.deepOrange),
-                                                Text(' ${post['likes']}')
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 65,
-                                            child: FlatButton(
-                                              onPressed: () {},
-                                              color: Colors.white,
-                                              textColor: Colors.deepOrange,
-                                              padding: EdgeInsets.all(13.0),
-                                              child: Row(
-                                                // Replace with a Row for horizontal icon + text
-                                                children: <Widget>[
-                                                  Icon(Icons.comment),
-                                                  Text(
-                                                      ' ${post['comments'].length}')
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )))
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    LikeButton(
+                                      size: 50,
+                                      circleColor: CircleColor(
+                                          start: Colors.deepOrange,
+                                          end: Colors.deepOrange),
+                                      bubblesColor: BubblesColor(
+                                        dotPrimaryColor: Colors.deepOrange,
+                                        dotSecondaryColor: Colors.deepOrange,
+                                      ),
+                                      likeBuilder: (isLiked) {
+                                        return Icon(
+                                          Icons.favorite,
+                                          color: (isLoved)
+                                              ? Colors.deepOrange
+                                              : Colors.grey,
+                                          size: 40,
+                                        );
+                                      },
+                                      likeCount: post['loves'],
+                                      onTap: onLoveButtonTapped,
+                                    ),
+                                    LikeButton(
+                                      size: 50,
+                                      circleColor: CircleColor(
+                                          start: Colors.deepOrange,
+                                          end: Colors.deepOrange),
+                                      bubblesColor: BubblesColor(
+                                        dotPrimaryColor: Colors.deepOrange,
+                                        dotSecondaryColor: Colors.deepOrange,
+                                      ),
+                                      likeBuilder: (isLiked) {
+                                        return Icon(
+                                          Icons.insert_emoticon_sharp,
+                                          color: (isHappy)
+                                              ? Colors.deepOrange
+                                              : Colors.grey,
+                                          size: 40,
+                                        );
+                                      },
+                                      likeCount: post['likes'],
+                                      onTap: onLikeButtonTapped,
+                                      // countBuilder: () {}
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      child: FlatButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      post_comment_section(
+                                                        post_id: widget.post_id,
+                                                        cat_id: widget.cat_id,
+                                                        user: widget.user,
+                                                        token: token,
+                                                      )));
+                                        },
+                                        color: Colors.white,
+                                        textColor: Colors.deepOrange,
+                                        padding: EdgeInsets.all(13.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(Icons.comment),
+                                            Text(" Comment")
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )))
                         : const SizedBox(),
                     const SizedBox(height: 10),
                     (!post['description'].isEmpty)
