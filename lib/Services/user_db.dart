@@ -474,15 +474,10 @@ class UserDB extends ChangeNotifier {
         }
       }
     }
-    categories.removeWhere((c) => c_id == c['id']);
-
-    //removes all deleted posts from recently added category
-    List s = categories[0]['posts'].where((p) => p['cat_id'] == c_id).toList();
-    tot_posts -= s.length;
-    var set1 = Set.from(s);
-    var set2 = Set.from(categories[0]['posts']);
-    categories[0]['posts'] = List.from(set1.difference(set2));
-    categories[0]['posts'] = userDocument.update({'categories': categories});
+    categories.removeWhere((c) => (c_id == c['id']));
+    categories[0]['posts'].removeWhere((c) => (c_id == c['cat_id']));
+    tot_posts = categories[0]['posts'].length;
+    userDocument.update({'categories': categories});
     notifyListeners();
   }
 
