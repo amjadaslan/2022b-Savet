@@ -17,7 +17,25 @@ class explore_card extends StatefulWidget {
 }
 
 class _explore_cardState extends State<explore_card> {
-  bool isPressed = false;
+  bool alreadyReacted = false;
+  int clicked = 0;
+  bool happy = false;
+
+  @override
+  void initState() {
+    Provider.of<UserDB>(context, listen: false).postsIliked.forEach((p) {
+      if (p == widget.post['id']) {
+        alreadyReacted = true;
+        happy = true;
+      }
+    });
+    Provider.of<UserDB>(context, listen: false).postsIloved.forEach((p) {
+      if (p == widget.post['id']) alreadyReacted = true;
+    });
+    if (alreadyReacted) clicked = 1;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,11 +63,11 @@ class _explore_cardState extends State<explore_card> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => postPage(
-                                            cat_id: widget.post['cat_id'],
-                                            post_id: widget.post['id'],
-                                            user: widget.user,
-                                            public_flag: true,
-                                          )));
+                                        cat_id: widget.post['cat_id'],
+                                        post_id: widget.post['id'],
+                                        user: widget.user,
+                                        public_flag: true,
+                                      )));
                             },
                             child: Container(
                               color: Colors.white,
@@ -64,99 +82,99 @@ class _explore_cardState extends State<explore_card> {
                             child: PopupMenuButton(
                                 icon: Icon(Icons.more_vert, color: Colors.grey),
                                 itemBuilder: (context) => [
-                                      PopupMenuItem(
-                                        child: TextButton(
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                barrierDismissible:
-                                                    false, // user must tap button!
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text('Report post'),
-                                                    content:
-                                                        SingleChildScrollView(
-                                                      child: Column(
-                                                        children: const <
-                                                            Widget>[
-                                                          Text(
-                                                              'Are you sure you want to report this post?')
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                          child: Text('Report'),
-                                                          style: ButtonStyle(
-                                                              foregroundColor:
-                                                                  MaterialStateProperty
-                                                                      .all(Colors
-                                                                          .white),
-                                                              backgroundColor:
-                                                                  MaterialStateProperty
-                                                                      .all(Colors
-                                                                          .deepOrange)),
-                                                          onPressed: () {
-                                                            widget.post[
-                                                                    'image'] =
-                                                                'https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/report.png?alt=media&token=ab9ee150-0bd4-4697-aee9-96b10d7b4959';
-                                                            Provider.of<UserDB>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .addToReported(
-                                                                    widget.post[
-                                                                        'id']);
-                                                            setState(() {});
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop(true);
-                                                          }),
-                                                      TextButton(
-                                                        child: Text('Cancel'),
-                                                        style: ButtonStyle(
-                                                            foregroundColor:
-                                                                MaterialStateProperty
-                                                                    .all(Colors
-                                                                        .white),
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all(Colors
-                                                                        .deepOrange)),
-                                                        onPressed: () =>
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop(false),
-                                                      ),
+                                  PopupMenuItem(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible:
+                                            false, // user must tap button!
+                                            builder:
+                                                (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text('Report post'),
+                                                content:
+                                                SingleChildScrollView(
+                                                  child: Column(
+                                                    children: const <
+                                                        Widget>[
+                                                      Text(
+                                                          'Are you sure you want to report this post?')
                                                     ],
-                                                  );
-                                                });
-                                          },
-                                          child: Row(
-                                            children: const [
-                                              Icon(Icons.report),
-                                              Text("Report")
-                                            ],
-                                          ),
-                                          //prefixIcon: Icon(Icons.add_alert),
-                                          // child: Container(
-                                          //   decoration: BoxDecoration(),
-                                          //   child: Center(
-                                          //     child: Text(
-                                          //       'Edit',
-                                          //       style: TextStyle(
-                                          //         fontFamily: 'Arial',
-                                          //         fontSize: 18,
-                                          //         color: Colors.deepOrange,
-                                          //       ),
-                                          //       textAlign: TextAlign.center,
-                                          //     ),
-                                          //   ),
-                                          // ),
-                                        ),
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                      child: Text('Report'),
+                                                      style: ButtonStyle(
+                                                          foregroundColor:
+                                                          MaterialStateProperty
+                                                              .all(Colors
+                                                              .white),
+                                                          backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(Colors
+                                                              .deepOrange)),
+                                                      onPressed: () {
+                                                        widget.post[
+                                                        'image'] =
+                                                        'https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/report.png?alt=media&token=ab9ee150-0bd4-4697-aee9-96b10d7b4959';
+                                                        Provider.of<UserDB>(
+                                                            context,
+                                                            listen:
+                                                            false)
+                                                            .addToReported(
+                                                            widget.post[
+                                                            'id']);
+                                                        setState(() {});
+                                                        Navigator.of(
+                                                            context)
+                                                            .pop(true);
+                                                      }),
+                                                  TextButton(
+                                                    child: Text('Cancel'),
+                                                    style: ButtonStyle(
+                                                        foregroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors
+                                                            .white),
+                                                        backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors
+                                                            .deepOrange)),
+                                                    onPressed: () =>
+                                                        Navigator.of(
+                                                            context)
+                                                            .pop(false),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.report),
+                                          Text("Report")
+                                        ],
                                       ),
-                                    ]),
+                                      //prefixIcon: Icon(Icons.add_alert),
+                                      // child: Container(
+                                      //   decoration: BoxDecoration(),
+                                      //   child: Center(
+                                      //     child: Text(
+                                      //       'Edit',
+                                      //       style: TextStyle(
+                                      //         fontFamily: 'Arial',
+                                      //         fontSize: 18,
+                                      //         color: Colors.deepOrange,
+                                      //       ),
+                                      //       textAlign: TextAlign.center,
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                    ),
+                                  ),
+                                ]),
                           )
                         ],
                       ),
@@ -172,9 +190,9 @@ class _explore_cardState extends State<explore_card> {
                                 SizedBox(width: 5),
                                 Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.20,
+                                  MediaQuery.of(context).size.width * 0.20,
                                   child: AutoSizeText(
-                                    "  ${widget.post['username']}",
+                                    "       ${widget.post['username']}",
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontFamily: 'arial',
@@ -184,12 +202,14 @@ class _explore_cardState extends State<explore_card> {
                                   ),
                                 ),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    SizedBox(width: 5),
                                     Icon(Icons.favorite,
                                         color: Colors.red, size: 13),
                                     SizedBox(width: 2),
                                     Text(
+                                      // (alreadyReacted)
+                                      //     ? "${widget.post['likes'] + widget.post['loves'] - 1} Likes" :
                                       "${widget.post['likes'] + widget.post['loves']} Likes",
                                       style: TextStyle(
                                           fontFamily: 'arial',
@@ -213,7 +233,7 @@ class _explore_cardState extends State<explore_card> {
                                                 builder: (context) =>
                                                     post_comment_section(
                                                         post_id:
-                                                            widget.post['id'],
+                                                        widget.post['id'],
                                                         cat_id: widget
                                                             .post['cat_id'],
                                                         user: widget.user)));
@@ -222,16 +242,53 @@ class _explore_cardState extends State<explore_card> {
                                           color: Colors.grey[400])),
                                   IconButton(
                                       iconSize: 18,
-                                      onPressed: () {
-                                        setState(() {
-                                          isPressed = !isPressed;
-                                        });
+                                      onPressed: () async {
+                                        clicked = 1 - clicked;
+                                        if (clicked == 0) {
+                                          if (happy) {
+                                            await Provider.of<UserDB>(context,
+                                                listen: false)
+                                                .removeLike(
+                                                Provider.of<UserDB>(context,
+                                                    listen: false)
+                                                    .user_email,
+                                                widget.user['email'],
+                                                widget.post['id'],
+                                                widget.post['cat_id']);
+
+                                            widget.post['likes']--;
+                                            happy = false;
+                                          } else {
+                                            await Provider.of<UserDB>(context,
+                                                listen: false)
+                                                .removeLove(
+                                                Provider.of<UserDB>(context,
+                                                    listen: false)
+                                                    .user_email,
+                                                widget.user['email'],
+                                                widget.post['id'],
+                                                widget.post['cat_id']);
+                                            widget.post['loves']--;
+                                          }
+                                        } else {
+                                          await Provider.of<UserDB>(context,
+                                              listen: false)
+                                              .addLove(
+                                              Provider.of<UserDB>(context,
+                                                  listen: false)
+                                                  .user_email,
+                                              widget.user['email'],
+                                              widget.post['id'],
+                                              widget.post['cat_id']);
+                                          widget.post['loves']++;
+                                        }
+                                        setState(() {});
                                       },
-                                      icon: (!isPressed)
+                                      icon: (clicked == 0)
                                           ? Icon(Icons.favorite_border,
-                                              color: Colors.grey[400])
+                                          color: Colors.grey[400])
                                           : Icon(Icons.favorite,
-                                              color: Colors.red))
+                                          color: Colors.red))
                                 ])),
                           ],
                         ),

@@ -39,7 +39,7 @@ class UserDB extends ChangeNotifier {
       'title': "Recently Added",
       'description': "Most Recent 20 Posts",
       'image':
-          "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/recently_added.png?alt=media&token=0b4a0d57-c19f-4f7a-bb49-ce67a6a20386",
+      "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/recently_added.png?alt=media&token=0b4a0d57-c19f-4f7a-bb49-ce67a6a20386",
       'posts': [],
       'id': 0,
       'tag': "Private"
@@ -57,7 +57,7 @@ class UserDB extends ChangeNotifier {
           FirebaseFirestore.instance.collection('users').doc(user_email);
       DocumentSnapshot userSnapshot = await userDocument.get();
       Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
+      userSnapshot.data() as Map<String, dynamic>;
       if (userData.length <= 3) {
         if (userData.length == 3) {
           avatar_path = userData['avatar_path'];
@@ -109,13 +109,13 @@ class UserDB extends ChangeNotifier {
       userDocument =
           FirebaseFirestore.instance.collection('users').doc(user_email);
       var userDocumentAnony =
-          FirebaseFirestore.instance.collection('users').doc(x);
+      FirebaseFirestore.instance.collection('users').doc(x);
       DocumentSnapshot userSnapshot = await userDocument.get();
       DocumentSnapshot userSnapshotAno = await userDocumentAnony.get();
       Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
+      userSnapshot.data() as Map<String, dynamic>;
       Map<String, dynamic> userDataAno =
-          userSnapshot.data() as Map<String, dynamic>;
+      userSnapshot.data() as Map<String, dynamic>;
       print("fetchDataAfterAnonymous");
       categories = userDataAno['categories'];
       print(userData.length);
@@ -207,7 +207,7 @@ class UserDB extends ChangeNotifier {
         'title': "Recently Added",
         'description': "Most Recent 20 Posts",
         'image':
-            "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/recently_added.png?alt=media&token=0b4a0d57-c19f-4f7a-bb49-ce67a6a20386",
+        "https://firebasestorage.googleapis.com/v0/b/savet-b9216.appspot.com/o/recently_added.png?alt=media&token=0b4a0d57-c19f-4f7a-bb49-ce67a6a20386",
         'posts': [],
         'id': 0,
         'tag': "Private"
@@ -221,8 +221,7 @@ class UserDB extends ChangeNotifier {
     DocumentSnapshot userSnapshot = await s.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
     var notifications = userData['notifications'];
-
-    notifications.add({
+    notifications.insert(0, {
       'username': username,
       'avatar_path': avatar_path,
       'email': user_email,
@@ -240,7 +239,7 @@ class UserDB extends ChangeNotifier {
     String c = new_img.hashCode.toString();
     await FirebaseStorage.instance.ref('$c').putFile(imageFile);
     String path =
-        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+    await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
 
     categories.forEach((e) {
       if (e['id'] == cat_id) {
@@ -274,7 +273,7 @@ class UserDB extends ChangeNotifier {
         String c = new_img.hashCode.toString();
         await FirebaseStorage.instance.ref('$c').putFile(imageFile);
         path =
-            await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
       }
       categories.forEach((e) {
         if (e['id'] == cat_id) {
@@ -304,11 +303,11 @@ class UserDB extends ChangeNotifier {
         final ref = await FirebaseStorage.instance.ref('$c');
         (videoFlag)
             ? await ref.putFile(
-                file, SettableMetadata(contentType: 'video/mp4'))
+            file, SettableMetadata(contentType: 'video/mp4'))
             : await ref.putFile(file);
 
         path =
-            await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
       }
       print(cat_id);
       print(post_id);
@@ -321,7 +320,7 @@ class UserDB extends ChangeNotifier {
       p['description'] = discr;
 
       var t = categories[0]['posts'].singleWhere(
-          (element) => element['cat_id'] == cat_id && element['id'] == post_id);
+              (element) => element['cat_id'] == cat_id && element['id'] == post_id);
       if (t['cat_id'] == cat_id && t['id'] == post_id) {
         if (temp) {
           t['image'] = path;
@@ -363,7 +362,7 @@ class UserDB extends ChangeNotifier {
     String c = new_img.hashCode.toString();
     await FirebaseStorage.instance.ref('$c').putFile(imageFile);
     String path =
-        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+    await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
 
     avatar_path = path;
     userDocument.update({'avatar_path': avatar_path});
@@ -408,7 +407,7 @@ class UserDB extends ChangeNotifier {
         : await ref.putFile(file);
     int post_id = DateTime.now().microsecondsSinceEpoch;
     String path =
-        await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
+    await FirebaseStorage.instance.ref().child('$c').getDownloadURL();
     categories.forEach((e) {
       if (e['id'] == c_i) {
         e['posts'].add({
@@ -475,10 +474,15 @@ class UserDB extends ChangeNotifier {
         }
       }
     }
-    categories.removeWhere((c) => (c_id == c['id']));
-    categories[0]['posts'].removeWhere((c) => (c_id == c['cat_id']));
-    tot_posts = categories[0]['posts'].length;
-    userDocument.update({'categories': categories});
+    categories.removeWhere((c) => c_id == c['id']);
+
+    //removes all deleted posts from recently added category
+    List s = categories[0]['posts'].where((p) => p['cat_id'] == c_id).toList();
+    tot_posts -= s.length;
+    var set1 = Set.from(s);
+    var set2 = Set.from(categories[0]['posts']);
+    categories[0]['posts'] = List.from(set1.difference(set2));
+    categories[0]['posts'] = userDocument.update({'categories': categories});
     notifyListeners();
   }
 
@@ -514,7 +518,7 @@ class UserDB extends ChangeNotifier {
     var s = FirebaseFirestore.instance.collection('users').doc(_email);
     DocumentSnapshot userSnapshot = await s.get();
     Map<String, dynamic> _userData =
-        userSnapshot.data() as Map<String, dynamic>;
+    userSnapshot.data() as Map<String, dynamic>;
 
     return _userData;
   }
@@ -672,7 +676,7 @@ class UserDB extends ChangeNotifier {
       var s = FirebaseFirestore.instance.collection('users').doc(email);
       DocumentSnapshot userSnapshot = await s.get();
       Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
+      userSnapshot.data() as Map<String, dynamic>;
       var cats = userData['categories'];
       cats
           .singleWhere((element) => element['id'] == cat_id)['posts']
@@ -719,11 +723,11 @@ class UserDB extends ChangeNotifier {
   // }
 
   Future<bool?> addLike(
-    String? myEmail,
-    String? email,
-    int post_id,
-    int cat_id,
-  ) async {
+      String? myEmail,
+      String? email,
+      int post_id,
+      int cat_id,
+      ) async {
     print("Adding like");
 
     var s = FirebaseFirestore.instance.collection('users').doc(email);
@@ -742,8 +746,8 @@ class UserDB extends ChangeNotifier {
     userData['categories']
         .singleWhere((element) => element['id'] == cat_id)['posts']
         .singleWhere((element) => element['id'] == post_id)['likes']++;
-
     myData['postsIliked'].add(post_id);
+    postsIliked = myData['postsIliked'];
     //s.update({'likes': userData['categories'][cat_id]['posts'][post_id]['likes']});
     s.update({'categories': userData['categories']});
     me.update({'postsIliked': myData['postsIliked']});
@@ -753,11 +757,11 @@ class UserDB extends ChangeNotifier {
 
 //
   Future<bool?> removeLike(
-    String? myEmail,
-    String? email,
-    int post_id,
-    int cat_id,
-  ) async {
+      String? myEmail,
+      String? email,
+      int post_id,
+      int cat_id,
+      ) async {
     print("Removing like");
 
     if (email == null) {
@@ -771,12 +775,12 @@ class UserDB extends ChangeNotifier {
       var s = FirebaseFirestore.instance.collection('users').doc(email);
       DocumentSnapshot userSnapshot = await s.get();
       Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
+      userSnapshot.data() as Map<String, dynamic>;
 
       var me = FirebaseFirestore.instance.collection('users').doc(myEmail);
       DocumentSnapshot userSnapshot2 = await me.get();
       Map<String, dynamic> myData =
-          userSnapshot2.data() as Map<String, dynamic>;
+      userSnapshot2.data() as Map<String, dynamic>;
 
       var likers = userData['categories']
           .singleWhere((element) => element['id'] == cat_id)['posts']
@@ -795,11 +799,11 @@ class UserDB extends ChangeNotifier {
   }
 
   Future<bool?> addLove(
-    String? myEmail,
-    String? email,
-    int post_id,
-    int cat_id,
-  ) async {
+      String? myEmail,
+      String? email,
+      int post_id,
+      int cat_id,
+      ) async {
     print("Adding love");
 
     var s = FirebaseFirestore.instance.collection('users').doc(email);
@@ -833,13 +837,21 @@ class UserDB extends ChangeNotifier {
     await userDocument.update({'reported': reported});
   }
 
+  Future<void> getRecentNotifications() async {
+    var userDocument =
+    FirebaseFirestore.instance.collection('users').doc(user_email);
+    DocumentSnapshot userSnapshot = await userDocument.get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    notifications = userData['notifications'];
+  }
+
 //
   Future<bool?> removeLove(
-    String? myEmail,
-    String? email,
-    int post_id,
-    int cat_id,
-  ) async {
+      String? myEmail,
+      String? email,
+      int post_id,
+      int cat_id,
+      ) async {
     print("Removing love");
 
     if (email == null) {
@@ -853,12 +865,12 @@ class UserDB extends ChangeNotifier {
       var s = FirebaseFirestore.instance.collection('users').doc(email);
       DocumentSnapshot userSnapshot = await s.get();
       Map<String, dynamic> userData =
-          userSnapshot.data() as Map<String, dynamic>;
+      userSnapshot.data() as Map<String, dynamic>;
 
       var me = FirebaseFirestore.instance.collection('users').doc(myEmail);
       DocumentSnapshot userSnapshot2 = await me.get();
       Map<String, dynamic> myData =
-          userSnapshot2.data() as Map<String, dynamic>;
+      userSnapshot2.data() as Map<String, dynamic>;
 
       var likers = userData['categories']
           .singleWhere((element) => element['id'] == cat_id)['posts']
