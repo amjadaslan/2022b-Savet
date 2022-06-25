@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -169,13 +170,18 @@ class _explore_cardState extends State<explore_card> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 SizedBox(width: 5),
-                                Text(
-                                  "  ${widget.post['username']}",
-                                  style: TextStyle(
-                                      fontFamily: 'arial',
-                                      decoration: TextDecoration.none,
-                                      color: Colors.black54,
-                                      fontSize: 11),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.20,
+                                  child: AutoSizeText(
+                                    "  ${widget.post['username']}",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontFamily: 'arial',
+                                        decoration: TextDecoration.none,
+                                        color: Colors.black54,
+                                        fontSize: 11),
+                                  ),
                                 ),
                                 Row(
                                   children: [

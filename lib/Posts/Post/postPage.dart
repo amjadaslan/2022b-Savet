@@ -31,7 +31,9 @@ class postPage extends StatefulWidget {
   @override
   _postPageState createState() => _postPageState();
 }
-String token ="";
+
+String token = "";
+
 class _postPageState extends State<postPage> {
   bool isPressed = false;
   List arr = [];
@@ -74,7 +76,9 @@ class _postPageState extends State<postPage> {
         Provider.of<UserDB>(context, listen: false)
             .addNotification(widget.user?['email'], 'reacted to your post');
         sendPushMessage(
-            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
+            token,
+            '',
+            '${Provider.of<UserDB>(context, listen: false).username}'
                 ' reacted to your post');
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLike(
@@ -85,8 +89,10 @@ class _postPageState extends State<postPage> {
         Provider.of<UserDB>(context, listen: false).addNotification(
             widget.user?['email'], 'deleted reaction on your post');
         sendPushMessage(
-            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
-            ' deleted reaction on your post');
+            token,
+            '',
+            '${Provider.of<UserDB>(context, listen: false).username}'
+                ' deleted reaction on your post');
       }
       isHappy = !isHappy;
       return isHappy;
@@ -101,8 +107,10 @@ class _postPageState extends State<postPage> {
             widget.post_id,
             widget.cat_id);
         sendPushMessage(
-            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
-            ' loved your post');
+            token,
+            '',
+            '${Provider.of<UserDB>(context, listen: false).username}'
+                ' loved your post');
         Provider.of<UserDB>(context, listen: false)
             .addNotification(widget.user?['email'], 'loved your post');
       } else {
@@ -114,8 +122,10 @@ class _postPageState extends State<postPage> {
         Provider.of<UserDB>(context, listen: false)
             .addNotification(widget.user?['email'], 'unlove your post');
         sendPushMessage(
-            token, '', '${Provider.of<UserDB>(context, listen: false).username}'
-            ' unlove your post');
+            token,
+            '',
+            '${Provider.of<UserDB>(context, listen: false).username}'
+                ' unlove your post');
       }
 
       isLoved = !isLoved;
@@ -126,7 +136,6 @@ class _postPageState extends State<postPage> {
     String tag;
     List posts;
     String _cat = " ";
-    String username = " ";
     if (widget.user != null) {
       var cat = widget.user!['categories']
           .singleWhere((element) => element['id'] == widget.cat_id);
@@ -154,7 +163,7 @@ class _postPageState extends State<postPage> {
     for (var e in posts) {
       if (e['id'] == widget.post_id) {
         post = e;
-        var te = e['date']; //.toDate();
+        var te = e['date'];
         print(e);
         print(te);
         if (te != null && te != "" && widget.date == null) {
@@ -168,14 +177,14 @@ class _postPageState extends State<postPage> {
           // widget.date = DateFormat.yMd().format(e['reminder']);
           //DateTime.tryParse(te);
           print(widget.date);
-          username = e['username'];
           break;
         }
       }
     }
 
     return FutureBuilder(
-        future: Future.wait([getTagPosts(tag),findTokenByEmail(widget.user!['email'])]),
+        future: Future.wait(
+            [getTagPosts(tag), findTokenByEmail(widget.user?['email'])]),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return Scaffold(
               appBar: AppBar(
@@ -252,8 +261,13 @@ class _postPageState extends State<postPage> {
                                                       time.hour,
                                                       time.minute),
                                                   time.format(context));
-                                          //String id, String title, String body,
-                                          //       DateTime scheduledTime, int not_id, int cat_id, int post_id
+
+                                          var image = Image(
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              image:
+                                                  NetworkImage(post['image']));
+
                                           Provider.of<UserDB>(context,
                                                   listen: false)
                                               .addReminder(
@@ -322,14 +336,19 @@ class _postPageState extends State<postPage> {
                                                             .all(Colors
                                                                 .deepOrange)),
                                                 onPressed: () {
-                                                  setState(() {
+                                                  // setState(() async {
+                                                  try {
                                                     Provider.of<UserDB>(context,
                                                             listen: false)
                                                         .removePost(post['id'],
                                                             post['cat_id']);
                                                     Navigator.pop(context);
                                                     Navigator.pop(context);
-                                                  });
+                                                    Navigator.pop(context);
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                  // });
                                                 },
                                               ),
                                               TextButton(
