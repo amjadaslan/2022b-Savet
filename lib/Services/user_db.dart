@@ -221,8 +221,7 @@ class UserDB extends ChangeNotifier {
     DocumentSnapshot userSnapshot = await s.get();
     Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
     var notifications = userData['notifications'];
-
-    notifications.add({
+    notifications.insert(0, {
       'username': username,
       'avatar_path': avatar_path,
       'email': user_email,
@@ -475,10 +474,15 @@ class UserDB extends ChangeNotifier {
         }
       }
     }
-    categories.removeWhere((c) => (c_id == c['id']));
-    categories[0]['posts'].removeWhere((c) => (c_id == c['cat_id']));
-    tot_posts = categories[0]['posts'].length;
-    userDocument.update({'categories': categories});
+    categories.removeWhere((c) => c_id == c['id']);
+
+    //removes all deleted posts from recently added category
+    List s = categories[0]['posts'].where((p) => p['cat_id'] == c_id).toList();
+    tot_posts -= s.length;
+    var set1 = Set.from(s);
+    var set2 = Set.from(categories[0]['posts']);
+    categories[0]['posts'] = List.from(set1.difference(set2));
+    categories[0]['posts'] = userDocument.update({'categories': categories});
     notifyListeners();
   }
 
@@ -742,8 +746,8 @@ class UserDB extends ChangeNotifier {
     userData['categories']
         .singleWhere((element) => element['id'] == cat_id)['posts']
         .singleWhere((element) => element['id'] == post_id)['likes']++;
-
     myData['postsIliked'].add(post_id);
+    postsIliked = myData['postsIliked'];
     //s.update({'likes': userData['categories'][cat_id]['posts'][post_id]['likes']});
     s.update({'categories': userData['categories']});
     me.update({'postsIliked': myData['postsIliked']});
@@ -789,6 +793,8 @@ class UserDB extends ChangeNotifier {
       likers.remove(userData['username']);
 
       myData['postsIliked'].remove(post_id);
+
+      postsIliked = myData['postsIliked'];
       s.update({'categories': userData['categories']});
       me.update({'postsIliked': myData['postsIliked']});
     }
@@ -820,6 +826,8 @@ class UserDB extends ChangeNotifier {
         .singleWhere((element) => element['id'] == post_id)['loves']++;
 
     myData['postsIloved'].add(post_id);
+
+    postsIloved = myData['postsIloved'];
     //s.update({'likes': userData['categories'][cat_id]['posts'][post_id]['likes']});
     s.update({'categories': userData['categories']});
     me.update({'postsIloved': myData['postsIloved']});
@@ -831,6 +839,14 @@ class UserDB extends ChangeNotifier {
     print("adding to Reported");
     reported.add(post_id);
     await userDocument.update({'reported': reported});
+  }
+
+  Future<void> getRecentNotifications() async {
+    var userDocument =
+        FirebaseFirestore.instance.collection('users').doc(user_email);
+    DocumentSnapshot userSnapshot = await userDocument.get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    notifications = userData['notifications'];
   }
 
 //
@@ -871,6 +887,8 @@ class UserDB extends ChangeNotifier {
       likers.remove(userData['username']);
 
       myData['postsIloved'].remove(post_id);
+
+      postsIloved = myData['postsIloved'];
       s.update({'categories': userData['categories']});
       me.update({'postsIloved': myData['postsIloved']});
     }

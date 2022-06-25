@@ -42,6 +42,7 @@ class _postPageState extends State<postPage> {
 
   void initState() {
     super.initState();
+
     tz.initializeTimeZones();
   }
 
@@ -50,7 +51,6 @@ class _postPageState extends State<postPage> {
     bool isHappy = false, isLoved = false;
     var postsIliked = Provider.of<UserDB>(context, listen: false).postsIliked;
     var postsIloved = Provider.of<UserDB>(context, listen: false).postsIloved;
-
     for (var e in postsIliked) {
       if (e == widget.post_id) {
         isHappy = true;
@@ -60,11 +60,11 @@ class _postPageState extends State<postPage> {
 
     for (var e in postsIloved) {
       if (e == widget.post_id) {
+        print("hi");
         isLoved = true;
         break;
       }
     }
-
     Future<bool> onLikeButtonTapped(bool x) async {
       /// send your request here
       if (!isHappy) {
@@ -436,81 +436,6 @@ class _postPageState extends State<postPage> {
                             fit: BoxFit.cover,
                             width: double.infinity,
                             image: NetworkImage(post['image'])),
-
-//                               // (widget.public_flag)
-                    //     ? Container(
-                    //   // height: MediaQuery.of(context).size.height * 0.12,
-                    //   //  color: Colors.deepOrangeAccent,
-                    //   // child: Row(
-                    //   // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //   //children: [
-                    //   //  Material(
-                    //   //   color: Colors.transparent,
-                    //     child: Reaction(
-                    //       cat_id: widget.cat_id,
-                    //       post_id: widget.post_id,
-                    //       user: widget.user ??
-                    //           FirebaseAuth.instance.currentUser,
-                    //     ))
-                    // //   child: IconButton(
-                    // //       iconSize: 50,
-                    // //       onPressed: () {
-                    // //         setState(() {
-                    // //           isPressed = !isPressed;
-                    // //         });
-                    // //       },
-                    // //       icon: (!isPressed)
-                    // //           ? Icon(Icons.favorite_border,
-                    // //               color: Colors.white)
-                    // //           : Icon(Icons.favorite,
-                    // //               color: Colors.white))
-                    // //  ),
-                    // //    const VerticalDivider(
-                    // //      color: Colors.white,
-                    // //      thickness: 3,
-                    // //      indent: 5,
-                    // //      endIndent: 5,
-                    // //    ),
-                    // // Material(
-                    // //     color: Colors.transparent,
-                    // //     child: IconButton(
-                    // //         iconSize: 40,
-                    // //         onPressed: () {
-                    // //           Navigator.push(
-                    // //               context,
-                    // //               MaterialPageRoute(
-                    // //                   builder: (context) =>
-                    // //                       post_comment_section(
-                    // //                         post_id: post['id'],
-                    // //                         cat_id: post['cat_id'],
-                    // //                       )));
-                    // //         },
-                    // //         icon: Icon(Icons.mode_comment_outlined,
-                    // //             color: Colors.white))),
-                    // //   ],
-                    // // ),
-                    // // )
-                    //     : const SizedBox(),
-                    //    const SizedBox(height: 20),
-                    //    (widget.public_flag)
-                    //        ? Row(
-                    //      children: [
-                    //        SizedBox(width: 10),
-                    //        Icon(Icons.favorite, color: Colors.red, size: 30),
-                    //        SizedBox(width: 5),
-                    //        Text(
-                    //          '0',
-                    //          //'${Provider.of<UserDB>(context).categories[widget.cat_id]['posts'][widget.post_id]['likes']}',
-                    //          style: TextStyle(
-                    //              fontFamily: 'arial',
-                    //              fontWeight: FontWeight.bold,
-                    //              decoration: TextDecoration.none,
-                    //              color: Colors.black54,
-                    //              fontSize: 20),
-                    //        )
-                    //      ],
-                    //    )
-                    //        : const SizedBox(),
                     (widget.public_flag)
                         ? Container(
                             child: Container(
