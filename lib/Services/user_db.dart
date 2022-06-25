@@ -7,21 +7,32 @@ import 'package:flutter/material.dart';
 
 class UserDB extends ChangeNotifier {
   int tot_posts = 0;
+
   String? token = "";
   String? username = "";
   String avatar_path = "";
   String? user_email = "";
   String? log_from = "";
   List notifications = [];
-
   List recently_added = [];
-
   List followers = [];
   int followers_count = 0;
   List following = [];
   int following_count = 0;
   List postsIliked = [];
   List postsIloved = [];
+  static List reminders = [
+    {
+      'date': DateTime.now(),
+      'cat_id': 2,
+      'post_id': 2,
+      'not_id': 0,
+      'body': "Nothing, just want to say Hi",
+      'title': "Hi ^___^",
+      'id': "id",
+      'ref': null
+    }
+  ];
   List reported = [];
   List categories = [
     {
@@ -68,6 +79,7 @@ class UserDB extends ChangeNotifier {
           'postsIloved': postsIloved,
           'reported': reported,
           'token': token
+          'reminders': reminders,
         });
       } else {
         username = userData['username'];
@@ -80,6 +92,31 @@ class UserDB extends ChangeNotifier {
         followers_count = userData['followers_count'];
         postsIliked = userData['postsIliked'];
         postsIloved = userData['postsIloved'];
+        reminders = userData['reminders'];
+
+        //fetching Notifications
+        List<dynamic> notif = userData['notifications'];
+        notifications = notif;
+
+        notif.forEach((e) => {notifications.add(e)});
+
+        //fetching list of followers
+        // List<dynamic> flwrs = userData['followers'];
+
+        //   flwrs.forEach((e) => {
+        //         followers.add(userwithFollowers_Following(e['followers'],
+        //             e['following'], e['username'], e['avatar_path']))
+        //       });
+        //
+        //   //fetching list of followers
+        //   List<dynamic> flwng = userData['following'];
+        //
+        //   flwng.forEach((e) => {
+        //         following.add(userwithFollowers_Following(e['followers'],
+        //             e['following'], e['username'], e['avatar_path']))
+        //       });
+        // }
+
         reported = userData['reported'];
         token = userData['token'];
       }
@@ -236,19 +273,28 @@ class UserDB extends ChangeNotifier {
     tot_posts = 0;
     postsIliked = [];
     postsIloved = [];
+    reminders = [
+      {
+        'date': DateTime.now(),
+        'cat_id': 2,
+        'post_id': 2,
+        'not_id': 0,
+        'body': "Nothing, just want to say Hi",
+        'title': "Hi ^___^",
+        'id': "id",
+        'ref': null
+      }
+    ];
     username = "";
     avatar_path = "";
     user_email = "";
     log_from = "";
     notifications = [];
-
     recently_added = [];
-
     followers = [];
     followers_count = 0;
     following = [];
     following_count = 0;
-
     categories = [
       {
         'title': "Recently Added",
@@ -587,9 +633,48 @@ class UserDB extends ChangeNotifier {
       p['date'] = date;
       p['time'] = _time;
     }
-
     userDocument.update({'categories': categories});
     notifyListeners();
+  }
+
+  Future<void> addReminder(String id, String title, String body,
+      DateTime scheduledTime, int not_id, int cat_id, int post_id) async {
+    print("Adding a Reminder");
+    bool e = true;
+    reminders.forEach((element) {
+      if (element['cat_id'] == cat_id && element['post_id'] == post_id) {
+        element['date'] = scheduledTime;
+        e = false;
+      }
+    });
+
+    print(reminders);
+    if (e) {
+      reminders.add({
+        'date': scheduledTime,
+        'cat_id': cat_id,
+        'post_id': post_id,
+        'not_id': not_id + 1,
+        'body': body,
+        'title': title,
+        'id': id,
+        'ref': null
+      });
+    }
+    userDocument.update({'categories': categories, 'reminders': reminders});
+    notifyListeners();
+  }
+
+  Future<void> removeReminder() async {
+    if (reminders != null && reminders.length > 1) {
+      reminders.toList().forEach((e) {
+        if (DateTime.now().isAfter(e['date'].toDate()) && e['not_id'] != 0) {
+          UserDB.reminders.remove(e);
+        }
+      });
+      userDocument.update({'reminders': reminders});
+      notifyListeners();
+    }
   }
 
   Future<void> addFollower(String email, Map him) async {
@@ -695,7 +780,8 @@ class UserDB extends ChangeNotifier {
       'categories': categories,
       'username': username,
       'postsIliked': postsIliked,
-      'postsIloved': postsIloved
+      'postsIloved': postsIloved,
+      'reminders': reminders
       //'log_from': log_from
     });
   }

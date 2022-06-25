@@ -197,7 +197,7 @@ class _categoryState extends State<category> {
                 children: List.generate(cat['posts'].length, (index) {
                   return InkWell(
                       onTap: () {
-                        if (index < cat.length) {
+                        if (index < cat['posts'].length) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
