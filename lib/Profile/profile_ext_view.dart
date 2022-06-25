@@ -39,6 +39,53 @@ class _profile_ext_viewState extends State<profile_ext_view> {
         .where((c) => (c['tag'] != "Private"))
         .toList();
 
+                scheduleNotification(
+                    notifsPlugin,
+                    DateTime.now().toString(),
+                    'Savet',
+                    "${widget.user['username']} started following you",
+                    DateTime.now().subtract(Duration(minutes: 1)),
+                    1,
+                    "");
+              }
+              setState(() {});
+            },
+            child:
+                (clicked == 0) ? const Text("Follow") : const Text("Unfollow"),
+            style: TextButton.styleFrom(
+                primary: Colors.white,
+                fixedSize: Size(
+                  MediaQuery.of(context).size.width * 0.4,
+                  MediaQuery.of(context).size.width * 0.1,
+                ),
+                shape: const StadiumBorder(),
+                backgroundColor:
+                    (clicked == 0) ? Colors.deepOrange : Colors.lightBlue),
+          ),
+          const SizedBox(height: 10),
+          Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => fol_list(
+                                flag: true, list: widget.user['followers'])),
+                      );
+                    },
+                    child: Container(
+                        width: 100,
+                        child: Text(
+                          (widget.already_follow)
+                              ? '${widget.user['followers_count'] - 1 + clicked}\nFollowers'
+                              : '${widget.user['followers_count'] + clicked}\nFollowers',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.deepOrange),
     return FutureBuilder(
         future: findTokenByEmail(widget.user['email']),
         builder: (context, snapshot) {

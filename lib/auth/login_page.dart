@@ -546,11 +546,13 @@ void initializeNotifications({bool out = false}) {
       print(UserDB.reminders);
       UserDB.reminders.toList().forEach((e) {
         scheduleNotification(notifsPlugin, e['id'], e['title'], e['body'],
-            e['date'].toDate(), e['not_id']);
+            e['date'].toDate(), e['not_id'], "");
       });
     }
     UserDB.reminders.toList().forEach((e) {
-      if (DateTime.now().isAfter(e['date'].toDate()) && e['not_id'] != 0) {
+      var date =
+          DateTime.fromMillisecondsSinceEpoch(e['date'].microsecondsSinceEpoch);
+      if (DateTime.now().isBefore(date) && e['not_id'] != 0) {
         UserDB.reminders.remove(e);
       }
     });

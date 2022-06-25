@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -166,178 +165,241 @@ class _postPageState extends State<postPage> {
               appBar: AppBar(
                 title: Text(post['title']),
                 actions: [
-                  PopupMenuButton(
-                      itemBuilder: (context) => [
-                            PopupMenuItem(
-                              child: TextButton(
-                                onPressed: () async {
-                                  print(widget.post_id);
-                                  print(widget.cat_id);
+                  if (widget.user == null)
+                    PopupMenuButton(
+                        itemBuilder: (context) => [
+                              PopupMenuItem(
+                                child: TextButton(
+                                  onPressed: () async {
+                                    print(widget.post_id);
+                                    print(widget.cat_id);
 
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => edit_post(
-                                                post_id: widget.post_id,
-                                                cat_id: widget.cat_id,
-                                              )));
-                                },
-                                child: Text("Edit"),
-                                //prefixIcon: Icon(Icons.add_alert),
-                                // child: Container(
-                                //   decoration: BoxDecoration(),
-                                //   child: Center(
-                                //     child: Text(
-                                //       'Edit',
-                                //       style: TextStyle(
-                                //         fontFamily: 'Arial',
-                                //         fontSize: 18,
-                                //         color: Colors.deepOrange,
-                                //       ),
-                                //       textAlign: TextAlign.center,
-                                //     ),
-                                //   ),
-                                // ),
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => edit_post(
+                                                  post_id: widget.post_id,
+                                                  cat_id: widget.cat_id,
+                                                )));
+                                  },
+                                  child: Text("Edit"),
+                                  //prefixIcon: Icon(Icons.add_alert),
+                                  // child: Container(
+                                  //   decoration: BoxDecoration(),
+                                  //   child: Center(
+                                  //     child: Text(
+                                  //       'Edit',
+                                  //       style: TextStyle(
+                                  //         fontFamily: 'Arial',
+                                  //         fontSize: 18,
+                                  //         color: Colors.deepOrange,
+                                  //       ),
+                                  //       textAlign: TextAlign.center,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                ),
                               ),
-                            ),
-                            PopupMenuItem(
-                              child: TextButton(
-                                onPressed: () async {
-                                  //print(widget.date);
-                                  await showDatePicker(
-                                          context: context,
-                                          initialDate:
-                                              widget.date ?? DateTime.now(),
-                                          firstDate: DateTime.now(),
-                                          lastDate: DateTime(2050))
-                                      .then((value) async {
-                                    if (value != null) {
-                                      var time = await showTimePicker(
-                                          initialEntryMode:
-                                              TimePickerEntryMode.input,
-                                          context: context,
-                                          initialTime: TimeOfDay(
-                                            hour: int.parse(
-                                                _setTime.split(":")[0]),
-                                            minute: int.parse(_setTime
-                                                .split(":")[1]
-                                                .split(" ")[0]),
-                                          ));
-                                      if (time != null) {
-                                        Provider.of<UserDB>(context,
-                                                listen: false)
-                                            .changeDate(
-                                                widget.cat_id,
-                                                widget.post_id,
-                                                DateTime(
-                                                    value.year,
-                                                    value.month,
-                                                    value.day,
-                                                    time.hour,
-                                                    time.minute),
-                                                time.format(context));
-                                        //String id, String title, String body,
-                                        //       DateTime scheduledTime, int not_id, int cat_id, int post_id
-                                        Provider.of<UserDB>(context,
-                                                listen: false)
-                                            .addReminder(
-                                                "1",
-                                                "Reminder from Savet",
-                                                "category: $_cat ,post: ${post['title']}",
-                                                DateTime(
-                                                    value.year,
-                                                    value.month,
-                                                    value.day,
-                                                    time.hour,
-                                                    time.minute),
-                                                0,
-                                                widget.cat_id,
-                                                widget.post_id);
-                                        scheduleNotification(
-                                            notifsPlugin,
-                                            " ",
-                                            "Reminder from Savet",
-                                            "category: $_cat ,post: ${post['title']}",
-                                            DateTime(
-                                                value.year,
-                                                value.month,
-                                                value.day,
-                                                time.hour,
-                                                time.minute),
-                                            0);
-                                        setState(() {
-                                          _setTime = time.format(context);
-                                          print(value);
-                                          widget.date = value;
-                                        });
+                              PopupMenuItem(
+                                child: TextButton(
+                                  onPressed: () async {
+                                    //print(widget.date);
+                                    await showDatePicker(
+                                            context: context,
+                                            initialDate:
+                                                widget.date ?? DateTime.now(),
+                                            firstDate: DateTime.now(),
+                                            lastDate: DateTime(2050))
+                                        .then((value) async {
+                                      if (value != null) {
+                                        var time = await showTimePicker(
+                                            initialEntryMode:
+                                                TimePickerEntryMode.input,
+                                            context: context,
+                                            initialTime: TimeOfDay(
+                                              hour: int.parse(
+                                                  _setTime.split(":")[0]),
+                                              minute: int.parse(_setTime
+                                                  .split(":")[1]
+                                                  .split(" ")[0]),
+                                            ));
+                                        if (time != null) {
+                                          Provider.of<UserDB>(context,
+                                                  listen: false)
+                                              .changeDate(
+                                                  widget.cat_id,
+                                                  widget.post_id,
+                                                  DateTime(
+                                                      value.year,
+                                                      value.month,
+                                                      value.day,
+                                                      time.hour,
+                                                      time.minute),
+                                                  time.format(context));
+                                          //String id, String title, String body,
+                                          //       DateTime scheduledTime, int not_id, int cat_id, int post_id
+                                          Provider.of<UserDB>(context,
+                                                  listen: false)
+                                              .addReminder(
+                                                  "1",
+                                                  "Reminder from Savet",
+                                                  "category: $_cat ,post: ${post['title']}",
+                                                  DateTime(
+                                                      value.year,
+                                                      value.month,
+                                                      value.day,
+                                                      time.hour,
+                                                      time.minute),
+                                                  0,
+                                                  widget.cat_id,
+                                                  widget.post_id);
+                                          scheduleNotification(
+                                              notifsPlugin,
+                                              " ",
+                                              "Reminder from Savet",
+                                              "category: $_cat ,post: ${post['title']}",
+                                              DateTime(
+                                                  value.year,
+                                                  value.month,
+                                                  value.day,
+                                                  time.hour,
+                                                  time.minute),
+                                              0,
+                                              "");
+                                          setState(() {
+                                            _setTime = time.format(context);
+                                            print(value);
+                                            widget.date = value;
+                                          });
+                                        }
+                                        print(value);
                                       }
-                                      print(value);
-                                    }
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                //prefixIcon: Icon(Icons.add_alert),
-                                child: Text(
-                                  'Reminder',
-                                  //style: TextStyle(fontSize: 15),
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  //prefixIcon: Icon(Icons.add_alert),
+                                  child: Text(
+                                    'Reminder',
+                                    //style: TextStyle(fontSize: 15),
+                                  ),
                                 ),
                               ),
-                            ),
-                            PopupMenuItem(
-                              child: TextButton(
-                                onPressed: () async {
-                                  await showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: const Text("Delete Post"),
-                                          content: const Text(
-                                              "Are you sure you want to delete this post?"),
-                                          actions: [
-                                            TextButton(
-                                              child: const Text("Yes"),
-                                              style: ButtonStyle(
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.white),
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.deepOrange)),
-                                              onPressed: () {
-                                                setState(() {
-                                                  Provider.of<UserDB>(context,
-                                                          listen: false)
-                                                      .removePost(post['id'],
-                                                          post['cat_id']);
-                                                  Navigator.pop(context);
-                                                  Navigator.pop(context);
-                                                });
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: const Text("No"),
-                                              style: ButtonStyle(
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.white),
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.deepOrange)),
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                },
-                                // icon: const Icon(Icons.delete),
-                                child: Text(
-                                  'Delete',
-                                  //style: TextStyle(fontSize: 15),
+                              PopupMenuItem(
+                                child: TextButton(
+                                  onPressed: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text("Delete Post"),
+                                            content: const Text(
+                                                "Are you sure you want to delete this post?"),
+                                            actions: [
+                                              TextButton(
+                                                child: const Text("Yes"),
+                                                style: ButtonStyle(
+                                                    foregroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.white),
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors
+                                                                .deepOrange)),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    Provider.of<UserDB>(context,
+                                                            listen: false)
+                                                        .removePost(post['id'],
+                                                            post['cat_id']);
+                                                    Navigator.pop(context);
+                                                    Navigator.pop(context);
+                                                  });
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text("No"),
+                                                style: ButtonStyle(
+                                                    foregroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.white),
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors
+                                                                .deepOrange)),
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  // icon: const Icon(Icons.delete),
+                                  child: Text(
+                                    'Delete',
+                                    //style: TextStyle(fontSize: 15),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ]),
+                            ]),
+                  if (widget.user != null)
+                    IconButton(
+                        onPressed: () async {
+                          await showDatePicker(
+                                  context: context,
+                                  initialDate: widget.date ?? DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2050))
+                              .then((value) async {
+                            if (value != null) {
+                              var time = await showTimePicker(
+                                initialEntryMode: TimePickerEntryMode.input,
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (time != null) {
+                                // Provider.of<UserDB>(context,
+                                //         listen: false)
+                                //     .changeDate(
+                                //         widget.cat_id,
+                                //         widget.post_id,
+                                //         DateTime(
+                                //             value.year,
+                                //             value.month,
+                                //             value.day,
+                                //             time.hour,
+                                //             time.minute),
+                                //         time.format(context));
+                                //String id, String title, String body,
+                                //       DateTime scheduledTime, int not_id, int cat_id, int post_id
+                                Provider.of<UserDB>(context, listen: false)
+                                    .addReminder(
+                                        "1",
+                                        "Reminder from Savet",
+                                        "Category: ${widget.cat_id} ,Post: ${post['title']}",
+                                        DateTime(value.year, value.month,
+                                            value.day, time.hour, time.minute),
+                                        0,
+                                        widget.cat_id,
+                                        widget.post_id);
+                                scheduleNotification(
+                                    notifsPlugin,
+                                    " ",
+                                    "Reminder from Savet",
+                                    "category: ${widget.cat_id} ,post: ${post['title']}",
+                                    DateTime(value.year, value.month, value.day,
+                                        time.hour, time.minute),
+                                    0,
+                                    "");
+                                setState(() {
+                                  print(value);
+                                  widget.date = value;
+                                });
+                              }
+                              print(value);
+                            }
+                          });
+                        },
+                        icon: Icon(Icons.add_alert)),
                   const SizedBox(width: 10),
                 ],
               ),

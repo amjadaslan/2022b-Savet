@@ -1,10 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 
+import '../../Notifications/notificationsHelper.dart';
 import '../../Services/user_db.dart';
+import '../../main.dart';
 import '../Comment_Section/comment_card.dart';
 import '../edit_post.dart';
 
@@ -74,25 +74,72 @@ class _post_comment_sectionState extends State<post_comment_section> {
                               PopupMenuItem(
                                 child: TextButton(
                                   onPressed: () async {
-                                    print(widget.date);
                                     await showDatePicker(
                                             context: context,
                                             initialDate:
                                                 widget.date ?? DateTime.now(),
                                             firstDate: DateTime.now(),
                                             lastDate: DateTime(2050))
-                                        .then((value) {
-                                      Provider.of<UserDB>(context,
-                                              listen: false)
-                                          .changeDate2(
-                                              Timestamp.fromDate(
-                                                  DateTime.now()),
-                                              widget.post_id);
-
-                                      print(value);
-
-                                      if (value != null) widget.date = value;
+                                        .then((value) async {
+                                      if (value != null) {
+                                        var time = await showTimePicker(
+                                          initialEntryMode:
+                                              TimePickerEntryMode.input,
+                                          context: context,
+                                          initialTime: TimeOfDay.now(),
+                                        );
+                                        if (time != null) {
+                                          // Provider.of<UserDB>(context,
+                                          //         listen: false)
+                                          //     .changeDate(
+                                          //         widget.cat_id,
+                                          //         widget.post_id,
+                                          //         DateTime(
+                                          //             value.year,
+                                          //             value.month,
+                                          //             value.day,
+                                          //             time.hour,
+                                          //             time.minute),
+                                          //         time.format(context));
+                                          //String id, String title, String body,
+                                          //       DateTime scheduledTime, int not_id, int cat_id, int post_id
+                                          Provider.of<UserDB>(context,
+                                                  listen: false)
+                                              .addReminder(
+                                                  "1",
+                                                  "Reminder from Savet",
+                                                  "Category: ${widget.cat_id} ,Post: ${post['title']}",
+                                                  DateTime(
+                                                      value.year,
+                                                      value.month,
+                                                      value.day,
+                                                      time.hour,
+                                                      time.minute),
+                                                  0,
+                                                  widget.cat_id,
+                                                  widget.post_id);
+                                          scheduleNotification(
+                                              notifsPlugin,
+                                              " ",
+                                              "Reminder from Savet",
+                                              "category: ${widget.cat_id} ,post: ${post['title']}",
+                                              DateTime(
+                                                  value.year,
+                                                  value.month,
+                                                  value.day,
+                                                  time.hour,
+                                                  time.minute),
+                                              0,
+                                              "");
+                                          setState(() {
+                                            print(value);
+                                            widget.date = value;
+                                          });
+                                        }
+                                        print(value);
+                                      }
                                     });
+                                    Navigator.pop(context);
                                   },
                                   //prefixIcon: Icon(Icons.add_alert),
                                   child: Text(
@@ -160,20 +207,59 @@ class _post_comment_sectionState extends State<post_comment_section> {
                             ])
                     : IconButton(
                         onPressed: () async {
-                          print(widget.date);
                           await showDatePicker(
                                   context: context,
                                   initialDate: widget.date ?? DateTime.now(),
                                   firstDate: DateTime.now(),
                                   lastDate: DateTime(2050))
-                              .then((value) {
-                            Provider.of<UserDB>(context, listen: false)
-                                .changeDate2(Timestamp.fromDate(DateTime.now()),
-                                    widget.post_id);
-
-                            print(value);
-
-                            if (value != null) widget.date = value;
+                              .then((value) async {
+                            if (value != null) {
+                              var time = await showTimePicker(
+                                initialEntryMode: TimePickerEntryMode.input,
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (time != null) {
+                                // Provider.of<UserDB>(context,
+                                //         listen: false)
+                                //     .changeDate(
+                                //         widget.cat_id,
+                                //         widget.post_id,
+                                //         DateTime(
+                                //             value.year,
+                                //             value.month,
+                                //             value.day,
+                                //             time.hour,
+                                //             time.minute),
+                                //         time.format(context));
+                                //String id, String title, String body,
+                                //       DateTime scheduledTime, int not_id, int cat_id, int post_id
+                                Provider.of<UserDB>(context, listen: false)
+                                    .addReminder(
+                                        "1",
+                                        "Reminder from Savet",
+                                        "Category: ${widget.cat_id} ,Post: ${post['title']}",
+                                        DateTime(value.year, value.month,
+                                            value.day, time.hour, time.minute),
+                                        0,
+                                        widget.cat_id,
+                                        widget.post_id);
+                                scheduleNotification(
+                                    notifsPlugin,
+                                    " ",
+                                    "Reminder from Savet",
+                                    "category: ${widget.cat_id} ,post: ${post['title']}",
+                                    DateTime(value.year, value.month, value.day,
+                                        time.hour, time.minute),
+                                    0,
+                                    "");
+                                setState(() {
+                                  print(value);
+                                  widget.date = value;
+                                });
+                              }
+                              print(value);
+                            }
                           });
                         },
                         icon: Icon(Icons.add_alert)),

@@ -1,12 +1,9 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Posts/Post/postPage.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import '../Posts/Post/post_comment_section.dart';
-import '../Posts/similar_content_card.dart';
 import '../Services/user_db.dart';
 
 class explore_card extends StatefulWidget {
@@ -47,9 +44,11 @@ class _explore_cardState extends State<explore_card> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => postPage(
-                                          cat_id: widget.post['cat_id'],
-                                          post_id: widget.post['id'],
-                                          user: widget.user)));
+                                            cat_id: widget.post['cat_id'],
+                                            post_id: widget.post['id'],
+                                            user: widget.user,
+                                            public_flag: true,
+                                          )));
                             },
                             child: Container(
                               color: Colors.white,
