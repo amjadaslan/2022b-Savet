@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -154,12 +155,14 @@ class _postPageState extends State<postPage> {
     List posts;
     String _cat = " ";
     if (widget.user != null) {
+      token = widget.user!['token'];
       var cat = widget.user!['categories']
           .singleWhere((element) => element['id'] == widget.cat_id);
       posts = cat['posts'];
       tag = cat['tag'];
       _cat = cat['title'];
     } else {
+      token = Provider.of<UserDB>(context).token!;
       var cat = Provider.of<UserDB>(context)
           .categories
           .singleWhere((element) => element['id'] == widget.cat_id);
@@ -197,12 +200,7 @@ class _postPageState extends State<postPage> {
     }
 
     return FutureBuilder(
-        future: Future.wait([
-          getTagPosts(tag),
-          findTokenByEmail((widget.user != null)
-              ? (widget.user?['email'])
-              : Provider.of<UserDB>(context, listen: false).user_email)
-        ]),
+        future: Future.wait([getTagPosts(tag)]),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return Scaffold(
               appBar: AppBar(
@@ -283,8 +281,8 @@ class _postPageState extends State<postPage> {
                                           var image = Image(
                                               fit: BoxFit.cover,
                                               width: double.infinity,
-                                              image:
-                                                  NetworkImage(post['image']));
+                                              image: CachedNetworkImageProvider(
+                                                  post['image']));
 
                                           Provider.of<UserDB>(context,
                                                   listen: false)
@@ -482,8 +480,10 @@ class _postPageState extends State<postPage> {
                                       children: [
                                         CircleAvatar(
                                             radius: 25,
-                                            backgroundImage: NetworkImage(
-                                                widget.user!['avatar_path'])),
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                    widget
+                                                        .user!['avatar_path'])),
                                         SizedBox(width: 5),
                                         Text(
                                           widget.user!['username'],
@@ -524,7 +524,7 @@ class _postPageState extends State<postPage> {
                         : Image(
                             fit: BoxFit.cover,
                             width: double.infinity,
-                            image: NetworkImage(post['image'])),
+                            image: CachedNetworkImageProvider(post['image'])),
                     (widget.public_flag)
                         ? Container(
                             child: Container(
@@ -538,6 +538,8 @@ class _postPageState extends State<postPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
+                                    SizedBox(),
+                                    SizedBox(),
                                     LikeButton(
                                       size: 50,
                                       circleColor: CircleColor(
@@ -593,7 +595,8 @@ class _postPageState extends State<postPage> {
                                                         post_id: widget.post_id,
                                                         cat_id: widget.cat_id,
                                                         user: widget.user,
-                                                        token: token,
+                                                        token: widget
+                                                            .user?['token'],
                                                       )));
                                         },
                                         color: Colors.white,
@@ -601,8 +604,11 @@ class _postPageState extends State<postPage> {
                                         padding: EdgeInsets.all(13.0),
                                         child: Row(
                                           children: <Widget>[
-                                            Icon(Icons.comment),
-                                            Text(" Comment")
+                                            Icon(
+                                              Icons.comment,
+                                              size: 30,
+                                            ),
+                                            //Text(" Comment")
                                           ],
                                         ),
                                       ),
@@ -729,11 +735,4 @@ class _postPageState extends State<postPage> {
 
     return time;
   }
-}
-
-Future<void> findTokenByEmail(String email) async {
-  var s = FirebaseFirestore.instance.collection('tokens').doc(email);
-  DocumentSnapshot userSnapshot = await s.get();
-  Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-  token = userData['token'];
 }

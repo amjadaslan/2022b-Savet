@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,10 +47,13 @@ class Google extends ChangeNotifier {
           await store.collection('users').doc(auth.currentUser?.email).get();
 
       if (!(boo).exists) {
-        await store.collection('users').doc(auth.currentUser?.email).set({
-          'username': auth.currentUser?.displayName,
-          'avatar_path': auth.currentUser?.photoURL,
-          'log_from': "Google",
+        FirebaseMessaging.instance.getToken().then((token) async {
+          await store.collection('users').doc(auth.currentUser?.email).set({
+            'username': auth.currentUser?.displayName,
+            'avatar_path': auth.currentUser?.photoURL,
+            'log_from': "Google",
+            'token': token
+          });
         });
       }
     } catch (e) {

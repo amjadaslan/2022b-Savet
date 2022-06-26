@@ -18,26 +18,26 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  void addToken() {
-    var auth = FirebaseAuth.instance;
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    messaging.getToken().then((token) {
-      final FirebaseFirestore db = FirebaseFirestore.instance;
-      return db.collection('tokens').where('token', isEqualTo: token)
-          .get().then((snapshot) async {
-        if (snapshot.docs.isEmpty) {
-          return db
-              .collection('tokens')
-              .add({
-            'token': token,
-            'registered_at': Timestamp.now(),
-            'email': auth.currentUser?.email
-          })
-              .then((value) => null);
-        }
-      });
-    });
-  }
+  // void addToken(String email) {
+  //   var auth = FirebaseAuth.instance;
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //   messaging.getToken().then((token) {
+  //     final FirebaseFirestore db = FirebaseFirestore.instance;
+  //     return db
+  //         .collection('users')
+  //         .where('token', isEqualTo: token)
+  //         .get()
+  //         .then((snapshot) async {
+  //       if (snapshot.docs.isEmpty) {
+  //         return db
+  //             .collection('users')
+  //             .doc(email)
+  //             .set({'token': token}).then((value) => null);
+  //       }
+  //     });
+  //   });
+  // }
+
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   TextEditingController _password = new TextEditingController();
   TextEditingController _confirmpassword = new TextEditingController();
@@ -194,12 +194,17 @@ class _RegisterState extends State<Register> {
                                             _password.text, _username.text) !=
                                         null)
                                       {
-                                        FirebaseFirestore.instance
-                                            .collection('users')
-                                            .doc(_email.text)
-                                            .set({
-                                          'username': _username.text,
-                                          'log_from': "Email",
+                                        FirebaseMessaging.instance
+                                            .getToken()
+                                            .then((token) {
+                                          FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(_email.text)
+                                              .set({
+                                            'username': _username.text,
+                                            'log_from': "Email",
+                                            'token': token
+                                          });
                                         }),
                                         setState(() {
                                           Navigator.push(
@@ -232,7 +237,7 @@ class _RegisterState extends State<Register> {
                                                                 child:
                                                                     CircularProgressIndicator());
                                                           })));
-                                        }),addToken(),
+                                        }),
                                       }
                                     else
                                       {

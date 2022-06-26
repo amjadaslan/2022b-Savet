@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class similar_content_card extends StatefulWidget {
@@ -30,7 +31,8 @@ class _similar_content_cardState extends State<similar_content_card> {
                         children: [
                           Image(
                               fit: BoxFit.fitWidth,
-                              image: NetworkImage(widget.post['image'])),
+                              image: CachedNetworkImageProvider(
+                                  widget.post['image'])),
                           SizedBox(height: 10),
                           Container(
                             alignment: Alignment.bottomLeft,

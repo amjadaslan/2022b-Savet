@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class notification_card extends StatefulWidget {
@@ -34,7 +35,7 @@ class _notification_cardState extends State<notification_card> {
                             backgroundImage: (widget.image == "")
                                 ? AssetImage('assets/images/avatar.jpg')
                                     as ImageProvider
-                                : NetworkImage(widget.image)),
+                                : CachedNetworkImageProvider(widget.image)),
                         const SizedBox(width: 20),
                         Text('${widget.username}',
                             style: TextStyle(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -59,8 +60,10 @@ class _follower_cardState extends State<follower_card> {
                                                   'assets/images/avatar.jpg'))
                                           : CircleAvatar(
                                               radius: 30,
-                                              backgroundImage: NetworkImage(
-                                                  userUpdated['avatar_path'])),
+                                              backgroundImage:
+                                                  CachedNetworkImageProvider(
+                                                      userUpdated[
+                                                          'avatar_path'])),
                                       const SizedBox(width: 20),
                                       Container(
                                         width:
