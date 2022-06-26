@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Community/community_post_card.dart';
 
-import '../Chat/chat.dart';
 import '../Services/user_db.dart';
 
 class community extends StatefulWidget {
@@ -32,7 +31,10 @@ class _communityState extends State<community> {
                 child: (arr.length > 0)
                     ? ListView(
                         children: List.generate(arr.length, (index) {
-                        return community_post(post: arr[index]);
+                        return community_post(
+                            post: arr[index]['post'],
+                            user: arr[index]['user'],
+                            token: arr[index]['token']);
                       }))
                     : Center(
                         child: Column(
@@ -58,7 +60,7 @@ class _communityState extends State<community> {
   Future<void> getTagPosts() async {
     arr.clear();
     List emails = [];
-    Provider.of<UserDB>(context).following.forEach((following) {
+    Provider.of<UserDB>(context, listen: false).following.forEach((following) {
       emails.add(following['email']);
     });
     var snapshot = (await FirebaseFirestore.instance.collection('users').get());
@@ -69,11 +71,12 @@ class _communityState extends State<community> {
       user['categories'].forEach((c) {
         if (c['id'] != 0 && c['tag'] != "Private") {
           c['posts'].forEach((p) {
-            arr.add(p);
+            var post = {'post': p, 'user': user, 'token': user['token']};
+            arr.add(post);
           });
         }
       });
     }
-    arr.sort((a, b) => (b['id'].compareTo(a['id'])));
+    arr.sort((a, b) => (b['post']['id'].compareTo(a['post']['id'])));
   }
 }

@@ -172,26 +172,26 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void addToken() {
-    var auth = FirebaseAuth.instance;
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    messaging.getToken().then((token) {
-      final FirebaseFirestore db = FirebaseFirestore.instance;
-      return db
-          .collection('tokens')
-          .where('token', isEqualTo: token)
-          .get()
-          .then((snapshot) async {
-        if (snapshot.docs.isEmpty) {
-          return db.collection('tokens').doc(auth.currentUser?.email).set({
-            'token': token,
-            'registered_at': Timestamp.now(),
-            'email': auth.currentUser?.email
-          }).then((value) => null);
-        }
-      });
-    });
-  }
+  // void addToken() {
+  //   var auth = FirebaseAuth.instance;
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //   messaging.getToken().then((token) {
+  //     final FirebaseFirestore db = FirebaseFirestore.instance;
+  //     return db
+  //         .collection('tokens')
+  //         .where('token', isEqualTo: token)
+  //         .get()
+  //         .then((snapshot) async {
+  //       if (snapshot.docs.isEmpty) {
+  //         return db.collection('tokens').doc(auth.currentUser?.email).set({
+  //           'token': token,
+  //           'registered_at': Timestamp.now(),
+  //           'email': auth.currentUser?.email
+  //         }).then((value) => null);
+  //       }
+  //     });
+  //   });
+  // }
 
   Widget LoginScreen() {
     final user = Provider.of<AuthRepository>(context);
@@ -339,7 +339,6 @@ class _LoginState extends State<Login> {
                         LogFrom = "Facebook";
                         await loginFace();
                         if (auth.currentUser != null) {
-                          addToken();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -381,7 +380,6 @@ class _LoginState extends State<Login> {
                             .doc(auth.currentUser?.email)
                             .get();
                         if (x.currentUser() != null && boo.exists) {
-                          addToken();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -475,13 +473,16 @@ class _LoginState extends State<Login> {
                 .doc(auth.currentUser?.email)
                 .get())
             .exists) {
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(auth.currentUser?.email)
-              .set({
-            'username': auth.currentUser?.displayName,
-            'avatar_path': model.picture?.url,
-            'log_from': "Facebook"
+          FirebaseMessaging.instance.getToken().then((token) async {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(auth.currentUser?.email)
+                .set({
+              'username': auth.currentUser?.displayName,
+              'avatar_path': model.picture?.url,
+              'log_from': "Facebook",
+              'token': token
+            });
           });
         }
         LogFrom = "Facebook";

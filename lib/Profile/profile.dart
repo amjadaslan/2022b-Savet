@@ -109,73 +109,75 @@ class _profileState extends State<profile> {
             const SizedBox(width: 20),
           ],
         ),
-        body: Container(
-            color: Colors.white,
-            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              const SizedBox(height: 20),
-              profileImage(
-                  pWrap: pWrap,
-                  shape: "circle",
-                  network_flag: true,
-                  profile_pic: true),
-              const SizedBox(height: 10),
-              Container(
-                child: Text(
-                  '${Provider.of<UserDB>(context).username}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-                ),
-              ),
-              const SizedBox(height: 10),
-              DefaultTabController(
-                length: 2,
-                child: Column(children: [
-                  const TabBar(
-                    labelColor: Colors.black,
-                    tabs: [
-                      Tab(
-                        text: "Followers",
-                      ),
-                      Tab(
-                        text: "Following",
-                      ),
-                    ],
+        body: SingleChildScrollView(
+          child: Container(
+              color: Colors.white,
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                const SizedBox(height: 20),
+                profileImage(
+                    pWrap: pWrap,
+                    shape: "circle",
+                    network_flag: true,
+                    profile_pic: true),
+                const SizedBox(height: 10),
+                Container(
+                  child: Text(
+                    '${Provider.of<UserDB>(context).username}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                   ),
-                  LimitedBox(
-                      maxHeight: MediaQuery.of(context).size.height * 0.55,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: TabBarView(
-                          children: [
-                            ListView(
-                              shrinkWrap: true,
-                              children: List.generate(
-                                  Provider.of<UserDB>(context, listen: false)
-                                      .followers
-                                      .length,
-                                  (index) => follower_card(
-                                      user: Provider.of<UserDB>(context,
-                                              listen: false)
-                                          .followers[index],
-                                      flag: false)),
-                            ),
-                            ListView(
-                              shrinkWrap: true,
-                              children: List.generate(
-                                  Provider.of<UserDB>(context, listen: false)
-                                      .following
-                                      .length,
-                                  (index) => follower_card(
-                                      user: Provider.of<UserDB>(context,
-                                              listen: false)
-                                          .following[index],
-                                      flag: false)),
-                            ),
-                          ],
+                ),
+                const SizedBox(height: 10),
+                DefaultTabController(
+                  length: 2,
+                  child: Column(children: [
+                    const TabBar(
+                      labelColor: Colors.black,
+                      tabs: [
+                        Tab(
+                          text: "Followers",
                         ),
-                      ))
-                ]),
-              )
-            ])));
+                        Tab(
+                          text: "Following",
+                        ),
+                      ],
+                    ),
+                    LimitedBox(
+                        maxHeight: MediaQuery.of(context).size.height * 0.55,
+                        child: Container(
+                          color: Colors.transparent,
+                          child: TabBarView(
+                            children: [
+                              ListView(
+                                shrinkWrap: true,
+                                children: List.generate(
+                                    Provider.of<UserDB>(context, listen: false)
+                                        .followers
+                                        .length,
+                                    (index) => follower_card(
+                                        user: Provider.of<UserDB>(context,
+                                                listen: false)
+                                            .followers[index],
+                                        flag: false)),
+                              ),
+                              ListView(
+                                shrinkWrap: true,
+                                children: List.generate(
+                                    Provider.of<UserDB>(context, listen: false)
+                                        .following
+                                        .length,
+                                    (index) => follower_card(
+                                        user: Provider.of<UserDB>(context,
+                                                listen: false)
+                                            .following[index],
+                                        flag: false)),
+                              ),
+                            ],
+                          ),
+                        ))
+                  ]),
+                )
+              ])),
+        ));
   }
 }

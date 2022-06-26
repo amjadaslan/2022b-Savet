@@ -263,11 +263,11 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> getUserList(String? username) async {
     var snapshot = (await FirebaseFirestore.instance.collection('users').get());
     userList = snapshot.docs.map((doc) => doc.data()).toList();
-
-    userList.removeWhere((user) =>
-        (user['username'] == username) ||
-        !user['email'].contains('@') ||
-        (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
-            .hasMatch(user['username'])));
+    print(userList.length);
+    userList.removeWhere((user) => (user['username'] != null &&
+        ((user['username'] == username) ||
+            !user['email'].contains('@') ||
+            (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
+                .hasMatch(user['username'])))));
   }
 }
