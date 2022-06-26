@@ -17,7 +17,6 @@ import 'package:savet/auth/anonymous.dart';
 import 'package:savet/homepage.dart';
 import 'package:http/http.dart' as http;
 
-
 import '../Notifications/notificationsHelper.dart';
 
 import '../Services/user_db.dart';
@@ -26,7 +25,6 @@ import '../main.dart';
 import 'Register.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
-
 
 class Login extends StatefulWidget {
   Login({Key? key, this.sharedFiles}) : super(key: key);
@@ -58,12 +56,14 @@ class _LoginState extends State<Login> {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       print('User granted provisional permission');
     } else {
       print('User declined or has not accepted permission');
     }
   }
+
   void listenFCM() async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -86,6 +86,7 @@ class _LoginState extends State<Login> {
       }
     });
   }
+
   void loadFCM() async {
     if (!kIsWeb) {
       channel = const AndroidNotificationChannel(
@@ -103,7 +104,7 @@ class _LoginState extends State<Login> {
       /// default FCM channel to enable heads up notifications.
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+              AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
 
       /// Update the iOS foreground notification presentation options to allow
@@ -117,13 +118,12 @@ class _LoginState extends State<Login> {
     }
   }
 
-
-    @override
+  @override
   void initState() {
     super.initState();
     _email = TextEditingController(text: "");
     _password = TextEditingController(text: "");
-    requestPermission();
+    //requestPermission();
 
     loadFCM();
 
@@ -137,7 +137,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-
     var auth = FirebaseAuth.instance;
     print(auth.currentUser);
     if (auth.currentUser != null) {
@@ -172,22 +171,23 @@ class _LoginState extends State<Login> {
               }));
     }
   }
+
   void addToken() {
     var auth = FirebaseAuth.instance;
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     messaging.getToken().then((token) {
       final FirebaseFirestore db = FirebaseFirestore.instance;
-      return db.collection('tokens').where('token', isEqualTo: token)
-          .get().then((snapshot) async {
+      return db
+          .collection('tokens')
+          .where('token', isEqualTo: token)
+          .get()
+          .then((snapshot) async {
         if (snapshot.docs.isEmpty) {
-          return db
-              .collection('tokens').doc(auth.currentUser?.email)
-              .set({
+          return db.collection('tokens').doc(auth.currentUser?.email).set({
             'token': token,
             'registered_at': Timestamp.now(),
             'email': auth.currentUser?.email
-          })
-              .then((value) => null);
+          }).then((value) => null);
         }
       });
     });
@@ -268,7 +268,6 @@ class _LoginState extends State<Login> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   onPressed: () async {
-
                     //await user.signIn(_email.text, _password.text);
                     if ((await user.signIn(_email.text, _password.text))) {
                       LogFrom = "Email";
@@ -486,7 +485,6 @@ class _LoginState extends State<Login> {
           });
         }
         LogFrom = "Facebook";
-
       }
     } catch (e) {
       print("ERROR Facebook login $e");

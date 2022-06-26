@@ -193,45 +193,35 @@ class _explore_cardState extends State<explore_card> {
                               color: Colors.white,
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                  CircleAvatar(
+                                      radius: 10,
+                                      backgroundImage: (widget
+                                                  .user['avatar_path'] !=
+                                              "")
+                                          ? NetworkImage(
+                                              widget.user['avatar_path'])
+                                          : const AssetImage(
+                                                  'assets/images/avatar.jpg')
+                                              as ImageProvider),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SizedBox(width: 5),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.20,
-                                        child: AutoSizeText(
-                                          "       ${widget.post['username']}",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontFamily: 'arial',
-                                              decoration: TextDecoration.none,
-                                              color: Colors.black54,
-                                              fontSize: 11),
-                                        ),
+                                      SizedBox(
+                                        width: 10,
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Icon(Icons.favorite,
-                                              color: Colors.red, size: 13),
-                                          SizedBox(width: 2),
-                                          Text(
-                                            // (alreadyReacted)
-                                            //     ? "${widget.post['likes'] + widget.post['loves'] - 1} Likes" :
-                                            "${widget.post['likes'] + widget.post['loves']} Likes",
-                                            style: TextStyle(
-                                                fontFamily: 'arial',
-                                                decoration: TextDecoration.none,
-                                                color: Colors.grey[500],
-                                                fontSize: 10),
-                                          )
-                                        ],
+                                      Icon(Icons.favorite,
+                                          color: Colors.red, size: 15),
+                                      SizedBox(width: 2),
+                                      AutoSizeText(
+                                        "${widget.post['likes'] + widget.post['loves']} Likes",
+                                        style: TextStyle(
+                                            fontFamily: 'arial',
+                                            decoration: TextDecoration.none,
+                                            color: Colors.grey[500],
+                                            fontSize: 5),
+                                        maxFontSize: 13,
                                       )
                                     ],
                                   ),
@@ -239,7 +229,8 @@ class _explore_cardState extends State<explore_card> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         IconButton(
-                                            padding: const EdgeInsets.all(0),
+                                            padding: EdgeInsets.zero,
+                                            constraints: BoxConstraints(),
                                             iconSize: 15,
                                             onPressed: () {
                                               Navigator.push(
@@ -258,8 +249,10 @@ class _explore_cardState extends State<explore_card> {
                                             icon: Icon(
                                                 Icons.mode_comment_outlined,
                                                 color: Colors.grey[400])),
+                                        SizedBox(width: 10),
                                         IconButton(
-                                            padding: const EdgeInsets.all(0),
+                                            padding: EdgeInsets.zero,
+                                            constraints: BoxConstraints(),
                                             iconSize: 18,
                                             onPressed: () async {
                                               clicked = 1 - clicked;

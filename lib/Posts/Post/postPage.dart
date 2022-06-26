@@ -10,6 +10,7 @@ import 'package:savet/Posts/videoPlayer.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../../Notifications/notificationsHelper.dart';
+import '../../Profile/profile_ext_view.dart';
 import '../../Services/user_db.dart';
 import '../../main.dart';
 import '../edit_post.dart';
@@ -35,6 +36,8 @@ class postPage extends StatefulWidget {
 String token = "";
 
 class _postPageState extends State<postPage> {
+  Map userUpdated = {};
+  bool already_follow = false;
   bool isPressed = false;
   List arr = [];
 
@@ -48,6 +51,8 @@ class _postPageState extends State<postPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.user != null) userUpdated = widget.user ?? {};
+
     bool isHappy = false, isLoved = false;
     var postsIliked = Provider.of<UserDB>(context, listen: false).postsIliked;
     var postsIloved = Provider.of<UserDB>(context, listen: false).postsIloved;
@@ -60,7 +65,6 @@ class _postPageState extends State<postPage> {
 
     for (var e in postsIloved) {
       if (e == widget.post_id) {
-        print("hi");
         isLoved = true;
         break;
       }
@@ -85,6 +89,9 @@ class _postPageState extends State<postPage> {
             '',
             '${Provider.of<UserDB>(context, listen: false).username}'
                 ' reacted to your post.');
+        widget.user!['categories']
+            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
+            .singleWhere((post) => post['id'] == widget.post_id)['likes']++;
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLike(
             Provider.of<UserDB>(context, listen: false).user_email,
@@ -93,6 +100,9 @@ class _postPageState extends State<postPage> {
                 : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
+        widget.user!['categories']
+            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
+            .singleWhere((post) => post['id'] == widget.post_id)['likes']--;
       }
       isHappy = !isHappy;
       setState(() {});
@@ -119,6 +129,9 @@ class _postPageState extends State<postPage> {
                 ? (widget.user?['email'])
                 : Provider.of<UserDB>(context, listen: false).user_email,
             ' reacted to your post.');
+        widget.user!['categories']
+            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
+            .singleWhere((post) => post['id'] == widget.post_id)['loves']++;
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLove(
             Provider.of<UserDB>(context, listen: false).user_email,
@@ -127,6 +140,9 @@ class _postPageState extends State<postPage> {
                 : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
+        widget.user!['categories']
+            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
+            .singleWhere((post) => post['id'] == widget.post_id)['loves']--;
       }
 
       isLoved = !isLoved;
@@ -165,8 +181,7 @@ class _postPageState extends State<postPage> {
       if (e['id'] == widget.post_id) {
         post = e;
         var te = e['date'];
-        print(e);
-        print(te);
+
         if (te != null && te != "" && widget.date == null) {
           try {
             widget.date = te.toDate();
@@ -175,9 +190,7 @@ class _postPageState extends State<postPage> {
           }
           String t = e['time'];
           if (t != null) _setTime = t;
-          // widget.date = DateFormat.yMd().format(e['reminder']);
-          //DateTime.tryParse(te);
-          print(widget.date);
+
           break;
         }
       }
@@ -448,6 +461,63 @@ class _postPageState extends State<postPage> {
                 color: Colors.white,
                 child: Column(
                   children: [
+                    (widget.user != null &&
+                            widget.user!['email'] !=
+                                Provider.of<UserDB>(context).user_email)
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.98,
+                                  color: Colors.lightBlue,
+                                  alignment: Alignment.centerLeft,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(25, 15, 0, 15),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage: NetworkImage(
+                                                widget.user!['avatar_path'])),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          widget.user!['username'],
+                                          style: const TextStyle(
+                                              fontFamily: 'arial',
+                                              decoration: TextDecoration.none,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        ),
+                                        SizedBox(width: 25),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        profile_ext_view(
+                                                            user: userUpdated,
+                                                            already_follow:
+                                                                already_follow)),
+                                              );
+                                            },
+                                            child: Text(
+                                              "View",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ))
+                                      ]),
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
                     (post['videoFlag'])
                         ? VideoPlayerScreen(
                             networkFlag: true, url: post['image'])
@@ -625,6 +695,16 @@ class _postPageState extends State<postPage> {
     }
 
     arr.removeWhere((post) => post['id'] == widget.post_id);
+
+    if (widget.user != null) {
+      userUpdated = await Provider.of<UserDB>(context, listen: false)
+          .getUserByEmail(widget.user?['email']);
+      userUpdated['followers'].forEach((follower) {
+        if (follower['username'] ==
+            Provider.of<UserDB>(context, listen: false).username)
+          already_follow = true;
+      });
+    }
   }
 
   String readTimestamp(int timestamp) {
