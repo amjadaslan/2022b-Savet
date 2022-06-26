@@ -33,10 +33,10 @@
 * [Firebase structure](https://github.com/Technion236272/2022b-Savet/blob/main/docs/Firebase%20structure.md)
 * [Set up](https://github.com/Technion236272/2022b-Savet/blob/main/docs/Setup.md)
 
-
-<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175804068-adabcd9d-857d-401a-a82b-5285fdf959eb.png" align="left" height="350" width="200" ></a>
-<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175804075-9ab32b02-aab3-4253-b28b-9b7bb0ba4806.png" align="left" height="350" width="200" ></a>
-<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175804083-0fe9e060-3d9e-4598-91ad-188c8448ce50.png" align="left" height="350" width="200" ></a>
-<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175804088-ce3d8702-d0ca-4141-8a9c-03c5e5c6a2b7.png" align="left" height="350" width="200" ></a>
-<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175804095-ff382f46-7e76-4b1f-b71d-c3ff1279303b.png" align="left" height="350" width="200" ></a>
+<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175806669-f6edced6-32b4-43e0-a434-e887a152a4d1.jpg" align="left" height="350" width="200" ></a>
+<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175806668-2808854e-fa38-442c-af8d-d749bfa37b9c.jpg" align="left" height="350" width="200" ></a>
+<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175806672-1838358c-81d8-44e7-93a4-130964e320e8.jpg" align="left" height="350" width="200" ></a>
+<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175806666-e58cd454-d3fc-4a2f-ad7f-413ab3b4fb0c.jpg" align="left" height="350" width="200" ></a>
+<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175806670-22945572-d853-467b-9a12-3547ddacecf9.jpg" align="left" height="350" width="200" ></a>
+<a href="url"><img src="https://user-images.githubusercontent.com/102037784/175806674-2080e8f4-fd1f-4cfc-addc-10984c0ee756.jpg" align="left" height="350" width="200" ></a>
 
