@@ -1,5 +1,6 @@
 
-<img width="791" alt="Application structure" src="https://user-images.githubusercontent.com/102037784/171220403-bb06aa4d-0ab5-4842-97b0-26d94909f7fb.PNG">
+<img width="856" alt="Capture" src="https://user-images.githubusercontent.com/102037784/175802158-97fe63e4-e306-4ed4-9afd-455e3530271e.PNG">
+
 
 
 # List of screens:
@@ -20,9 +21,7 @@
 
 ## Notifcations screen
 
-## Chat screen
-
-## Community screen
+## Community screen (Where you can see your following users' public categories)
 
 
 
