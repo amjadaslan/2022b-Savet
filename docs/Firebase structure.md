@@ -1,1 +1,3 @@
-<img width="503" alt="Firebase structure" src="https://user-images.githubusercontent.com/102037784/171270621-6be8583f-d8ab-4cd5-9d16-8ef6090b6b3f.PNG">
+
+![firebase](https://user-images.githubusercontent.com/102037784/175803560-5b0912ea-227d-4b3f-a4c9-656f95ed98f1.png)
+
