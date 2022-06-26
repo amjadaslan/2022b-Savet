@@ -2,8 +2,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class notification_card extends StatefulWidget {
-  const notification_card({Key? key}) : super(key: key);
-
+  notification_card(
+      {Key? key,
+      required this.image,
+      required this.username,
+      required this.message})
+      : super(key: key);
+  String image = "";
+  String username = "";
+  String message = "";
   @override
   _notification_cardState createState() => _notification_cardState();
 }
@@ -22,12 +29,14 @@ class _notification_cardState extends State<notification_card> {
                     child: Row(
                       children: [
                         const SizedBox(width: 20),
-                        const CircleAvatar(
+                        CircleAvatar(
                             radius: 30,
-                            backgroundImage:
-                                NetworkImage('https://i.ibb.co/CwTL6Br/1.jpg')),
+                            backgroundImage: (widget.image == "")
+                                ? AssetImage('assets/images/avatar.jpg')
+                                    as ImageProvider
+                                : NetworkImage(widget.image)),
                         const SizedBox(width: 20),
-                        Text("MichaelHendley",
+                        Text('${widget.username}',
                             style: TextStyle(
                                 decoration: TextDecoration.none,
                                 fontSize: 15,
@@ -37,10 +46,10 @@ class _notification_cardState extends State<notification_card> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text("started following you.",
+                        Text("${widget.message}",
                             style: TextStyle(
                                 decoration: TextDecoration.none,
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontFamily: 'arial',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black45))

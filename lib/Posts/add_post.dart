@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:savet/Category/category.dart';
+import 'package:savet/homepage.dart';
 
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
+import '../auth/login_page.dart';
 
 class add_post extends StatefulWidget {
-  const add_post({Key? key, required this.cat_id}) : super(key: key);
+  const add_post({Key? key, required this.cat_id, this.image_path})
+      : super(key: key);
   final cat_id;
+  final image_path;
   @override
   _add_postState createState() => _add_postState();
 }
@@ -20,6 +26,9 @@ class _add_postState extends State<add_post> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.image_path != null) {
+      pWrap.value = widget.image_path;
+    }
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -61,7 +70,7 @@ class _add_postState extends State<add_post> {
                         maxLines: 10,
                         controller: _desc,
                         decoration: InputDecoration(
-                            labelText: 'Description',
+                            labelText: 'Description (Optional)',
                             enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
                                     color: Colors.black38, width: 1.0),
@@ -113,8 +122,21 @@ class _add_postState extends State<add_post> {
                                         pWrap.value,
                                         widget.cat_id,
                                         pWrap.videoFlag,
+                                        null,
                                         null);
-                                Navigator.of(context).pop();
+                                print(widget.image_path);
+                                if (widget.image_path != null) {
+                                  ReceiveSharingIntent.reset();
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) => Login()),
+                                      (Route<dynamic> route) => false);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          category(id: widget.cat_id)));
+                                } else {
+                                  Navigator.of(context).pop();
+                                }
                               }
                             },
                             child: const Text("Submit"),

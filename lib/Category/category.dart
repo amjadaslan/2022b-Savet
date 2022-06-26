@@ -6,7 +6,7 @@ import 'package:savet/Category/profileImage.dart';
 import 'package:savet/Posts/videoPlayer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../Posts/Private_Post/private_post.dart';
+import '../Posts/Post/postPage.dart';
 import '../Posts/add_post.dart';
 import '../Services/user_db.dart';
 import 'add_category.dart';
@@ -39,7 +39,8 @@ class _categoryState extends State<category> {
       if (e['id'] == widget.id) cat = e;
     });
 
-    var pWrap = pathWrapper(cat['image']);
+    var pWrap =
+        (cat['image'] != null) ? pathWrapper(cat['image']) : pathWrapper("");
     var t = cat['title'];
     TextEditingController _cont = TextEditingController();
 
@@ -77,13 +78,12 @@ class _categoryState extends State<category> {
                                             MaterialStateProperty.all(
                                                 Colors.deepOrange)),
                                     onPressed: () {
-                                      setState(() {
-                                        Provider.of<UserDB>(context,
-                                                listen: false)
-                                            .removeCategory(widget.id);
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      });
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      Provider.of<UserDB>(context,
+                                              listen: false)
+                                          .removeCategory(widget.id);
+                                      setState(() {});
                                     },
                                   ),
                                   TextButton(
@@ -195,17 +195,19 @@ class _categoryState extends State<category> {
             child: SingleChildScrollView(
               child: StaggeredGrid.count(
                 crossAxisCount: 3,
-                children: List.generate(cat['posts'].length, (index) {
+                children: List.generate((cat['posts']).length, (index) {
                   return InkWell(
                       onTap: () {
-                        if (index < cat.length) {
+                        if (index < cat['posts'].length) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => private_post(
-                                      cat_id: cat['id'],
-                                      post_id: cat['posts'][index]['id'],
-                                      user: widget.user)));
+                                  builder: (context) => postPage(
+                                        cat_id: cat['id'],
+                                        post_id: cat['posts'][index]['id'],
+                                        user: widget.user,
+                                        public_flag: (cat['tag'] != "Private"),
+                                      )));
                         }
                       },
                       child: Container(

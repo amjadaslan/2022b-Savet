@@ -16,6 +16,7 @@ import '../auth/AnonymousLogin.dart';
 class home extends StatefulWidget {
   home({Key? key, required this.LoginFrom}) : super(key: key);
   String LoginFrom;
+  static bool first_time = true;
 
   @override
   _homeState createState() => _homeState();
@@ -31,7 +32,7 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance.currentUser;
-    List cats = Provider.of<UserDB>(context).categories.toList();
+    List cats = Provider.of<UserDB>(context, listen: true).categories.toList();
     cats.removeWhere((cat) =>
         (!RegExp('.*${_editingController.text}.*', caseSensitive: false)
             .hasMatch(cat['title'])));
@@ -66,7 +67,10 @@ class _homeState extends State<home> {
                             builder: (context) =>
                                 profile(LoginFrom: widget.LoginFrom)));
                       },
-                      icon: const Icon(Icons.account_circle)))
+                      icon: const Icon(
+                        Icons.account_circle,
+                        size: 30,
+                      )))
                   : (IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -81,8 +85,10 @@ class _homeState extends State<home> {
             ]),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const add_category())),
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const add_category()));
+          },
           backgroundColor: Colors.deepOrange,
         ),
         body: ListView(children: <Widget>[
@@ -109,16 +115,16 @@ class _homeState extends State<home> {
           // FloatingSearchAppBarExample(),
           const SizedBox(height: 10),
           Center(
-              child: Container(
-                  child: ReorderableGridView.count(
+              child: ReorderableGridView.count(
+            physics: ScrollPhysics(),
             shrinkWrap: true,
             crossAxisCount: 3,
             onReorder: (int oldIndex, int newIndex) async {
               if (newIndex == 0 || oldIndex == 0) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.grey[300],
-                    content: const Text("Cannot Move Recently Added Category!",
-                        style: TextStyle(color: Colors.black54))));
+                    content: const Text(
+                  "Cannot Move Recently Added Category!",
+                )));
                 return;
               }
               var oldp = categories[oldIndex];
@@ -128,6 +134,7 @@ class _homeState extends State<home> {
               var t = Provider.of<UserDB>(context, listen: false)
                   .categories[oldIndex];
               print(t);
+
               Provider.of<UserDB>(context, listen: false).categories[oldIndex] =
                   Provider.of<UserDB>(context, listen: false)
                       .categories[newIndex];
@@ -139,7 +146,7 @@ class _homeState extends State<home> {
             },
             children: categories,
             childAspectRatio: 0.8,
-          )))
+          ))
         ]));
   }
 }

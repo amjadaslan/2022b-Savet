@@ -13,6 +13,7 @@ class fol_list extends StatefulWidget {
 
 class _fol_listState extends State<fol_list> {
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,6 +23,7 @@ class _fol_listState extends State<fol_list> {
         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: ListView(
             children: List.generate(widget.list.length, (index) {
+          print(widget.list[index]);
           return follower_card(user: widget.list[index], flag: false);
         })),
       ),

@@ -1,13 +1,16 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/Profile/follower_card.dart';
 import 'package:savet/auth/auth_repository.dart';
 import 'package:savet/auth/googleLogin.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Category/add_category.dart';
 import '../Category/profileImage.dart';
 import '../Services/user_db.dart';
 import '../auth/login_page.dart';
+import '../main.dart';
 
 class profile extends StatefulWidget {
   profile({Key? key, required this.LoginFrom}) : super(key: key);
@@ -29,6 +32,7 @@ class _profileState extends State<profile> {
           actions: [
             IconButton(
                 onPressed: () async {
+                  initializeNotifications(out: true);
                   if (widget.LoginFrom == "Email" || logfrom == "Email") {
                     Provider.of<UserDB>(context, listen: false)
                         .resetFetchData();
@@ -45,12 +49,64 @@ class _profileState extends State<profile> {
                         .resetFetchData();
                     await Login().signOut();
                   }
+                  await notifsPlugin.cancelAll();
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const Login()),
+                      MaterialPageRoute(builder: (context) => Login()),
                       (Route<dynamic> route) => false);
                 },
                 icon: const Icon(Icons.logout)),
-            const SizedBox(width: 20)
+            IconButton(
+                onPressed: () {
+                  showAboutDialog(
+                      context: context,
+                      applicationName: 'Savet',
+                      applicationVersion: '2.0.0',
+                      applicationLegalese: '©️ 2022 Savet all rights reserved',
+                      children: <Widget>[
+                        InkWell(
+                            child: const Text('Privacy Policy'),
+                            onTap: () async {
+                              var url =
+                                  'https://gist.github.com/SiwarK97/dc43067d24e89221da6e1f3f250fd703#file-savet-privacypolicy-md';
+                              await launch(url);
+                            }),
+                        InkWell(
+                            child: const Text('Terms & Conditions'),
+                            onTap: () async {
+                              var url =
+                                  'https://gist.github.com/SiwarK97/dc43067d24e89221da6e1f3f250fd703#file-savet-terms-conditions-md';
+                              await launch(url);
+                            }),
+                        // InkWell(
+                        // child: const Text('Credits'),
+                        // onTap: () async {
+                        // var url =
+                        // 'https://gist.github.com/mostafanaax69/118ab1cb1cbfa18dcd7ebe0df39b0db4';
+                        // await launch(url);
+                        // }),
+                      ]);
+                },
+
+                // showAboutDialog(
+                //   context: context,
+                //   applicationIcon: FlutterLogo(),
+                //   applicationName: 'Savet App',
+                //   applicationVersion: '2.0.0',
+                //   applicationLegalese: '©2022 Savet-Technion All Rights Reserved',
+                //   children: <Widget>[
+                //     Padding(
+                //         padding: EdgeInsets.only(top: 15),
+                //         child: Text('')
+                //     )
+                //   ],
+                // );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const about()),
+                // );
+                // },
+                icon: const Icon(Icons.info_outline)),
+            const SizedBox(width: 20),
           ],
         ),
         body: Container(

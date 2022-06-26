@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -16,13 +15,6 @@ class explore extends StatefulWidget {
 }
 
 class _exploreState extends State<explore> {
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   List<String> tags = [
     "Home décor",
     "DIY & crafts",
@@ -60,7 +52,7 @@ class _exploreState extends State<explore> {
                 appBar: AppBar(
                   title: const Text("Choose tags"),
                   leading: IconButton(
-                    icon: const Icon(Icons.filter_list),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -163,7 +155,8 @@ class _exploreState extends State<explore> {
                                   // Generate 100 widgets that display their index in the List.
                                   children: List.generate(arr.length, (index) {
                                     return explore_card(
-                                        url: arr[index]['image']);
+                                        post: arr[index]['post'],
+                                        user: arr[index]['user']);
                                   }),
                                 ),
                               )
@@ -200,8 +193,15 @@ class _exploreState extends State<explore> {
     for (var user in users) {
       user['categories'].forEach((c) {
         if (c['id'] != 0 && curr_tags.contains(c['tag'])) {
-          c['posts'].forEach((p) {
-            arr.add(p);
+          c['posts'].forEach((p) async {
+            var post = {'post': p, 'user': user};
+            arr.add(post);
+
+            if ((await Provider.of<UserDB>(context, listen: false))
+                .reported
+                .contains(p['id'])) {
+              arr.remove(post);
+            }
           });
         }
       });
@@ -263,10 +263,11 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> getUserList(String? username) async {
     var snapshot = (await FirebaseFirestore.instance.collection('users').get());
     userList = snapshot.docs.map((doc) => doc.data()).toList();
+
     userList.removeWhere((user) =>
-        (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
-            .hasMatch(user['username'])) ||
         (user['username'] == username) ||
-        (!user['email'].contains('@')));
+        !user['email'].contains('@') ||
+        (!RegExp('.*${_userControl.text}.*', caseSensitive: false)
+            .hasMatch(user['username'])));
   }
 }

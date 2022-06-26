@@ -1,44 +1,133 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:savet/auth/Register.dart';
 import 'package:savet/auth/ResetPassword.dart';
 import 'package:savet/auth/anonymous.dart';
 import 'package:savet/homepage.dart';
+import 'package:http/http.dart' as http;
+
+import '../Notifications/notificationsHelper.dart';
 
 import '../Services/user_db.dart';
 import '../homepage.dart';
+import '../main.dart';
 import 'Register.dart';
 import 'auth_repository.dart';
 import 'googleLogin.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
-
+  Login({Key? key, this.sharedFiles}) : super(key: key);
+  List? sharedFiles;
   @override
   State<Login> createState() => _LoginState();
   Future signOut() => _LoginState().signOutFace();
 }
 
 class _LoginState extends State<Login> {
-  AccessToken? _accessToken;
-  UserModel? _currentUser;
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   TextEditingController _password = new TextEditingController();
   TextEditingController _email = new TextEditingController();
   String LogFrom = "";
+  late AndroidNotificationChannel channel;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+  void listenFCM() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              icon: 'launch_background',
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  void loadFCM() async {
+    if (!kIsWeb) {
+      channel = const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        importance: Importance.high,
+        enableVibration: true,
+      );
+
+      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      /// Create an Android Notification Channel.
+      ///
+      /// We use this channel in the `AndroidManifest.xml` file to override the
+      /// default FCM channel to enable heads up notifications.
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+
+      /// Update the iOS foreground notification presentation options to allow
+      /// heads up notifications.
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _email = TextEditingController(text: "");
     _password = TextEditingController(text: "");
+    //requestPermission();
+
+    loadFCM();
+
+    listenFCM();
   }
 
   Future<FirebaseApp> _initializeFirebase() async {
@@ -52,16 +141,21 @@ class _LoginState extends State<Login> {
     print(auth.currentUser);
     if (auth.currentUser != null) {
       return FutureBuilder(
-          future: Provider.of<UserDB>(context).fetchData(),
+          future: Provider.of<UserDB>(context, listen: false).fetchData(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             } else if (snapshot.connectionState == ConnectionState.done) {
               return homepage(
-                LoginFrom: LogFrom,
-              );
+                  LoginFrom: LogFrom, sharedFiles: widget.sharedFiles);
+            } else {
+              return Scaffold(
+                  body: Center(
+                      child: LoadingAnimationWidget.fourRotatingDots(
+                color: Colors.deepOrange,
+                size: 200,
+              )));
             }
-            return const Center(child: CircularProgressIndicator());
           });
     } else {
       return Scaffold(
@@ -76,6 +170,27 @@ class _LoginState extends State<Login> {
                 return LoginScreen();
               }));
     }
+  }
+
+  void addToken() {
+    var auth = FirebaseAuth.instance;
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((token) {
+      final FirebaseFirestore db = FirebaseFirestore.instance;
+      return db
+          .collection('tokens')
+          .where('token', isEqualTo: token)
+          .get()
+          .then((snapshot) async {
+        if (snapshot.docs.isEmpty) {
+          return db.collection('tokens').doc(auth.currentUser?.email).set({
+            'token': token,
+            'registered_at': Timestamp.now(),
+            'email': auth.currentUser?.email
+          }).then((value) => null);
+        }
+      });
+    });
   }
 
   Widget LoginScreen() {
@@ -160,8 +275,9 @@ class _LoginState extends State<Login> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => FutureBuilder(
-                                  future:
-                                      Provider.of<UserDB>(context).fetchData(),
+                                  future: Provider.of<UserDB>(context,
+                                          listen: false)
+                                      .fetchData(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasError) {
                                       return Center(
@@ -169,6 +285,7 @@ class _LoginState extends State<Login> {
                                               Text(snapshot.error.toString()));
                                     } else if (snapshot.connectionState ==
                                         ConnectionState.done) {
+                                      initializeNotifications();
                                       return homepage(LoginFrom: LogFrom);
                                     }
                                     return const Center(
@@ -199,9 +316,11 @@ class _LoginState extends State<Login> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => FutureBuilder(
-                                  future:
-                                      Provider.of<UserDB>(context).fetchData(),
+                                  future: Provider.of<UserDB>(context,
+                                          listen: false)
+                                      .fetchData(),
                                   builder: (context, snapshot) {
+                                    initializeNotifications();
                                     return homepage(
                                       LoginFrom: LogFrom,
                                     );
@@ -220,11 +339,13 @@ class _LoginState extends State<Login> {
                         LogFrom = "Facebook";
                         await loginFace();
                         if (auth.currentUser != null) {
+                          addToken();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FutureBuilder(
-                                      future: Provider.of<UserDB>(context)
+                                      future: Provider.of<UserDB>(context,
+                                              listen: false)
                                           .fetchData(),
                                       builder: (context, snapshot) {
                                         if (snapshot.hasError) {
@@ -233,6 +354,7 @@ class _LoginState extends State<Login> {
                                                   snapshot.error.toString()));
                                         } else if (snapshot.connectionState ==
                                             ConnectionState.done) {
+                                          initializeNotifications();
                                           return homepage(LoginFrom: LogFrom);
                                         }
                                         return const Center(
@@ -254,22 +376,23 @@ class _LoginState extends State<Login> {
                         LogFrom = "Google";
                         var x = Google.instance();
                         await x.signIn();
-
-                        // Provider.of<UserDB>(context,listen:false).userDocument
                         var boo = await FirebaseFirestore.instance
                             .collection('users')
                             .doc(auth.currentUser?.email)
                             .get();
                         if (x.currentUser() != null && boo.exists) {
+                          addToken();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FutureBuilder(
-                                      future: Provider.of<UserDB>(context)
+                                      future: Provider.of<UserDB>(context,
+                                              listen: false)
                                           .fetchData(),
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState ==
                                             ConnectionState.done) {
+                                          initializeNotifications();
                                           return homepage(LoginFrom: LogFrom);
                                         } else if (snapshot.hasError) {
                                           return Center(
@@ -340,7 +463,6 @@ class _LoginState extends State<Login> {
     //final googleAuth = await login_res?.authentication;
     try {
       if (login_res.status == LoginStatus.success) {
-        _accessToken = login_res.accessToken;
         final data = await FacebookAuth.i.getUserData();
         UserModel model = UserModel.fromJson(data);
 
@@ -362,7 +484,6 @@ class _LoginState extends State<Login> {
             'log_from': "Facebook"
           });
         }
-        _currentUser = model;
         LogFrom = "Facebook";
       }
     } catch (e) {
@@ -373,8 +494,6 @@ class _LoginState extends State<Login> {
   Future signOutFace() async {
     var auth = FirebaseAuth.instance;
     await FacebookAuth.i.logOut();
-    _currentUser = null;
-    _accessToken = null;
     await auth.signOut();
   }
 }
@@ -417,4 +536,29 @@ class UserModel {
 }
    */
 
+}
+
+void initializeNotifications({bool out = false}) {
+  if (UserDB.reminders.length > 1) {
+    if (!out) {
+      print(UserDB.reminders);
+      UserDB.reminders.toList().forEach((e) {
+        scheduleNotification(notifsPlugin, e['id'], e['title'], e['body'],
+            e['date'].toDate(), e['not_id'], " ");
+      });
+    }
+    UserDB.reminders.toList().forEach((e) {
+      var date =
+          DateTime.fromMillisecondsSinceEpoch(e['date'].microsecondsSinceEpoch);
+      if (DateTime.now().isBefore(date) && e['not_id'] != 0) {
+        UserDB.reminders.remove(e);
+      }
+    });
+
+    final auth = FirebaseAuth.instance.currentUser;
+    var user_email = !(auth!.isAnonymous) ? auth.email : auth.uid;
+    var userDocument =
+        FirebaseFirestore.instance.collection('users').doc(user_email);
+    userDocument.update({'reminders': UserDB.reminders});
+  }
 }
