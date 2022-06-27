@@ -65,7 +65,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                 //remove follow
                 await Provider.of<UserDB>(context, listen: false)
                     .removeFollower(widget.user['email'], widget.user);
-                widget.user['followers'].where((f) => (f['username'] ==
+                widget.user['followers'].removeWhere((f) => (f['username'] ==
                     Provider.of<UserDB>(context, listen: false).username));
               } else {
                 //perform follow
