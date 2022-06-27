@@ -76,23 +76,32 @@ class _postPageState extends State<postPage> {
         await Provider.of<UserDB>(context, listen: false).addLike(
             Provider.of<UserDB>(context, listen: false).user_email,
             (widget.user != null)
-                ? (widget.user?['email'])
+                ? (widget.user!['email'])
                 : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
         Provider.of<UserDB>(context, listen: false).addNotification(
             (widget.user != null)
-                ? (widget.user?['email'])
+                ? (widget.user!['email'])
                 : Provider.of<UserDB>(context, listen: false).user_email,
             ' reacted to your post.');
-        sendPushMessage(
-            token,
-            '',
-            '${Provider.of<UserDB>(context, listen: false).username}'
-                ' reacted to your post.');
-        widget.user!['categories']
-            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
-            .singleWhere((post) => post['id'] == widget.post_id)['likes']++;
+        if (token != Provider.of<UserDB>(context, listen: false).token) {
+          sendPushMessage(
+              token,
+              '',
+              '${Provider.of<UserDB>(context, listen: false).username}'
+                  ' reacted to your post.');
+        }
+        (widget.user != null)
+            ? widget.user!['categories']
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['likes']++
+            : Provider.of<UserDB>(context, listen: false)
+                .categories
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['likes']++;
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLike(
             Provider.of<UserDB>(context, listen: false).user_email,
@@ -101,9 +110,16 @@ class _postPageState extends State<postPage> {
                 : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
-        widget.user!['categories']
-            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
-            .singleWhere((post) => post['id'] == widget.post_id)['likes']--;
+        (widget.user != null)
+            ? widget.user!['categories']
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['likes']--
+            : Provider.of<UserDB>(context, listen: false)
+                .categories
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['likes']--;
       }
       isHappy = !isHappy;
       setState(() {});
@@ -120,19 +136,28 @@ class _postPageState extends State<postPage> {
                 : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
-        sendPushMessage(
-            token,
-            '',
-            '${Provider.of<UserDB>(context, listen: false).username}'
-                ' reacted to your post.');
+        if (token != Provider.of<UserDB>(context, listen: false).token) {
+          sendPushMessage(
+              token,
+              '',
+              '${Provider.of<UserDB>(context, listen: false).username}'
+                  ' reacted to your post.');
+        }
         Provider.of<UserDB>(context, listen: false).addNotification(
             (widget.user != null)
                 ? (widget.user?['email'])
                 : Provider.of<UserDB>(context, listen: false).user_email,
             ' reacted to your post.');
-        widget.user!['categories']
-            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
-            .singleWhere((post) => post['id'] == widget.post_id)['loves']++;
+        (widget.user != null)
+            ? widget.user!['categories']
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['loves']++
+            : Provider.of<UserDB>(context, listen: false)
+                .categories
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['loves']++;
       } else {
         await Provider.of<UserDB>(context, listen: false).removeLove(
             Provider.of<UserDB>(context, listen: false).user_email,
@@ -141,9 +166,16 @@ class _postPageState extends State<postPage> {
                 : Provider.of<UserDB>(context, listen: false).user_email,
             widget.post_id,
             widget.cat_id);
-        widget.user!['categories']
-            .singleWhere((element) => element['id'] == widget.cat_id)['posts']
-            .singleWhere((post) => post['id'] == widget.post_id)['loves']--;
+        (widget.user != null)
+            ? widget.user!['categories']
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['loves']--
+            : Provider.of<UserDB>(context, listen: false)
+                .categories
+                .singleWhere(
+                    (element) => element['id'] == widget.cat_id)['posts']
+                .singleWhere((post) => post['id'] == widget.post_id)['loves']--;
       }
 
       isLoved = !isLoved;
