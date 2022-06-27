@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class notification_card extends StatefulWidget {
@@ -34,22 +35,25 @@ class _notification_cardState extends State<notification_card> {
                             backgroundImage: (widget.image == "")
                                 ? AssetImage('assets/images/avatar.jpg')
                                     as ImageProvider
-                                : NetworkImage(widget.image)),
+                                : CachedNetworkImageProvider(widget.image)),
                         const SizedBox(width: 20),
-                        Text('${widget.username}',
-                            style: TextStyle(
-                                decoration: TextDecoration.none,
-                                fontSize: 15,
-                                fontFamily: 'arial',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
+                        AutoSizeText(
+                          '${widget.username}',
+                          style: TextStyle(
+                              decoration: TextDecoration.none,
+                              fontSize: 14,
+                              fontFamily: 'arial',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                          maxFontSize: 15,
+                        ),
                         SizedBox(
                           width: 5,
                         ),
                         Text("${widget.message}",
                             style: TextStyle(
                                 decoration: TextDecoration.none,
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontFamily: 'arial',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black45))

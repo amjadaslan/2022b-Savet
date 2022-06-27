@@ -58,12 +58,13 @@ class UserDB extends ChangeNotifier {
       DocumentSnapshot userSnapshot = await userDocument.get();
       Map<String, dynamic> userData =
           userSnapshot.data() as Map<String, dynamic>;
-      if (userData.length <= 3) {
-        if (userData.length == 3) {
+      if (userData.length <= 4) {
+        if (userData.length == 4) {
           avatar_path = userData['avatar_path'];
         }
         log_from = userData['log_from'];
         username = userData['username'];
+        token = userData['token'];
         await userDocument.set({
           'avatar_path': avatar_path,
           'notifications': notifications,
@@ -78,8 +79,8 @@ class UserDB extends ChangeNotifier {
           'postsIliked': postsIliked,
           'postsIloved': postsIloved,
           'reported': reported,
-          'token': token,
           'reminders': reminders,
+          'token': token
         });
       } else {
         username = userData['username'];
@@ -119,10 +120,11 @@ class UserDB extends ChangeNotifier {
       print("fetchDataAfterAnonymous");
       categories = userDataAno['categories'];
       print(userData.length);
-      if (userData.length <= 3) {
-        if (userData.length == 3) {
+      if (userData.length <= 4) {
+        if (userData.length == 4) {
           avatar_path = userData['avatar_path'];
         }
+        token = userData['token'];
         username = userData['username'];
         //log_from = userData['log_from'];
         await userDocument.set({
@@ -229,8 +231,7 @@ class UserDB extends ChangeNotifier {
     });
 
     s.update({'notifications': notifications});
-    fetchData();
-    notifyListeners();
+    // notifyListeners();
   }
 
   void changeCategoryProfile(int cat_id, String new_img) async {
@@ -496,9 +497,9 @@ class UserDB extends ChangeNotifier {
         e['posts'].removeWhere((p) => p_id == p['id']);
         print(e);
       });
-      categories[0]['posts'].removeWhere((p) {
-        if (p_id == p['id'] && c_id == p['cat_id']) tot_posts--;
-      });
+      categories[0]['posts']
+          .removeWhere((p) => (p_id == p['id'] && c_id == p['cat_id']));
+      tot_posts = categories[0]['posts'].length;
       pathToDelete =
           RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
       await FirebaseStorage.instance.ref('$pathToDelete').delete();

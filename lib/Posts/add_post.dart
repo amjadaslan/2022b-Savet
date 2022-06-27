@@ -10,8 +10,10 @@ import '../Services/user_db.dart';
 import '../auth/login_page.dart';
 
 class add_post extends StatefulWidget {
-  const add_post({Key? key, required this.cat_id, this.image_path})
+  const add_post(
+      {Key? key, required this.cat_id, this.image_path, this.videoFlag})
       : super(key: key);
+  final videoFlag;
   final cat_id;
   final image_path;
   @override
@@ -28,6 +30,7 @@ class _add_postState extends State<add_post> {
   Widget build(BuildContext context) {
     if (widget.image_path != null) {
       pWrap.value = widget.image_path;
+      pWrap.videoFlag = (widget.videoFlag != null) ? widget.videoFlag : false;
     }
     return Scaffold(
         appBar: AppBar(

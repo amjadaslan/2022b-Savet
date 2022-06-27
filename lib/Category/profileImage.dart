@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,7 @@ class _profileImageState extends State<profileImage> {
 
   @override
   Widget build(BuildContext context) {
+    type = (widget.pWrap.videoFlag) ? "Video" : "Image";
     path = widget.pWrap.value;
     final _picker = ImagePicker();
 
@@ -97,7 +99,7 @@ class _profileImageState extends State<profileImage> {
               backgroundImage: ((path == "")
                   ? const AssetImage('assets/images/avatar.jpg')
                   : ((widget.network_flag)
-                      ? NetworkImage(path)
+                      ? CachedNetworkImageProvider(path)
                       : FileImage(File(path)) as ImageProvider)))
         else if (type == "Image" && widget.shape == "square")
           Container(
@@ -116,7 +118,7 @@ class _profileImageState extends State<profileImage> {
                     child: Image(
                         fit: BoxFit.cover,
                         image: (widget.network_flag)
-                            ? NetworkImage(path)
+                            ? CachedNetworkImageProvider(path)
                             : ((path == "")
                                 ? const AssetImage('assets/images/default.jpg')
                                     as ImageProvider
