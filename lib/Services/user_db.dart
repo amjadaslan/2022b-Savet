@@ -497,9 +497,9 @@ class UserDB extends ChangeNotifier {
         e['posts'].removeWhere((p) => p_id == p['id']);
         print(e);
       });
-      categories[0]['posts'].removeWhere((p) {
-        if (p_id == p['id'] && c_id == p['cat_id']) tot_posts--;
-      });
+      categories[0]['posts']
+          .removeWhere((p) => (p_id == p['id'] && c_id == p['cat_id']));
+      tot_posts = categories[0]['posts'].length;
       pathToDelete =
           RegExp('\/o\/([0-9]*)').firstMatch(pathToDelete!)?.group(1);
       await FirebaseStorage.instance.ref('$pathToDelete').delete();
