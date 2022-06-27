@@ -48,7 +48,7 @@ class _add_postState extends State<add_post> {
                       pWrap: pWrap,
                       shape: "square",
                       network_flag: false,
-                      vid: pWrap.videoFlag),
+                      vid: true),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
