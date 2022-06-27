@@ -84,7 +84,7 @@ class _profile_ext_viewState extends State<profile_ext_view> {
                       .following_count,
                 });
                 Provider.of<UserDB>(context, listen: false).addNotification(
-                    widget.user['email'], 'started following you');
+                    widget.user['email'], ' started following you.');
 
                 // scheduleNotification(
                 //     notifsPlugin,
