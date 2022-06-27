@@ -37,6 +37,7 @@ class _profileImageState extends State<profileImage> {
 
   @override
   Widget build(BuildContext context) {
+    type = (widget.vid) ? "Video" : "Image";
     path = widget.pWrap.value;
     final _picker = ImagePicker();
 

@@ -29,7 +29,8 @@ class _add_sharedState extends State<add_shared> {
     List cats = Provider.of<UserDB>(context).categories.toList();
     cats.removeWhere((cat) =>
         (!RegExp('.*${_editingController.text}.*', caseSensitive: false)
-            .hasMatch(cat['title'])));
+                .hasMatch(cat['title']) ||
+            cat['id'] == 0));
     List<Widget> categories = List.generate(cats.length, (i) {
       var cat = cats[i];
       return InkWell(
@@ -37,12 +38,15 @@ class _add_sharedState extends State<add_shared> {
         onTap: () {
           print("home");
           print(cat['id']);
+          print(widget.sharedFiles?.first.type == SharedMediaType.VIDEO);
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => add_post(
                         cat_id: cat['id'],
                         image_path: widget.sharedFiles?.first.path,
+                        videoFlag: widget.sharedFiles?.first.type ==
+                            SharedMediaType.VIDEO,
                       )));
         },
         child: Container(

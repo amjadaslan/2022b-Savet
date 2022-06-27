@@ -37,20 +37,23 @@ class _notification_cardState extends State<notification_card> {
                                     as ImageProvider
                                 : CachedNetworkImageProvider(widget.image)),
                         const SizedBox(width: 20),
-                        Text('${widget.username}',
-                            style: TextStyle(
-                                decoration: TextDecoration.none,
-                                fontSize: 15,
-                                fontFamily: 'arial',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
+                        AutoSizeText(
+                          '${widget.username}',
+                          style: TextStyle(
+                              decoration: TextDecoration.none,
+                              fontSize: 14,
+                              fontFamily: 'arial',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                          maxFontSize: 15,
+                        ),
                         SizedBox(
                           width: 5,
                         ),
                         Text("${widget.message}",
                             style: TextStyle(
                                 decoration: TextDecoration.none,
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontFamily: 'arial',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black45))
